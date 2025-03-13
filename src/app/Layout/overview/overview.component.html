@@ -1,0 +1,137 @@
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left Section: Main Image & Sub-Images -->
+    <div class="col-lg-12">
+      <div class="row g-0">
+        <!-- Main Image -->
+        <div class="col-md-9">
+          <img [src]="'' + hotel.image" class="main-image img-fluid rounded w-100" alt="{{ hotel.name }}">
+        </div>
+        <!-- Sub-Images (Beside Main Image) -->
+        <div class="col-md-3 d-flex flex-column align-items-start">
+          <img *ngFor="let subImg of hotel.subImages" [src]="'' + subImg" class="sub-image img-thumbnail mb-2 w-100"
+            alt="Hotel Image">
+        </div>
+      </div>
+
+
+
+
+      <!-- Tabs Section (Overview, Amenities, Rooms, Location) -->
+      <div class="row">
+        <div class="col-md-12">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'overview'"
+                (click)="scrollToSection('overview')">Overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'amenities'"
+                (click)="scrollToSection('amenities')">Amenities</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'rooms'" (click)="scrollToSection('rooms')">Rooms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'location'"
+                (click)="scrollToSection('location')">Location</a>
+            </li>
+          </ul>
+
+
+          <div class="tab-content mt-3">
+            <div id="overview" class="tab-pane fade show active">
+              <!-- Hotel Name & Address -->
+              <h2 class="mt-3" style="color: #570E49; font-weight: bold;">{{ hotel.name }}</h2>
+
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <i class="bi bi-geo-alt">{{ hotel.address }} - 
+                  <a href="javascript:void(0);" class="text-primary" (click)="toggleMap()">Show Map</a>
+                </i>
+              
+
+                <button class="btn btn-primary" style="background-color: #570E49; border: none;">See Room
+                  Availability</button>
+              </div><br>
+
+              <div class="d-flex justify-content-between align-items-start">
+                <!-- Left Section: Overview -->
+                <div class="flex-grow-1 me-3">
+                  <h4 style="color: #570E49; font-weight: bold;">{{ "Overview" }}</h4>
+                  <p>{{ hotel.description }}</p>
+                </div>
+
+                <!-- Right Section: Highlights -->
+                <div class="col-md-3 text-start p-4">
+                  <div class="card p-3 shadow-sm">
+                    <h5 class="highlight_section">Highlights</h5>
+                    <ul class="list-unstyled">
+                      <li><i class="bi bi-star-fill text-warning"></i> Location Score: <b>{{ hotel.locationScore }}</b>
+                      </li>
+                      <li><i class="bi bi-star-fill text-warning"></i> Hotel Rating: <b>{{ hotel.rating }}</b></li>
+                      <li><i class="bi bi-wifi"></i> WiFi Rating: <b>{{ hotel.wifiScore }}</b></li>
+                      <li><i class="bi bi-people"></i> Staff Rating: <b>{{ hotel.staffScore }}</b></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Amenities Section -->
+            <div id="amenities" class="mt-4">
+              <h4 style="color: #570E49; font-weight: bold;">Amenities</h4>
+
+              <div class="row mt-4">
+                <div *ngFor="let amenity of hotel.amenities" class="col-md-3 col-sm-6 mb-3">
+                  <div class="amenity-card d-flex align-items-center p-2 shadow-sm">
+                    <i [class]="amenity.icon" class="amenity-icon text-success"></i>
+                    <span class="ms-2">{{ amenity.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Room Section -->
+            <div id="rooms" class="mt-5">
+              <h4 class="mb-3" style="color: #570E49; font-weight: bold;">Rooms</h4>
+
+              <div class="row">
+                <div *ngFor="let room of hotel.rooms" class="col-12 mb-4">
+                  <div class="card room-card" [class.expanded]="expandedRooms[room.name]">
+                    <div class="row g-0 align-items-center">
+                      <!-- Room Image -->
+                      <div class="col-md-4 room-image-container">
+                        <img [src]="room.image" class="room-image" alt="{{ room.name }}">
+                      </div>
+
+                      <!-- Room Details -->
+                      <div class="col-md-8 room-info">
+                        <div class="room-content">
+                          <h5>{{ room.name }}</h5>
+                          <p class="room-desc" #desc>{{ room.description }}</p>
+                        </div>
+
+                        <!-- Expand Icon (Only show if description is longer) -->
+                        <div class="expand-icon" [class.show-expand-icon]="room.showExpandIcon"
+                          (click)="toggleRoomExpansion(room.name)">
+                          <i class="fas fa-chevron-down"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div id="location" class="tab-section">
+              <h4 style="color: #570E49; font-weight: bold;">Location</h4>
+              <div id="map" class="hotel-map"></div>
+            </div>
+            
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>

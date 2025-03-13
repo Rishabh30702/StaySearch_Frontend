@@ -1,0 +1,166 @@
+h2 {
+    font-size: calc(1.325rem + .9vw);
+    color: #570E49;
+    margin-bottom: 10vh;
+    margin-top: 5vh;
+    margin-left: 5vw;
+    font-weight: bold;
+    letter-spacing: 0.2vw;
+}
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.contact-container {
+    width: 80%;
+    margin: 30px auto;
+}
+
+.form-container {
+    display: flex;
+    gap: 20px;
+    padding: 0 50px; 
+}
+
+textarea {
+    flex: 2;
+    height: 200px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+    background: #f8f8f8;
+}
+
+.right-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-form input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f8f8f8;
+}
+
+.send-btn {
+    background: #570E49;;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.send-btn:hover {
+    background: #570E49;;
+}
+
+.contact-info {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.info-item {
+    text-align: center;
+}
+
+.icon {
+    background: #570E49;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin: auto;
+}
+
+
+
+
+
+
+.gallery-container {
+    width: 90%;
+    margin: 50px auto;
+}
+
+.gallery-header {
+    margin-bottom: 20px;
+}
+
+.gallery-header h4 {
+    color: #570E49;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.gallery-header h2 {
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.image-gallery {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.gallery {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+.gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery img {
+    width: 250px;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.gallery img:hover {
+
+    transform: scale(1.04);
+   
+
+}
+
+
+
+.next-btn {
+    position: absolute;
+    right: 10px;
+    background: #570E49;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}

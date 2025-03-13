@@ -1,0 +1,35 @@
+/* Background image for navbar */
+.navbar {
+    background: url('/navimage.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 1.7rem;
+  }
+  
+  /* Logo Styling */
+  .navbar-brand {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white !important;
+  }
+  
+  /* Center menu items */
+  .navbar-nav {
+    margin: auto;
+  }
+  
+  /* Menu Item Styling */
+  .nav-item .nav-link {
+    color: white !important;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  /* Navbar Toggler Color */
+  .navbar-toggler {
+    outline: 2px solid transparent !important; /* Makes sure default outline is removed */
+    box-shadow: none; /* Soft white glow */
+    border: 1px solid white; /* White border */
+    background-color: white; /* White background */
+  }
+
+  

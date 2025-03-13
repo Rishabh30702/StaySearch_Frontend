@@ -1,0 +1,79 @@
+<div class="contactUs-container">
+    <h2>Contact Us</h2>
+    
+
+    <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="contact-form">
+      <div class="form-container">
+        <textarea formControlName="description" placeholder="Description" class="form-control shadow-none"></textarea>
+    
+        <div class="right-form">
+          <input type="text" formControlName="subject" placeholder="Subject" class="form-control shadow-none">
+          <small *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="error">
+            <span style="color:red">Subject is required.</span>
+          </small>
+    
+          <input type="text" formControlName="name" placeholder="Name / Surname" class="form-control shadow-none">
+          <small *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="error">
+            <span style="color:red">Enter full name (at least two words).</span>
+          </small>
+    
+          <input type="email" formControlName="email" placeholder="Email" class="form-control shadow-none">
+          <small *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="error">
+            <span style="color:red"> Enter a valid email.</span>
+          </small>
+    
+          <button type="submit" class="send-btn">
+            Send <span>✈️</span>
+          </button>
+        </div>
+      </div>
+    </form>
+    <small *ngIf="contactForm.get('description')?.invalid && contactForm.get('description')?.touched" class="error">
+      <span style="color:red; margin-left: 4vw;" class="d-flex align-items-center">Description must be at least 10 characters.</span>
+    </small>
+    
+    
+      <div class="contact-info">
+        <div class="info-item">
+          <div class="icon">📧</div>
+          <h3>Email</h3>
+          <p>example&#64;yahoo.com</p>
+          <p>exampleemail2&#64;yahoo.com</p>
+        </div>
+        <div class="info-item">
+          <div class="icon">📞</div>
+          <h3>Phone</h3>
+          <p>+0 320 422 4254</p>
+          <p>+0 342 552 523</p>
+        </div>
+        <div class="info-item">
+          <div class="icon">📍</div>
+          <h3>Location</h3>
+          <p>Main Str Chicago Illinois</p>
+          <p>Main Street New York City</p>
+        </div>
+      </div>
+
+      <div class="gallery-container">
+        <div class="gallery-header">
+          <h4>PHOTOS</h4>
+          <h2>See our latest photos <br> from restaurant and hotel</h2>
+        </div>
+        
+        <div class="image-gallery">
+          <div class="gallery">
+         
+                <img src="photo1.jpg" alt="Beach">
+                <img src="photo2.jpg" alt="Mountains">
+                <img src="photo3.jpg" alt="Stairs">
+                <img src="photo4.jpg" alt="Green Garden">
+                <img src="photo5.jpg" alt="Resort">
+           
+           
+          </div>
+          <button class="next-btn">➡️</button>
+        </div>
+      </div>
+      
+
+</div>

@@ -1,0 +1,50 @@
+<div class="listings-container">
+  <div class="listings">
+    <div class="filter-box">
+      <div class="filter-options">
+        <span>Bordeaux</span>
+        <span>Feb 10 - 12</span>
+        <span>2 guests</span>
+        <button class="filter-button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <h2>Listings</h2>
+    
+    <div class="hotel-card" *ngFor="let hotel of hotels; let i = index" style="cursor: pointer;" (click)="onHotelClick(hotel)">
+      <!-- Hotel Image -->
+      <div class="hotel-image">
+        <img [src]="hotel.image" alt="{{ hotel.name }}">
+      </div>
+
+      <!-- Hotel Details -->
+      <div class="hotel-details">
+        <div class="nameAndfav d-flex justify-content-between">
+          <h4>{{ hotel.name }}</h4>
+          <button class="btn" style="border: none;">
+            <i
+            class="fa-heart heart-icon"
+            [ngClass]="{ 'fas': hotel.liked, 'far': !hotel.liked }"
+            (click)="$event.stopPropagation(); toggleLike(hotel)">
+          </i>
+          </button>
+        </div>
+        <p>{{ getShortDescription(hotel.description) }}</p>
+
+        <div class="priceAndrating">
+          <div class="rating d-flex justify-content-between my-3">
+            <span style="color: gold; font-weight: bold;">{{ hotel.rating +' ⭐' + "&nbsp;&nbsp;&nbsp;&nbsp;("+ hotel.reviews+")"}}</span>
+            <strong class="price">{{ hotel.price + "/night" }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Map / Demo Map -->
+      <div class="hotel-map" (click)="$event.stopPropagation()">
+       <!-- Individual map container with a unique ID -->
+  <div [id]="'map-' + i" class="hotel-map"></div>
+      </div>
+    </div>
+  </div>
+</div>
