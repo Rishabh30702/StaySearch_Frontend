@@ -1,0 +1,17 @@
+<div *ngIf="showModal" class="modal-overlay">
+    <div class="modal-content" @fadeSlideIn>
+      <button class="close-btn" (click)="closeModal()">X</button>
+      <h2 class="welcome-text" @moveTitleUp>Welcome to StaySearch</h2>
+  
+      <form *ngIf="showForm" (submit)="search($event)" @fadeInForm>
+        <label for="place">Enter Place:</label>
+        <input type="text" id="place" [(ngModel)]="place" name="place" required />
+  
+        <label for="hotel">Hotel Name:</label>
+        <input type="text" id="hotel" [(ngModel)]="hotelName" name="hotel" required />
+  
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+  
