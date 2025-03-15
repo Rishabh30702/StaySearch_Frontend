@@ -1,0 +1,109 @@
+.filter-container {
+    width: 300px;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  h4 {
+    font-weight: bold;
+  }
+  
+  .form-check-label {
+    font-size: 14px;
+  }
+  
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .form-range {
+    width: 100%;
+  }
+  
+  .btn-primary {
+    background-color: #570E49;
+    border: none;
+    transition: 0.3s ease-in-out;
+  }
+  
+  .btn-primary:hover {
+    background-color: #751261;
+  }
+  /* Customizing the range input */
+.custom-range {
+  accent-color: #570E49;
+}
+
+/* Customizing checkboxes */
+.custom-checkbox {
+  accent-color: #570E49; /* Changes checkbox color */
+}
+
+/* Optional: If accent-color doesn't work for some browsers */
+.custom-checkbox:checked {
+  background-color: #570E49;
+  border-color: #570E49;
+  outline: #570E49;
+}
+/* Customizing the range input (Seekbar) */
+.custom-range {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0; /* Background track color */
+  border-radius: 5px;
+  outline: none;
+  opacity: 0.9;
+  transition: 0.2s;
+}
+
+/* Track styling */
+.custom-range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: #570E49; /* Primary track color */
+  border-radius: 5px;
+}
+
+/* Thumb (Draggable Circle) styling */
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #570E49;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -4px;
+}
+
+.custom-range::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #570E49;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Track color for Firefox */
+.custom-range::-moz-range-track {
+  width: 100%;
+  height: 6px;
+  background: #570E49;
+  border-radius: 5px;
+}
+
+/* Customizing checkboxes */
+.custom-checkbox {
+  accent-color: #570E49;
+}
+
+/* Ensuring compatibility for browsers that don’t support accent-color */
+.custom-checkbox:checked {
+  background-color: #570E49;
+  border-color: #570E49;
+}
+
+
