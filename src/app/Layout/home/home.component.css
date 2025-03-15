@@ -45,7 +45,7 @@
 .background-wrapper {
     width: 100%;
     min-height: 100vh; /* Ensures enough height */
-    background: url('/taj.jpg') no-repeat center center fixed;
+    background: url('/taj_mahal_converted.jpg') no-repeat center center fixed;
     background-size: cover; /* Ensures the image covers the entire div */
     display: flex;
     flex-direction: column;
@@ -550,5 +550,156 @@
 }
 
 
+
+/*Feedback and Ratings Section   */
+
+h5.heading{
+  text-align: center;
+  color: #570E49;
+font-size: 28px; /* Increased font size */
+font-weight: bold;
+margin-bottom: 30px;
+}
+
+.button {
+  background-color: #4a004e; /* Dark purple background */
+  color: white; /* White text */
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 0; /* Vertical padding */
+  width: 100%; /* Full width */
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 40px;
+}
+
+.button:hover {
+  background-color: #620062; /* Slightly lighter purple on hover */
+}
+
+
+.rating {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  padding: 40px;
+}
+
+.star {
+  color: red; /* Red color for the star */
+  font-size: 18px; /* Slightly larger than text */
+  margin-right: 4px;
+}
+
+.score {
+  font-weight: bold;
+}
+
+.reviews {
+  font-weight: normal;
+  color: black;
+}
+
+
+
+.ratings-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 40px; /* Adjust spacing between columns */
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  padding: 40px;
+  width: 1000px; /* Adjust width as needed */
+}
+
+.rating-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rating-row {
+  display: grid;
+  grid-template-columns: 1fr 120px 30px; /* Label, bar, and value */
+  align-items: center;
+  gap: 10px; /* Space between elements */
+}
+
+.rating-bar {
+  width: 120px;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  position: relative;
+}
+
+.fill {
+  height: 100%;
+  background: black;
+  border-radius: 3px;
+}
+
+.rating-value {
+  min-width: 30px;
+  text-align: right;
+}
+
+
+
+
+
+.reviews-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 90%;
+  margin: 20px;
+
+  padding: 20px;
+
+  
+}
+.review {
+  
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.profile-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.review-text {
+  font-size: 14px;
+  color: #333;
+}
+.show-more {
+  color: #0073E6;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.all-reviews-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 15px;
+  border: 1px solid #000;
+  background-color: #570E49;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  
+  border-radius: 8px;
+}
+
+.all-reviews-btn:hover {
+  background: #8A206B;
+  transform: scale(1.05);
+}
 
 
