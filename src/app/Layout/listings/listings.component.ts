@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as L from 'leaflet';
+import { HotelFilterComponent } from "../../Core/hotel-filter/hotel-filter.component";
 
 @Component({
   selector: 'app-listings',
-  imports: [CommonModule],
+  imports: [CommonModule, HotelFilterComponent],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css'
 })
@@ -15,22 +16,30 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   hasApiKey = false; // Change to 'true' if you have a Google Maps API Key
   map: any; // Store the map instance
 
-  constructor(private sanitizer: DomSanitizer, private router: Router) {
+  filteredHotels: any[] = []; // Filtered list of hotels
+
+  constructor(private sanitizer: DomSanitizer, private router: Router, private route: ActivatedRoute) {
     this.hotels = [
       {
         name: 'Bordeaux Getaway',
-        description: "Bordeaux Getaway is a charming hotel nestled in the heart of Bordeaux, France. Offering a blend of modern comfort and classic French elegance, it provides guests with a relaxing retreat near the city top attractions. The hotel features well-appointed rooms, excellent amenities, and easy access to Bordeaux renowned vineyards, historic landmarks, and vibrant dining scene. Whether you visiting for leisure or business, Bordeaux Getaway ensures a memorable stay with warm hospitality and a serene ambiance.",
+        destination: 'Bordeaux', // ✅ Added destination
+        description: "Bordeaux Getaway is a charming hotel nestled in the heart of Bordeaux, France...",
         price: '$225',
         image: 'bor.jpeg',
         lat: 44.8378,
         lng: -0.5792,
         rating: 4.5,
         reviews: "12 reviews",
-        liked: false,  // Default value,
+        liked: false,
         address: "Bordeaux, France",
+        checkIn: '2025-04-10', // ✅ Added check-in
+        checkOut: '2025-04-15', // ✅ Added check-out
+        guests: 2, // ✅ Added guests
+        rooms: 1 // ✅ Added rooms
       },
       {
         name: 'Charming Waterfront Condo',
+        destination: 'Paris',
         description: 'Enjoy the sea view from this amazing condo.',
         price: '$200',
         image: 'waterfront.jpg',
@@ -40,9 +49,14 @@ export class ListingsComponent implements AfterViewInit, OnInit {
         reviews: "14 reviews",
         liked: true,
         address: "Paris, France",
+        checkIn: '2025-05-01',
+        checkOut: '2025-05-07',
+        guests: 3,
+        rooms: 2
       },
       {
         name: 'New York Loft',
+        destination: 'New York',
         description: 'Stylish loft in downtown Manhattan.',
         price: '$225',
         image: 'bor.jpeg',
@@ -52,9 +66,31 @@ export class ListingsComponent implements AfterViewInit, OnInit {
         reviews: "29 reviews",
         liked: true,
         address: "New York, USA",
+        checkIn: '2025-06-12',
+        checkOut: '2025-06-18',
+        guests: 4,
+        rooms: 2
+      },
+      {
+        name: 'ABC',
+        destination: 'New York',
+        description: 'Stylish loft in downtown Manhattan.',
+        price: '$225',
+        image: 'bor.jpeg',
+        lat: 40.7128,
+        lng: -74.0060,
+        rating: 2.5,
+        reviews: "29 reviews",
+        liked: true,
+        address: "New York, USA",
+        checkIn: '2025-06-12',
+        checkOut: '2025-06-18',
+        guests: 4,
+        rooms: 2
       },
       {
         name: 'Sydney Beach House',
+        destination: 'Sydney',
         description: 'Relaxing stay near Sydney’s famous beaches.',
         price: '$200',
         image: 'waterfront.jpg',
@@ -64,14 +100,48 @@ export class ListingsComponent implements AfterViewInit, OnInit {
         reviews: "38 reviews",
         liked: false,
         address: "Sydney, Australia",
-      },
-      
+        checkIn: '2025-07-05',
+        checkOut: '2025-07-12',
+        guests: 2,
+        rooms: 1
+      }
     ];
+    
     
   }
   ngOnInit(): void {
-    
+    this.filteredHotels = [...this.hotels]; // Start with all hotels
+  
+    this.route.queryParams.subscribe(params => {
+      let matchedHotels = this.hotels.filter(hotel => {
+        const matchesDestination = !params['destination'] || hotel.destination.toLowerCase().includes(params['destination'].toLowerCase());
+        const matchesCheckIn = !params['checkIn'] || hotel.checkIn === params['checkIn'];
+        const matchesCheckOut = !params['checkOut'] || hotel.checkOut === params['checkOut'];
+        const matchesGuests = !params['guests'] || +hotel.guests >= +params['guests'];
+        const matchesRooms = !params['rooms'] || +hotel.rooms >= +params['rooms'];
+  
+        return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
+      });
+  
+      let remainingHotels = this.hotels.filter(hotel => !matchedHotels.includes(hotel));
+  
+      // Show searched result first, then remaining hotels
+      this.filteredHotels = [...matchedHotels, ...remainingHotels];
+    });
   }
+  
+  
+  sortHotelsBySearch(destination: string): void {
+    const index = this.filteredHotels.findIndex(hotel => 
+      hotel.destination.toLowerCase() === destination.toLowerCase()
+    );
+  
+    if (index !== -1) {
+      const [matchedHotel] = this.filteredHotels.splice(index, 1);
+      this.filteredHotels.unshift(matchedHotel);
+    }
+  }
+  
   ngAfterViewInit(): void {
     this.hotels.forEach((hotel, index) => {
       const mapId = `map-${index}`; // Unique ID for each map
@@ -100,7 +170,9 @@ export class ListingsComponent implements AfterViewInit, OnInit {
 
 
   toggleLike(hotel: any) {
-    hotel.liked = !hotel.liked;
+    setTimeout(() => {
+      hotel.liked = !hotel.liked;
+    });
   }
   onHotelClick(hotel: any) {
     this.router.navigate(['listings/overview'], { queryParams: hotel });
@@ -110,6 +182,17 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   getShortDescription(description: string): string {
     return description.length > 150 ? description.substring(0, 150) + '...' : description;
   }
-  
+  applyFilter(filters: any) {
+    console.log("Filters applied:", filters);
+    
+    // Example: Filtering hotels based on price, star rating, and amenities
+    this.filteredHotels = this.hotels.filter(hotel => {
+      return (
+        hotel.price <= filters.price &&
+        (!filters.star || filters.star[hotel.rating]) &&
+        (!filters.amenities || Object.keys(filters.amenities).every(a => !filters.amenities[a] || hotel.amenities.includes(a)))
+      );
+    });
+  }
 
 }
