@@ -65,3 +65,17 @@
 .heart-icon.fas {
   color: red !important; /* If liked, show in red */
 }
+.custom-map-marker {
+  font-size: 14px;
+  color: black;
+  text-align: center;
+  white-space: nowrap;
+}
+#main-map {
+  height: 100vh;  /* Ensure it has a height */
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
