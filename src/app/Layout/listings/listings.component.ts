@@ -4,10 +4,12 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as L from 'leaflet';
 import { HotelFilterComponent } from "../../Core/hotel-filter/hotel-filter.component";
+import { HotelListingService } from '../../Core/Services/hotel-listing.service';
+import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 
 @Component({
   selector: 'app-listings',
-  imports: [CommonModule, HotelFilterComponent],
+  imports: [CommonModule, HotelFilterComponent, SpinnerComponent],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css'
 })
@@ -17,96 +19,39 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   map: any; // Store the map instance
 
   filteredHotels: any[] = []; // Filtered list of hotels
-
-  constructor(private sanitizer: DomSanitizer, private router: Router, private route: ActivatedRoute) {
+  isLoading: boolean = true;
+  constructor(private sanitizer: DomSanitizer, private router: Router,
+     private route: ActivatedRoute, private hotellisttingservice: HotelListingService) {
     this.hotels = [
-      {
-        name: 'Bordeaux Getaway',
-        destination: 'Bordeaux', // ✅ Added destination
-        description: "Bordeaux Getaway is a charming hotel nestled in the heart of Bordeaux, France...",
-        price: '$225',
-        image: 'bor.jpeg',
-        lat: 44.8378,
-        lng: -0.5792,
-        rating: 4.5,
-        reviews: "12 reviews",
-        liked: false,
-        address: "Bordeaux, France",
-        checkIn: '2025-04-10', // ✅ Added check-in
-        checkOut: '2025-04-15', // ✅ Added check-out
-        guests: 2, // ✅ Added guests
-        rooms: 1 // ✅ Added rooms
-      },
-      {
-        name: 'Charming Waterfront Condo',
-        destination: 'Paris',
-        description: 'Enjoy the sea view from this amazing condo.',
-        price: '$200',
-        image: 'waterfront.jpg',
-        lat: 48.8566,
-        lng: 2.3522,
-        rating: 4.3,
-        reviews: "14 reviews",
-        liked: true,
-        address: "Paris, France",
-        checkIn: '2025-05-01',
-        checkOut: '2025-05-07',
-        guests: 3,
-        rooms: 2
-      },
-      {
-        name: 'New York Loft',
-        destination: 'New York',
-        description: 'Stylish loft in downtown Manhattan.',
-        price: '$225',
-        image: 'bor.jpeg',
-        lat: 40.7128,
-        lng: -74.0060,
-        rating: 2.5,
-        reviews: "29 reviews",
-        liked: true,
-        address: "New York, USA",
-        checkIn: '2025-06-12',
-        checkOut: '2025-06-18',
-        guests: 4,
-        rooms: 2
-      },
-      {
-        name: 'ABC',
-        destination: 'New York',
-        description: 'Stylish loft in downtown Manhattan.',
-        price: '$225',
-        image: 'bor.jpeg',
-        lat: 40.7128,
-        lng: -74.0060,
-        rating: 2.5,
-        reviews: "29 reviews",
-        liked: true,
-        address: "New York, USA",
-        checkIn: '2025-06-12',
-        checkOut: '2025-06-18',
-        guests: 4,
-        rooms: 2
-      },
-      {
-        name: 'Sydney Beach House',
-        destination: 'Sydney',
-        description: 'Relaxing stay near Sydney’s famous beaches.',
-        price: '$200',
-        image: 'waterfront.jpg',
-        lat: -33.8688,
-        lng: 151.2093,
-        rating: 3.5,
-        reviews: "38 reviews",
-        liked: false,
-        address: "Sydney, Australia",
-        checkIn: '2025-07-05',
-        checkOut: '2025-07-12',
-        guests: 2,
-        rooms: 1
-      }
+      // {
+      //   hotel_id: 5,
+      //   name: 'Sydney Beach House',
+      //   destination: 'Sydney',
+      //   description: 'Relaxing stay near Sydney’s famous beaches.',
+      //   price: '$200',
+      //   image: 'waterfront.jpg',
+      //   lat: -33.8688,
+      //   lng: 151.2093,
+      //   rating: 3.5,
+      //   reviews: "38 reviews",
+      //   liked: false,
+      //   address: "Sydney, Australia",
+      //   checkIn: '2025-07-05',
+      //   checkOut: '2025-07-12',
+      //   guests: 2,
+      //   rooms: 1
+      // }
     ];
-    
+    this.hotellisttingservice.getHotels().subscribe((data: any) => {
+      console.log(data);
+      this.hotels = data;
+      this.filteredHotels = [...this.hotels]; // ✅ Ensure filteredHotels is updated
+      this.initializeMaps(); // ✅ Initialize maps AFTER hotels are loaded
+      this.isLoading = false;
+    }, error=>{
+      console.log(error);
+      this.isLoading = false;
+    });
     
   }
   ngOnInit(): void {
@@ -143,11 +88,15 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   }
   
   ngAfterViewInit(): void {
-    this.hotels.forEach((hotel, index) => {
-      const mapId = `map-${index}`; // Unique ID for each map
-  
-      setTimeout(() => { // Ensure the element is rendered before initializing Leaflet
+   
+  }
+
+  initializeMaps(): void {
+    setTimeout(() => {  // Ensure the DOM is ready
+      this.hotels.forEach((hotel, index) => {
+        const mapId = `map-${index}`; // Unique ID for each map
         const mapContainer = document.getElementById(mapId);
+        
         if (mapContainer) {
           const map = L.map(mapId).setView([hotel.lat, hotel.lng], 13);
   
@@ -164,10 +113,9 @@ export class ListingsComponent implements AfterViewInit, OnInit {
             })
           }).addTo(map).bindPopup(`<b>${hotel.name}</b>`);
         }
-      }, 100); // Small delay to ensure the DOM is ready
-    });
+      });
+    }, 300);  // Small delay ensures DOM is updated
   }
-
 
   toggleLike(hotel: any) {
     setTimeout(() => {

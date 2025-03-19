@@ -1,3 +1,4 @@
+<app-spinner [isLoading]="isLoading"></app-spinner>
 <div class="container-fluid">
   <div class="row">
     <!-- Filter Section (Left) -->
@@ -15,7 +16,7 @@
             
             <!-- Hotel Image -->
             <div class="hotel-image">
-              <img [src]="hotel.image" alt="{{ hotel.name }}">
+              <img [src]="hotel.imageUrl" alt="{{ hotel.name }}">
             </div>
 
             <!-- Hotel Details -->
