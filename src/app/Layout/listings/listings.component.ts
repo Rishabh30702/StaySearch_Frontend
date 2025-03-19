@@ -1,139 +1,196 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as L from 'leaflet';
+import { debounceTime } from 'rxjs/operators';
 import { HotelFilterComponent } from "../../Core/hotel-filter/hotel-filter.component";
 import { HotelListingService } from '../../Core/Services/hotel-listing.service';
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 
 @Component({
   selector: 'app-listings',
+  standalone: true,
   imports: [CommonModule, HotelFilterComponent, SpinnerComponent],
   templateUrl: './listings.component.html',
   styleUrl: './listings.component.css'
 })
 export class ListingsComponent implements AfterViewInit, OnInit {
   hotels: any[] = [];
-  hasApiKey = false; // Change to 'true' if you have a Google Maps API Key
-  map: any; // Store the map instance
-
-  filteredHotels: any[] = []; // Filtered list of hotels
+  filteredHotels: any[] = [];
   isLoading: boolean = true;
-  constructor(private sanitizer: DomSanitizer, private router: Router,
-     private route: ActivatedRoute, private hotellisttingservice: HotelListingService) {
-    this.hotels = [
-      // {
-      //   hotel_id: 5,
-      //   name: 'Sydney Beach House',
-      //   destination: 'Sydney',
-      //   description: 'Relaxing stay near Sydney’s famous beaches.',
-      //   price: '$200',
-      //   image: 'waterfront.jpg',
-      //   lat: -33.8688,
-      //   lng: 151.2093,
-      //   rating: 3.5,
-      //   reviews: "38 reviews",
-      //   liked: false,
-      //   address: "Sydney, Australia",
-      //   checkIn: '2025-07-05',
-      //   checkOut: '2025-07-12',
-      //   guests: 2,
-      //   rooms: 1
-      // }
-    ];
-    this.hotellisttingservice.getHotels().subscribe((data: any) => {
-      console.log(data);
-      this.hotels = data;
-      this.filteredHotels = [...this.hotels]; // ✅ Ensure filteredHotels is updated
-      this.initializeMaps(); // ✅ Initialize maps AFTER hotels are loaded
-      this.isLoading = false;
-    }, error=>{
-      console.log(error);
-      this.isLoading = false;
-    });
-    
-  }
+  map: any;
+  marker: any;
+
+  constructor(
+    private sanitizer: DomSanitizer, 
+    private router: Router,
+    private route: ActivatedRoute, 
+    private hotelListingService: HotelListingService
+  ) {}
+
   ngOnInit(): void {
-    this.filteredHotels = [...this.hotels]; // Start with all hotels
-  
-    this.route.queryParams.subscribe(params => {
-      let matchedHotels = this.hotels.filter(hotel => {
-        const matchesDestination = !params['destination'] || hotel.destination.toLowerCase().includes(params['destination'].toLowerCase());
-        const matchesCheckIn = !params['checkIn'] || hotel.checkIn === params['checkIn'];
-        const matchesCheckOut = !params['checkOut'] || hotel.checkOut === params['checkOut'];
-        const matchesGuests = !params['guests'] || +hotel.guests >= +params['guests'];
-        const matchesRooms = !params['rooms'] || +hotel.rooms >= +params['rooms'];
-  
-        return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
-      });
-  
-      let remainingHotels = this.hotels.filter(hotel => !matchedHotels.includes(hotel));
-  
-      // Show searched result first, then remaining hotels
-      this.filteredHotels = [...matchedHotels, ...remainingHotels];
-    });
-  }
-  
-  
-  sortHotelsBySearch(destination: string): void {
-    const index = this.filteredHotels.findIndex(hotel => 
-      hotel.destination.toLowerCase() === destination.toLowerCase()
+    // Load hotels from API before applying filters
+    this.hotelListingService.getHotels().subscribe(
+      (data: any) => {
+        console.log("Hotels fetched from API:", data); // ✅ Log API response
+        if (!Array.isArray(data)) {
+          console.error("API response is not an array:", data);
+          return;
+        }
+        this.hotels = data;
+        this.filteredHotels = [...this.hotels];
+        this.isLoading = false;
+      },
+      (error: any) => {
+        console.error("Error fetching hotels:", error);
+        this.isLoading = false;
+      }
     );
   
-    if (index !== -1) {
-      const [matchedHotel] = this.filteredHotels.splice(index, 1);
-      this.filteredHotels.unshift(matchedHotel);
-    }
+    // Log query params
+    this.route.queryParams.subscribe(params => {
+      console.log("Query Params:", params); // ✅ Log query params
+      this.applyFilters(params);
+    });
+  }
+
+  /**
+   * Applies filtering based on query parameters.
+   */
+  applyFilters(params: any): void {
+    console.log("Applying Filters with Params:", params);
+  
+    let matchedHotels = this.hotels.filter(hotel => {
+      console.log(`Checking hotel: ${hotel.name}`);
+  
+      const matchesDestination = !params['destination'] || 
+        (hotel.destination && hotel.destination.toLowerCase().trim() === params['destination'].toLowerCase().trim());
+  
+      if (!matchesDestination) console.log(`❌ ${hotel.name} excluded due to destination mismatch`);
+  
+      const matchesCheckIn = !params['checkInDate'] || 
+        (hotel.checkIn && hotel.checkIn === params['checkInDate']);
+  
+      if (!matchesCheckIn) console.log(`❌ ${hotel.name} excluded due to check-in mismatch`);
+  
+      const matchesCheckOut = !params['checkOutDate'] || 
+        (hotel.checkOut && hotel.checkOut === params['checkOutDate']);
+  
+      if (!matchesCheckOut) console.log(`❌ ${hotel.name} excluded due to check-out mismatch`);
+  
+      const matchesGuests = !params['guests'] || 
+        (+hotel.guests >= Number(params['guests']));
+  
+      if (!matchesGuests) console.log(`❌ ${hotel.name} excluded due to guests mismatch`);
+  
+      const matchesRooms = !params['rooms'] || 
+        (+hotel.rooms >= Number(params['rooms']));
+  
+      if (!matchesRooms) console.log(`❌ ${hotel.name} excluded due to rooms mismatch`);
+  
+      return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
+    });
+  
+    console.log("✅ Matched Hotels:", matchedHotels);
+  
+    let remainingHotels = this.hotels.filter(hotel => 
+      !matchedHotels.some(matched => matched.hotelId === hotel.hotelId)
+    );
+  
+    this.filteredHotels = [...matchedHotels, ...remainingHotels];
+  
+    console.log("✅ Final Filtered Hotels:", this.filteredHotels);
   }
   
+  
+  
+  
+  /**
+   * Moves all hotels matching the searched destination to the top.
+   */
+  sortHotelsBySearch(destination: string): void {
+    const matchingHotels = this.filteredHotels.filter(hotel =>
+      hotel.destination?.toLowerCase() === destination.toLowerCase()
+    );
+  
+    const nonMatchingHotels = this.filteredHotels.filter(hotel =>
+      hotel.destination?.toLowerCase() !== destination.toLowerCase()
+    );
+  
+    this.filteredHotels = [...matchingHotels, ...nonMatchingHotels]; // ✅ Ensures all matched hotels are on top
+  }
+  
+
   ngAfterViewInit(): void {
-   
+    this.initializeMap();
+  }
+ 
+  initializeMap(): void {
+    setTimeout(() => {
+      const mapContainer = document.getElementById('main-map');
+
+      if (!mapContainer) {
+        console.error('❌ Map container not found!');
+        return;
+      }
+
+      this.map = L.map('main-map').setView([27.1767, 78.0081], 6); // Default to Agra
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(this.map);
+
+      console.log('✅ Map initialized successfully!');
+    }, 500);
+  }
+  
+
+  highlightHotelOnMap(hotel: any): void {
+    if (!this.map) return;
+
+    // Remove the previous marker if it exists
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+    }
+
+    // Create a new marker for the hovered hotel
+    this.marker = L.marker([hotel.lat, hotel.lng], {
+      icon: L.divIcon({
+        className: 'custom-map-marker',
+        html: `<div style="background: white; padding: 5px 10px; border-radius: 8px; box-shadow: 0px 0px 8px rgba(0,0,0,0.2); font-weight: bold;">
+                ${hotel.price}/night
+               </div>`,
+        iconSize: [60, 20]
+      })
+    }).addTo(this.map);
+
+    // Pan the map to the hotel’s location
+    this.map.setView([hotel.lat, hotel.lng], 13);
   }
 
-  initializeMaps(): void {
-    setTimeout(() => {  // Ensure the DOM is ready
-      this.hotels.forEach((hotel, index) => {
-        const mapId = `map-${index}`; // Unique ID for each map
-        const mapContainer = document.getElementById(mapId);
-        
-        if (mapContainer) {
-          const map = L.map(mapId).setView([hotel.lat, hotel.lng], 13);
-  
-          L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: ''
-          }).addTo(map);
-  
-          L.marker([hotel.lat, hotel.lng], {
-            icon: L.icon({
-              iconUrl: 'marker-icon.png',
-              shadowUrl: 'marker-shadow.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41]
-            })
-          }).addTo(map).bindPopup(`<b>${hotel.name}</b>`);
-        }
-      });
-    }, 300);  // Small delay ensures DOM is updated
-  }
-
-  toggleLike(hotel: any) {
+  toggleLike(hotel: any): void {
     setTimeout(() => {
       hotel.liked = !hotel.liked;
     });
   }
-  onHotelClick(hotel: any) {
+  onHotelClick(hotel: any): void {
     this.router.navigate(['listings/overview'], { queryParams: hotel });
-    return hotel.liked ? 'favorite' : 'favorite_border';
-
   }
+
+  /**
+   * Returns a shortened hotel description for display.
+   */
   getShortDescription(description: string): string {
     return description.length > 150 ? description.substring(0, 150) + '...' : description;
   }
-  applyFilter(filters: any) {
+
+  /**
+   * Filters hotels based on price, star rating, and amenities.
+   */
+  applyFilter(filters: any): void {
     console.log("Filters applied:", filters);
     
-    // Example: Filtering hotels based on price, star rating, and amenities
     this.filteredHotels = this.hotels.filter(hotel => {
       return (
         hotel.price <= filters.price &&
@@ -142,5 +199,4 @@ export class ListingsComponent implements AfterViewInit, OnInit {
       );
     });
   }
-
 }
