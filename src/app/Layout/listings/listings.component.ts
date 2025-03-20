@@ -30,69 +30,44 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load hotels from API before applying filters
+    // ✅ Fetch Hotels Before Applying Filters
     this.hotelListingService.getHotels().subscribe(
       (data: any) => {
-        console.log("Hotels fetched from API:", data); // ✅ Log API response
         if (!Array.isArray(data)) {
-          console.error("API response is not an array:", data);
+          console.error("❌ API response is not an array:", data);
           return;
         }
         this.hotels = data;
         this.filteredHotels = [...this.hotels];
         this.isLoading = false;
+
+        // ✅ Apply Filters AFTER Data is Loaded
+        this.route.queryParams.subscribe(params => {
+          console.log("Query Params Received:", params);
+          this.applyFilters(params);
+        });
       },
       (error: any) => {
-        console.error("Error fetching hotels:", error);
+        console.error("❌ Error fetching hotels:", error);
         this.isLoading = false;
       }
     );
-  
-    // Log query params
-    this.route.queryParams.subscribe(params => {
-      console.log("Query Params:", params); // ✅ Log query params
-      this.applyFilters(params);
-    });
   }
 
-  /**
-   * Applies filtering based on query parameters.
-   */
   applyFilters(params: any): void {
     console.log("Applying Filters with Params:", params);
   
     let matchedHotels = this.hotels.filter(hotel => {
-      console.log(`Checking hotel: ${hotel.name}`);
-  
       const matchesDestination = !params['destination'] || 
-        (hotel.destination && hotel.destination.toLowerCase().trim() === params['destination'].toLowerCase().trim());
+        (hotel.destination?.toLowerCase().trim() === params['destination'].toLowerCase().trim());
   
-      if (!matchesDestination) console.log(`❌ ${hotel.name} excluded due to destination mismatch`);
-  
-      const matchesCheckIn = !params['checkInDate'] || 
-        (hotel.checkIn && hotel.checkIn === params['checkInDate']);
-  
-      if (!matchesCheckIn) console.log(`❌ ${hotel.name} excluded due to check-in mismatch`);
-  
-      const matchesCheckOut = !params['checkOutDate'] || 
-        (hotel.checkOut && hotel.checkOut === params['checkOutDate']);
-  
-      if (!matchesCheckOut) console.log(`❌ ${hotel.name} excluded due to check-out mismatch`);
-  
-      const matchesGuests = !params['guests'] || 
-        (+hotel.guests >= Number(params['guests']));
-  
-      if (!matchesGuests) console.log(`❌ ${hotel.name} excluded due to guests mismatch`);
-  
-      const matchesRooms = !params['rooms'] || 
-        (+hotel.rooms >= Number(params['rooms']));
-  
-      if (!matchesRooms) console.log(`❌ ${hotel.name} excluded due to rooms mismatch`);
+      const matchesCheckIn = !params['checkInDate'] || hotel.checkIn === params['checkInDate'];
+      const matchesCheckOut = !params['checkOutDate'] || hotel.checkOut === params['checkOutDate'];
+      const matchesGuests = !params['guests'] || +hotel.guests >= Number(params['guests']);
+      const matchesRooms = !params['rooms'] || +hotel.rooms >= Number(params['rooms']);
   
       return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
     });
-  
-    console.log("✅ Matched Hotels:", matchedHotels);
   
     let remainingHotels = this.hotels.filter(hotel => 
       !matchedHotels.some(matched => matched.hotelId === hotel.hotelId)
@@ -100,25 +75,25 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   
     this.filteredHotels = [...matchedHotels, ...remainingHotels];
   
-    console.log("✅ Final Filtered Hotels:", this.filteredHotels);
+    console.log("✅ Filtered Hotels (Searched on top):", this.filteredHotels);
+  
+    // ✅ Update the map to focus on the first search result
+    this.updateMapToFirstResult();
   }
   
   
   
   
-  /**
-   * Moves all hotels matching the searched destination to the top.
-   */
   sortHotelsBySearch(destination: string): void {
     const matchingHotels = this.filteredHotels.filter(hotel =>
       hotel.destination?.toLowerCase() === destination.toLowerCase()
     );
-  
+
     const nonMatchingHotels = this.filteredHotels.filter(hotel =>
       hotel.destination?.toLowerCase() !== destination.toLowerCase()
     );
-  
-    this.filteredHotels = [...matchingHotels, ...nonMatchingHotels]; // ✅ Ensures all matched hotels are on top
+
+    this.filteredHotels = [...matchingHotels, ...nonMatchingHotels]; // ✅ Ensures matched hotels are on top
   }
   
 
@@ -144,17 +119,45 @@ export class ListingsComponent implements AfterViewInit, OnInit {
       console.log('✅ Map initialized successfully!');
     }, 500);
   }
+
+  updateMapToFirstResult(): void {
+    if (!this.map || this.filteredHotels.length === 0) return;
+  
+    const firstHotel = this.filteredHotels[0];
+  
+    // ✅ Ensure the hotel has valid coordinates
+    if (!firstHotel.lat || !firstHotel.lng) return;
+  
+    // ✅ Set the map to the top hotel’s location
+    this.map.setView([firstHotel.lat, firstHotel.lng], 13);
+  
+    // ✅ Update marker on the map
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+    }
+  
+    this.marker = L.marker([firstHotel.lat, firstHotel.lng], {
+      icon: L.divIcon({
+        className: 'custom-map-marker',
+        html: `<div style="background: white; padding: 5px 10px; border-radius: 8px; box-shadow: 0px 0px 8px rgba(0,0,0,0.2); font-weight: bold;">
+                ${firstHotel.price}/night
+               </div>`,
+        iconSize: [60, 20]
+      })
+    }).addTo(this.map);
+  }
+  
   
 
   highlightHotelOnMap(hotel: any): void {
     if (!this.map) return;
-
-    // Remove the previous marker if it exists
+  
+    // ✅ Remove previous marker
     if (this.marker) {
       this.map.removeLayer(this.marker);
     }
-
-    // Create a new marker for the hovered hotel
+  
+    // ✅ Create a new marker for the hovered hotel
     this.marker = L.marker([hotel.lat, hotel.lng], {
       icon: L.divIcon({
         className: 'custom-map-marker',
@@ -164,10 +167,11 @@ export class ListingsComponent implements AfterViewInit, OnInit {
         iconSize: [60, 20]
       })
     }).addTo(this.map);
-
-    // Pan the map to the hotel’s location
+  
+    // ✅ Move map to hovered hotel’s location
     this.map.setView([hotel.lat, hotel.lng], 13);
   }
+  
 
   toggleLike(hotel: any): void {
     setTimeout(() => {
@@ -200,3 +204,4 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     });
   }
 }
+
