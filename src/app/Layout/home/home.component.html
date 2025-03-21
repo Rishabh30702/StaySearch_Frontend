@@ -5,9 +5,13 @@
         <div class="carousel-item active">
             <img src="cora1.jpg" class="d-block w-100 carousel-img" alt="First Slide">
             <div class="carousel-caption">
-                <h2 class="fw-bold" style>{{ 'WELCOME TO STAYSEARCH' | translate }}</h2>
+                <div class="text-container">Uttar Pradesh Tourism <span class="heart">❤️</span></div>
+         
                 <p>{{ 'Good people. Good thinking. Good feeling.' |translate }}</p>
 <!-- Search Bar -->
+<div class="search-filter-wrapper">
+    <!-- Transparent Header -->
+    <h4 class="Find-Stay">Find your stay</h4>
 <div class="search-filter d-flex align-items-center p-2 shadow-sm rounded animated-search">
   
     <!-- Destination -->
@@ -56,6 +60,7 @@
     </button>
   
   </div>
+  </div>
   
             </div>
         </div>
@@ -63,9 +68,67 @@
         <div class="carousel-item">
             <img src="cora3.jpg" class="d-block w-100 carousel-img" alt="Third Slide">
             <div class="carousel-caption">
+                <div class="text-container">Uttar Pradesh Tourism <span class="heart">❤️</span></div>
             <h2 class="fw-bold" style>{{ 'Relax. Travel. Repeat.' |translate }}</h2>
-            <p>{{ 'Find stays that match your journey.' |translate }}</p>
+                  
+<!-- Search Bar -->
+<div class="search-filter-wrapper">
+    <!-- Transparent Header -->
+    <h4 class="Find-Stay">Find your stay</h4>
+
+    <!-- Search Bar -->
+    <div class="search-filter d-flex align-items-center p-2 shadow-sm rounded animated-search">
         
+        <!-- Destination -->
+        <div class="input-group mx-2 animated-input">
+            <span class="input-group-text">
+                <i class="fa fa-map-marker-alt"></i>
+            </span>
+            <input type="text" class="form-control" placeholder="Where to?" [(ngModel)]="searchData.destination">
+        </div>
+
+        <!-- Check-in Date -->
+        <div class="input-group mx-2 animated-input">
+            <span class="input-group-text">
+                <i class="fa fa-calendar-alt"></i>
+            </span>
+            <input type="date" class="form-control" [(ngModel)]="searchData.checkInDate">
+        </div>
+
+        <!-- Check-out Date -->
+        <div class="input-group mx-2 animated-input">
+            <span class="input-group-text">
+                <i class="fa fa-calendar-check"></i>
+            </span>
+            <input type="date" class="form-control" [(ngModel)]="searchData.checkOutDate">
+        </div>
+
+        <!-- Number of Guests -->
+        <div class="input-group mx-2 animated-input">
+            <span class="input-group-text">
+                <i class="fa fa-user"></i>
+            </span>
+            <input type="number" class="form-control" [(ngModel)]="searchData.guests" min="1" placeholder="Guests">
+        </div>
+
+        <!-- Number of Rooms -->
+        <div class="input-group mx-2 animated-input">
+            <span class="input-group-text">
+                <i class="fa fa-bed"></i>
+            </span>
+            <input type="number" class="form-control" [(ngModel)]="searchData.rooms" min="1" placeholder="Rooms">
+        </div>
+
+        <!-- Search Button -->
+        <button class="btn btn-primary mx-2 animated-button" (click)="searchHotels()">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+</div>
+
+
+
+
         </div>
         </div>
     </div>
@@ -92,15 +155,9 @@
         <!-- Flexed Images with Text Overlay -->
         <!-- First Row -->
         <div class="image-container">
+           
             <div class="image-box">
-                <img src="taj2.jpg" alt="Taj Mahal" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{ 'Taj Mahal' |translate }}</span>
-                    <span class="explore-text">{{ 'Explore Agra' |translate }}</span>
-                </div>
-            </div>
-            <div class="image-box">
-                <img src="ayo.png" alt="Taj Mahal" class="flex-image">
+                <img src="ayo.png" alt="Ram Mandir" class="flex-image">
                 <div class="image-caption">
                     <span class="place-name">{{ 'Ram Mandir' |translate }}</span>
                     <span class="explore-text">{{ 'Explore Ayodhya' |translate }}</span>
@@ -114,10 +171,8 @@
                     <span class="explore-text">{{ 'Explore Kashi Vishwanath' |translate }}</span>
                 </div>
             </div>
-        </div>
 
-        <!-- Second Row -->
-        <div class="image-container">
+
             <div class="image-box">
                 <img src="varanashi.jpg" alt="Varanasi" class="flex-image">
                 <div class="image-caption">
@@ -126,15 +181,29 @@
                 </div>
             </div>
 
+
+        </div>
+
+        <!-- Second Row -->
+        <div class="image-container">
+
             <div class="image-box">
-                <img src="holi.jpg" alt="Lucknow" class="flex-image">
+                <img src="taj2.jpg" alt="Taj Mahal" class="flex-image">
+                <div class="image-caption">
+                    <span class="place-name">{{ 'Taj Mahal' |translate }}</span>
+                    <span class="explore-text">{{ 'Explore Agra' |translate }}</span>
+                </div>
+            </div>
+
+            <div class="image-box">
+                <img src="holi.jpg" alt="Mathura" class="flex-image">
                 <div class="image-caption">
                     <span class="place-name">{{ 'Lath Maar Holi' |translate }}</span>
                     <span class="explore-text">{{ 'Explore Mathura'|translate }}</span>
                 </div>
             </div>
             <div class="image-box">
-                <img src="mathura.jpg" alt="Lucknow" class="flex-image">
+                <img src="mathura.jpg" alt="Mathura" class="flex-image">
                 <div class="image-caption">
                     <span class="place-name">{{ 'Prem Mandir' |translate }}</span>
                     <span class="explore-text">{{ 'Explore Mathura'|translate }}</span>
@@ -207,6 +276,54 @@
             </div>
     </div>
 </div>
+
+
+
+<!--Offers Section-->
+<div class="offers-container">
+        
+    <!-- Offer 1 -->
+    <div class="offer-card purple">
+        <span class="badge">APP EXCLUSIVE</span>
+        <div class="offer-content">
+            <h3 class="offer-title">Save up to 45% OFF*</h3>
+            <p class="offer-description">Use Code: <span class="offer-code">EMTSTAY</span></p>
+            <p class="validity">Valid till: 31st Mar, 2025</p>
+            <a href="#" class="book-now">Book Now</a>
+        </div>
+    </div>
+
+    <!-- Offer 2 -->
+    <div class="offer-card orange">
+        <div class="offer-content">
+            <h3 class="offer-title">Best Price Guarantee</h3>
+            <p class="offer-description">Find better hotel prices anywhere else & get a double refund on the price difference.</p>
+            <a href="#" class="book-now">Book Now</a>
+        </div>
+    </div>
+
+    <!-- Offer 3 -->
+    <div class="offer-card blue">
+        <div class="offer-content">
+            <h3 class="offer-title">Get up to 25% OFF*</h3>
+            <p class="offer-description">Enjoy memorable experiences with up to 25% OFF* on Cygnett Hotels & Resorts.</p>
+            <p class="validity">Valid till: 31st Mar, 2025</p>
+            <a href="#" class="book-now">Book Now</a>
+        </div>
+    </div>
+
+    <!-- Offer 4 -->
+    <div class="offer-card green">
+        <div class="offer-content">
+            <h3 class="offer-title">Get up to 45% OFF*</h3>
+            <p class="offer-description">Make your stay affordable with 45% OFF* on The Hosteller Hotels.</p>
+            <p class="validity">Valid till: 31st Mar, 2025</p>
+            <a href="#" class="book-now">Book Now</a>
+        </div>
+    </div>
+
+</div>
+
 
 <!-- Stay Tuned Section -->
 <div class="stay-tuned">

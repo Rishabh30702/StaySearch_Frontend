@@ -67,6 +67,14 @@ export class SearchModalComponent implements OnInit {
     });
   }
 
+  
+  isSignup: boolean = false;
+
+  toggleSignup() {
+    this.isSignup = !this.isSignup;
+  }
+
+
   closeModal(): void {
     console.log('Modal closed');
     this.showModal = false;

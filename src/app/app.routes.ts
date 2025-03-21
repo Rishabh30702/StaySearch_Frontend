@@ -5,6 +5,7 @@ import { OverviewComponent } from './Layout/overview/overview.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { AboutComponent } from './Layout/about/about.component';
 
+
 export const routes: Routes = [
     {
         path: '',
@@ -20,14 +21,16 @@ export const routes: Routes = [
         component: OverviewComponent,
     },
     {
-        path: 'contactUs', // Top-level route for overview
+        path: 'contactUs', 
         component: ContactUsComponent,
         pathMatch: 'full'
     },
 
     {
-        path: 'about', // Top-level route for overview
+        path: 'about', 
         component: AboutComponent,
         pathMatch: 'full'
     },
+
+  
 ];
