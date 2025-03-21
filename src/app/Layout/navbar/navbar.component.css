@@ -11,6 +11,15 @@
     font-weight: bold;
     color: white !important;
   }
+  .text-container {
+    text-align: left;
+    font-family: Arial, sans-serif;
+}
+.sub-text {
+  font-size: 14px;
+  color: white;
+  text-transform: uppercase;
+}
   
   /* Center menu items */
   .navbar-nav {
