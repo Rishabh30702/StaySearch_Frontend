@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SearchData } from '../../Core/search-data';
 import { TranslateModule } from '@ngx-translate/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [SearchModalComponent,FormsModule,TranslateModule],
+  imports: [SearchModalComponent,FormsModule,TranslateModule,RouterModule,CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

@@ -30,11 +30,14 @@
       </div>
       <div class="language-toggle">
         <div class="input-container" (click)="toggleLanguage(currentLanguage === 'en' ? 'hi' : 'en')">
-          <img *ngIf="currentLanguage === 'en'" src="ukflag.png" alt="English" class="flag-icon" />
-          <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
-          <input type="text" readonly [value]="langText" />
+            <div class="flag-wrapper">
+                <img *ngIf="currentLanguage === 'en'" src="ukflag.png" alt="English" class="flag-icon" />
+                <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
+            </div>
+            <span class="lang-text">{{ langText }}</span>
         </div>
-      </div>
+    </div>
+    
     </div>
   </nav>
   

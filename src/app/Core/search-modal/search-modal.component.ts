@@ -49,7 +49,7 @@ export class SearchModalComponent implements OnInit {
     setTimeout(() => {
       if (!sessionStorage.getItem('modalShown')) {
         this.showModal = true;
-        sessionStorage.setItem('modalShown', 'true');
+        // sessionStorage.setItem('modalShown', 'true');
         setTimeout(() => {
           this.showForm = true;
           this.cdr.detectChanges(); // ✅ Prevents Angular from unnecessary UI checks
