@@ -12,5 +12,9 @@ export class HotelListingService {
   getHotels(){
     return this._http.get(`${this.baseAPI}/v1/hotels`);
   }
+
+  getOneHotel(id:any){
+    return this._http.get(`${this.baseAPI}/v1/hotel/${id}`);
+  }
 }
 

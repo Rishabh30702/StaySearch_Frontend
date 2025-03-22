@@ -2,93 +2,89 @@ import { Component, ElementRef, HostListener, OnInit, QueryList, ViewChildren } 
 import { CommonModule } from '@angular/common';
 import * as L from 'leaflet';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 
 @Component({
   selector: 'app-overview',
-  imports: [CommonModule],
+  imports: [CommonModule, SpinnerComponent],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
 })
-export class OverviewComponent {
-  hotel: any;
+export class OverviewComponent implements OnInit {
+  hotel: any = {
+    amenities: [], // Ensure it's always an array
+    rooms: [], // Ensure it's always an array
+  };
+  hotelId: string = ''; // Store hotel ID from query params
   private map: any;
   activeTab: string = 'overview';
-
   expandedRooms: { [key: string]: boolean } = {}; // Track expanded rooms
+  isLoading: boolean = true;
   @ViewChildren('desc') descriptions!: QueryList<ElementRef>;
 
-
-  constructor(private route: ActivatedRoute) { }
+  
+  constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      // Ensure params are converted to an object properly
-      this.hotel = { ...params,
-        latitude: params['lat'] ? parseFloat(params['lat']) : 27.1751,  // Default: Taj Mahal
-        longitude: params['lng'] ? parseFloat(params['lng']) : 78.0421
-       };
+      console.log("Query Params:", params); // Debugging
 
-      // Assign the subImages manually
-      this.hotel.subImages = [
-        'bor.jpeg',
-        'waterfront.jpg',
-        'bor.jpeg'
-      ];
+      this.hotelId = params['hotelId'];
+      console.log("Extracted hotelId:", this.hotelId); // Debugging
 
-      // Ensure amenities exist
-      this.hotel.amenities = [
-        { name: 'Air Conditioning', icon: 'fa-solid fa-wind' },
-        { name: 'Business Center', icon: 'fa-solid fa-briefcase' },
-        { name: 'Clothing Iron', icon: 'fa-solid fa-shirt' },
-        { name: 'Data Ports', icon: 'fa-solid fa-network-wired' },
-        { name: 'Dry Cleaning', icon: 'fa-solid fa-soap' },
-        { name: 'Hair Dryer', icon: 'fa-solid fa-wind' },
-        { name: 'Meeting Rooms', icon: 'fa-solid fa-users' },
-        { name: 'Outdoor Pool', icon: 'fa-solid fa-water-ladder' },
-        { name: 'Parking Garage', icon: 'fa-solid fa-square-parking' },
-        { name: 'Safe', icon: 'fa-solid fa-lock' },
-        { name: 'Room Service', icon: 'fa-solid fa-bell-concierge' },
-        { name: 'TV in Room', icon: 'fa-solid fa-tv' },
-        { name: 'Voicemail', icon: 'fa-solid fa-voicemail' }
-      ];
-      this.hotel.rooms = [
-        {
-          name: "Deluxe Room",
-          image: "deluxeroom.jpg",
-          description: "Experience the perfect blend of comfort and elegance in our Deluxe Room. Featuring a plush king-size bed, modern decor, and a spacious layout, this room is designed for ultimate relaxation. Enjoy stunning city views, a private balcony, and top-notch amenities, including high-speed WiFi, a flat-screen TV, and a minibar. luxurious room with modern amenities and a stunning city view."
-        },
-        {
-          name: "Executive Suite",
-          image: "executiveroom.jpg",
-          description: "Indulge in the height of luxury with our Executive Suite, featuring a spacious living area, elegant furnishings, and breathtaking city views. This suite includes a king-size bed, a stylish lounge, and a private workspace. Guests can enjoy exclusive amenities such as a complimentary breakfast, access to the executive lounge, and a premium minibar."
-        },
-        {
-          name: "Family Room",
-          image: "familyroom.jpg",
-          description: "Our Superior Room offers a cozy retreat with sophisticated decor and modern furnishings. Perfect for business travelers and vacationers alike, this room includes a comfortable queen-size bed, a work desk, and a luxurious en-suite bathroom."
-        }
-      ];
-      
+      if (this.hotelId) {
+        this.fetchHotelData();
+      } else {
+        console.error("hotelId is missing in queryParams!");
+        this.isLoading = false
+      }
     });
   }
 
-  ngAfterViewInit(): void {
-    this.descriptions.forEach((descElement, index) => {
-      const descHeight = descElement.nativeElement.scrollHeight;
-      const lineHeight = parseFloat(getComputedStyle(descElement.nativeElement).lineHeight);
-      const maxLines = 3;
-  
-      if (descHeight > lineHeight * maxLines) {
-        this.hotel.rooms[index].showExpandIcon = true;
-      } else {
-        this.hotel.rooms[index].showExpandIcon = false;
-      }
-    });
+  fetchHotelData(): void {
+    if (!this.hotelId) {
+      console.error("Hotel ID is missing!");
+      return;
+    }
 
+    const apiUrl = `https://staysearchbackend.onrender.com/v1/hotel/${this.hotelId}`;
+    console.log("Fetching from API:", apiUrl); // Debugging
+
+    this.http.get(apiUrl).subscribe(
+      (data: any) => {
+        console.log("Fetched Hotel Data:", data); // Debugging
+
+        if (data) {
+          this.hotel = {
+            ...data,
+            latitude: data.lat, // Fix lat mapping
+            longitude: data.lng // Fix lng mapping
+          };
+          this.isLoading = false
+
+          // Ensure arrays are properly initialized
+          this.hotel.amenities = Array.isArray(data.amenities) ? data.amenities : [];
+          this.hotel.rooms = Array.isArray(data.rooms) ? data.rooms : [];
+
+          setTimeout(() => this.loadMap(), 500); // Load map after data is fetched
+          this.isLoading = false
+        } else {
+          console.error("Invalid API response", data);
+          this.isLoading = false
+        }
+      },
+      (error) => {
+        console.error("Error fetching hotel data:", error);
+        this.isLoading = false
+      }
+    );
+  }
+
+  ngAfterViewInit(): void {
     setTimeout(() => {
       this.loadMap();
     }, 500);
-  
   }
 
   toggleMap() {
@@ -96,14 +92,8 @@ export class OverviewComponent {
       console.error("Latitude and Longitude not available");
       return;
     }
-  
-    const lat = this.hotel.latitude;
-    const lng = this.hotel.longitude;
-  
-    // Construct Google Maps URL
-    const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-  
-    // Open the URL in a new tab
+
+    const googleMapsUrl = `https://www.google.com/maps?q=${this.hotel.latitude},${this.hotel.longitude}`;
     window.open(googleMapsUrl, '_blank');
   }
 
@@ -112,35 +102,34 @@ export class OverviewComponent {
       console.error("Latitude and Longitude not provided");
       return;
     }
-  
-    const lat = this.hotel.latitude;
-    const lng = this.hotel.longitude;
-  
-    // Initialize map with dynamic coordinates
-    this.map = L.map('map').setView([lat, lng], 13);
-  
-    // Load OpenStreetMap tiles
+
+    if (this.map) {
+      this.map.remove(); // Ensure we don't create multiple maps
+    }
+
+    this.map = L.map('map').setView([this.hotel.latitude, this.hotel.longitude], 13);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
-  
-    // Add a marker
-    L.marker([lat, lng]).addTo(this.map)
+
+    L.marker([this.hotel.latitude, this.hotel.longitude]).addTo(this.map)
       .bindPopup(this.hotel.name || 'Hotel Location')
       .openPopup();
   }
-  
+
   scrollToSection(sectionId: string) {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      this.activeTab = sectionId; // Update active tab manually
+      this.activeTab = sectionId;
     }
   }
+
   @HostListener('window:scroll', [])
   onScroll() {
     const sections = ['overview', 'amenities', 'rooms', 'location'];
-    const scrollPosition = window.scrollY + 200; // Adjust offset for better accuracy
+    const scrollPosition = window.scrollY + 200;
 
     for (const sectionId of sections) {
       const section = document.getElementById(sectionId);
@@ -149,10 +138,11 @@ export class OverviewComponent {
       }
     }
   }
+
   toggleRoomExpansion(roomName: string) {
     this.expandedRooms[roomName] = !this.expandedRooms[roomName];
-  
-    if (this.expandedRooms[roomName]) { // Only scroll if expanded
+
+    if (this.expandedRooms[roomName]) {
       setTimeout(() => {
         const expandedRoom = document.getElementById(roomName);
         if (expandedRoom) {
@@ -161,5 +151,4 @@ export class OverviewComponent {
       }, 300);
     }
   }
-  
 }
