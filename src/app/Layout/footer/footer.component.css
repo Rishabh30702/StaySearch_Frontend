@@ -1,55 +1,106 @@
-.footer {
-    display: flex;
-    justify-content: space-between;
-    background: url('/navimage.jpg') no-repeat center center;
-    background-size: cover;
-    padding: 10px 20px;
-    color: white;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  .footer-left{
-    margin-left: 5vw;
-  }
-  .footer-left h2 {
-    margin: 0;
-    margin-top: 8vh;
-  }
-  
-  .footer-left p a {
-    color: #ADD8E6;
-    text-decoration: none;
+/* Background Animation (Same as Navbar) */
+@keyframes waveEffect {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-  }
-  
-  .footer-middle ul {
-    list-style: none;
-    padding: 0;
-    margin-top: 10vh;
-  }
-  
-  .footer-middle ul li a {
-    color: white;
-    text-decoration: none;
-  }
-  .footer-right {
-    margin-top: 8vh;
-    margin-right: 5vw;
-  }
-  .footer-right input {
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-  }
-  
-  .footer-right button {
-    display: block;
-    margin-top: 10px;
-    padding: 8px;
-    border: none;
-    background: #8B008B;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #571845, #C70039, #FF5733);
+  background-size: 200% 200%;
+  animation: waveEffect 6s infinite ease-in-out;
+  padding: 20px 5vw;
+  color: white;
+  font-family: Arial, sans-serif;
+  box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 0; /* No rounded corners */
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2; /* Reduce spacing */
+}
+
+.sub-text {
+  font-size: 12px; /* Adjust font size */
+  margin-bottom: -5px; /* Reduce gap */
+}
+
+/* Footer Left */
+.footer-left h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.footer-left p a {
+  color: #FFD700;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.footer-left p a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* Footer Middle */
+.footer-middle ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-middle ul li {
+  margin-bottom: 8px;
+}
+
+.footer-middle ul li a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-middle ul li a:hover {
+  color: #FFD700;
+}
+
+/* Footer Right (Newsletter) */
+.footer-right {
+  text-align: right;
+}
+
+/* Input Box */
+.footer-right input {
+  padding: 8px;
+  width: 180px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Subscribe Button */
+.footer-right button {
+  display: block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  background: #FFD700;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.footer-right button:hover {
+  background: white;
+  color: #FFD700;
+  transform: scale(1.05);
+}

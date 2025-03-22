@@ -193,15 +193,43 @@ export class ListingsComponent implements AfterViewInit, OnInit {
    * Filters hotels based on price, star rating, and amenities.
    */
   applyFilter(filters: any): void {
-    console.log("Filters applied:", filters);
-    
+    console.log("Filters received:", filters);
+  
+    if (!this.hotels || this.hotels.length === 0) {
+      console.warn("⚠️ No hotels available to filter.");
+      this.filteredHotels = [];
+      return;
+    }
+  
+    const maxPrice = filters.price ?? Infinity;
+    console.log("🔍 Filtering hotels with price <= ", maxPrice);
+  
     this.filteredHotels = this.hotels.filter(hotel => {
-      return (
-        hotel.price <= filters.price &&
-        (!filters.star || filters.star[hotel.rating]) &&
-        (!filters.amenities || Object.keys(filters.amenities).every(a => !filters.amenities[a] || hotel.amenities.includes(a)))
+      const withinPriceRange = hotel.price >= 0 && hotel.price <= maxPrice;
+  
+      // ✅ Fix for star rating: Show hotels with rating >= selected star
+      const matchesStar = !filters.star || Object.keys(filters.star).length === 0 || 
+        Object.keys(filters.star).some(star => filters.star[star] && hotel.rating >= Number(star));
+  
+      const matchesAmenities = !filters.amenities || Object.keys(filters.amenities).every(
+        a => !filters.amenities[a] || (hotel.amenities && hotel.amenities.includes(a))
       );
+  
+      return withinPriceRange && matchesStar && matchesAmenities;
     });
+  
+    // ✅ If no hotels match, show original list instead of an empty page
+    // if (this.filteredHotels.length === 0) {
+    //   console.warn("⚠️ No hotels matched the filters. Showing default list.");
+    //   this.filteredHotels = [...this.hotels];
+    // }
+  
+    console.log("✅ Updated Hotel List:", this.filteredHotels);
   }
+  
+  
+  
+  
+  
 }
 
