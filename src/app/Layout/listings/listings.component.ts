@@ -179,9 +179,10 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     });
   }
   onHotelClick(hotel: any): void {
-    this.router.navigate(['listings/overview'], { queryParams: hotel });
+    this.router.navigate(['listings/overview'], { queryParams: { hotelId: hotel.hotelId } });
   }
-
+  
+  
   /**
    * Returns a shortened hotel description for display.
    */
