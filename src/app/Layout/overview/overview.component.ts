@@ -4,10 +4,12 @@ import * as L from 'leaflet';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
+import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-overview',
-  imports: [CommonModule, SpinnerComponent],
+  imports: [CommonModule, SpinnerComponent,FormsModule],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
 })
@@ -19,10 +21,22 @@ export class OverviewComponent implements OnInit {
   hotelId: string = ''; // Store hotel ID from query params
   private map: any;
   activeTab: string = 'overview';
-  expandedRooms: { [key: string]: boolean } = {}; // Track expanded rooms
+  expandedRooms: { [key: string]: boolean } = {};
   isLoading: boolean = true;
   @ViewChildren('desc') descriptions!: QueryList<ElementRef>;
 
+  isFeedbackPopupVisible: boolean = false;
+hotelRating: number = 0;
+feedbackText: string = "";
+amenities = [
+  { name: "WiFi", selected: false },
+  { name: "Room Service", selected: false },
+  { name: "Food Quality", selected: false },
+  { name: "Cleanliness", selected: false },
+  { name: "Staff Behavior", selected: false }
+];
+
+stars = Array(5).fill(0);
   
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
@@ -47,38 +61,46 @@ export class OverviewComponent implements OnInit {
       console.error("Hotel ID is missing!");
       return;
     }
-
+  
     const apiUrl = `https://staysearchbackend.onrender.com/v1/hotel/${this.hotelId}`;
-    console.log("Fetching from API:", apiUrl); // Debugging
-
+    console.log("Fetching from API:", apiUrl);
+  
     this.http.get(apiUrl).subscribe(
       (data: any) => {
-        console.log("Fetched Hotel Data:", data); // Debugging
-
+        console.log("Fetched Hotel Data:", data);
+  
         if (data) {
           this.hotel = {
             ...data,
-            latitude: data.lat, // Fix lat mapping
-            longitude: data.lng // Fix lng mapping
+            latitude: data.lat,
+            longitude: data.lng,
+            roomsList: data.roomsList?.map((room: any) => ({
+              ...room,
+              showExpandIcon: room.description && room.description.length > 50, // Ensure check for description existence
+            })) || [],
           };
-          this.isLoading = false
-
-          // Ensure arrays are properly initialized
-          this.hotel.amenities = Array.isArray(data.amenities) ? data.amenities : [];
-          this.hotel.rooms = Array.isArray(data.rooms) ? data.rooms : [];
-
-          setTimeout(() => this.loadMap(), 500); // Load map after data is fetched
-          this.isLoading = false
+  
+          this.hotel.roomsList.forEach((room: any) => {
+            this.expandedRooms[room.id] = false;
+          });
+  
+          this.isLoading = false;
+          setTimeout(() => this.loadMap(), 500);
         } else {
           console.error("Invalid API response", data);
-          this.isLoading = false
+          this.isLoading = false;
         }
       },
       (error) => {
         console.error("Error fetching hotel data:", error);
-        this.isLoading = false
+        this.isLoading = false;
       }
     );
+  }
+  
+  toggleRoomExpansion(roomId: number) {
+    console.log("Toggling Room:", roomId);
+    this.expandedRooms[roomId] = !this.expandedRooms[roomId];
   }
 
   ngAfterViewInit(): void {
@@ -139,16 +161,69 @@ export class OverviewComponent implements OnInit {
     }
   }
 
-  toggleRoomExpansion(roomName: string) {
-    this.expandedRooms[roomName] = !this.expandedRooms[roomName];
-
-    if (this.expandedRooms[roomName]) {
-      setTimeout(() => {
-        const expandedRoom = document.getElementById(roomName);
-        if (expandedRoom) {
-          expandedRoom.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 300);
-    }
+  // Function to toggle feedback popup
+toggleFeedbackPopup() {
+  this.isFeedbackPopupVisible = !this.isFeedbackPopupVisible;
+  if (this.isFeedbackPopupVisible) {
+    document.documentElement.style.overflow = "hidden"; // Disable scrolling
+  } else {
+    document.documentElement.style.overflow = ""; // Enable scrolling
   }
 }
+
+// Function to rate hotel
+rateHotel(rating: number) {
+  this.hotelRating = rating;
+}
+
+// Function to submit feedback
+submitFeedback() {
+  this.isLoading = true;
+  if (!this.hotelRating) {
+    Swal.fire({ title: 'Warning', text: 'Please give a rating before submitting!', icon: 'warning' });
+    return;
+  }
+
+  if (!this.hotel || !this.hotel.name) {
+    Swal.fire({ title: 'Error', text: 'Hotel data is missing. Please try again!', icon: 'error' });
+    return;
+  }
+
+  const selectedAmenities = this.amenities.filter(a => a.selected).map(a => a.name);
+
+  // Prepare feedback data with the dynamically fetched hotel name
+  const feedbackData = {
+    hotelName: this.hotel.name, // Using fetched hotel name dynamically
+    likedAmenities: selectedAmenities,
+    rating: this.hotelRating,
+    description: this.feedbackText
+  };
+
+  console.log("Submitting feedback:", feedbackData);
+
+  // Send data to backend
+  this.http.post('https://staysearchbackend.onrender.com/v1/feedbacks/submit', feedbackData).subscribe({
+    next: (response) => {
+      console.log("Feedback submitted successfully!", response);
+      Swal.fire({ title: 'Success', text: 'Thank you for your feedback!', icon: 'success' });
+
+      this.isFeedbackPopupVisible = false;
+      document.documentElement.style.overflow = ""; // Enable scrolling
+      
+      // Reset form
+      this.hotelRating = 0;
+      this.amenities.forEach(a => a.selected = false);
+      this.feedbackText = "";
+      this.isFeedbackPopupVisible = false;
+      this.isLoading = false;
+    },
+    error: (error) => {
+      console.error("Error submitting feedback", error);
+      Swal.fire({ title: 'Error', text: 'Failed to submit feedback. Please try again!', icon: 'error' });
+      this.isLoading = false;
+    }
+  });
+}
+
+}
+

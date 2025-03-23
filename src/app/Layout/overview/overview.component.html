@@ -36,6 +36,10 @@
               <a class="nav-link" [class.active]="activeTab === 'location'"
                 (click)="scrollToSection('location')">Location</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" [class.active]="activeTab === 'feedback'"
+                (click)="scrollToSection('feedback')">Feedback</a>
+            </li>
           </ul>
 
 
@@ -50,7 +54,7 @@
                 </i>
               
 
-                <button class="btn btn-primary" style="background-color: #570E49; border: none;">See Room
+                <button class="btn btn-primary" style="background-color: #570E49; border: none;" data-bs-toggle="offcanvas" data-bs-target="#availabilitySidebar">See Room
                   Availability</button>
               </div><br>
 
@@ -92,39 +96,86 @@
             <!-- Room Section -->
             <div id="rooms" class="mt-5">
               <h4 class="mb-3" style="color: #570E49; font-weight: bold;">Rooms</h4>
-
+            
               <div class="row">
-                <div *ngFor="let room of hotel.rooms || []" class="col-12 mb-4">
-                  <div class="card room-card" [class.expanded]="expandedRooms[room.name]">
+                <div *ngFor="let room of hotel.roomsList || []" class="col-12 mb-4">
+                  <div class="card room-card" [class.expanded]="expandedRooms[room.id]">
                     <div class="row g-0 align-items-center">
+                      
                       <!-- Room Image -->
                       <div class="col-md-4 room-image-container">
-                        <img [src]="room.image" class="room-image" alt="{{ room.name }}">
+                        <img [src]="room.imageUrl" class="room-image" alt="{{ room.name }}">
                       </div>
-
+            
                       <!-- Room Details -->
-                      <div class="col-md-8 room-info">
+                      <div class="col-md-8 room-info position-relative">
                         <div class="room-content">
                           <h5>{{ room.name }}</h5>
-                          <p class="room-desc" #desc>{{ room.description }}</p>
+                          <p class="room-desc">
+                            {{ expandedRooms[room.id] ? room.description : (room.description | slice:0:100) + '...' }}
+                          </p>
                         </div>
-
-                        <!-- Expand Icon (Only show if description is longer) -->
-                        <div class="expand-icon" [class.show-expand-icon]="room.showExpandIcon"
-                          (click)="toggleRoomExpansion(room.name)">
-                          <i class="fas fa-chevron-down"></i>
+                      
+                        <!-- Expand Icon (Now at the bottom center) -->
+                        <div *ngIf="room.showExpandIcon" class="expand-icon" (click)="toggleRoomExpansion(room.id)">
+                          <i [ngClass]="expandedRooms[room.id] ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
                         </div>
                       </div>
+                      
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            
+            
 
 
             <div id="location" class="tab-section">
               <h4 style="color: #570E49; font-weight: bold;">Location</h4>
               <div id="map" class="hotel-map"></div>
+            </div>
+
+
+            <div id="feedback" class="tab-section">
+              <h4 style="color: #570E49; font-weight: bold;">Feedback</h4>
+              <div class="feedback-section">
+                <h3>Your Feedback Matters!</h3>
+                <p>We value your feedback. Let us know how we can improve.</p>
+                <button class="open-feedback-btn" (click)="toggleFeedbackPopup()">Give Feedback</button>
+              </div>
+              
+              <!-- Feedback Popup (Hidden by Default) -->
+              <div class="feedback-popup" [class.show]="isFeedbackPopupVisible">
+                <div class="feedback-content">
+                  <span class="close-btn" (click)="toggleFeedbackPopup()">&times;</span>
+                  <h2>Rate Your Experience</h2>
+              
+                  <!-- Star Rating -->
+                  <div class="star-rating">
+                    <span *ngFor="let star of stars; let i = index" 
+                          (click)="rateHotel(i+1)" 
+                          [class.filled]="i < hotelRating">
+                      ★
+                    </span>
+                  </div>
+              
+                  <!-- Amenities Liked -->
+                  <h3>Which amenities did you like?</h3>
+                  <div class="amenities">
+                    <label *ngFor="let amenity of amenities">
+                      <input type="checkbox" [(ngModel)]="amenity.selected" />
+                      {{ amenity.name }}
+                    </label>
+                  </div>
+              
+                  <!-- Additional Feedback -->
+                  <textarea placeholder="Describe your experience..." [(ngModel)]="feedbackText"></textarea>
+              
+                  <!-- Submit Button -->
+                  <button class="submit-btn" (click)="submitFeedback()">Submit Feedback</button>
+                </div>
+              </div>
             </div>
             
           </div>
@@ -133,5 +184,30 @@
 
       </div>
     </div>
+  </div>
+</div>
+
+
+<div class="offcanvas offcanvas-end" id="availabilitySidebar">
+  <div class="offcanvas-header">
+    <h5>Room Availability</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="coming-soon-box">
+      <h2 class="glow-text">Coming Soon</h2>
+      <p class="slide-in">We are preparing something amazing for you! ✨</p>
+      <p class="slide-in">Stay tuned for the best room booking experience. 🏨</p>
+      
+      <!-- Total Rooms Section -->
+      <div class="room-availability">
+        <p>Total number of rooms in {{ hotel.name }} : <span id="room-count">{{ hotel.rooms }}</span></p>
+      </div>
+    
+      <div class="dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    
   </div>
 </div>
