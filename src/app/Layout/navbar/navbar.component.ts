@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -14,6 +15,7 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent {
   currentLanguage = 'en';
   langText = 'English';
+ 
 
   constructor(private translate: TranslateService) { 
     this.currentLanguage = localStorage.getItem('language') || 'en';
@@ -31,4 +33,6 @@ export class NavbarComponent {
   updateLangText() {
     this.langText = this.currentLanguage === 'en' ? 'English' : 'हिन्दी';
   }
+
+ 
 }

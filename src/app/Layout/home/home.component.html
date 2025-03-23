@@ -1,5 +1,62 @@
 <app-search-modal></app-search-modal>
 
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+       <!-- Language Toggle -->
+      
+      <!-- Menu -->
+      <div class="text-container2">
+        <div class="sub-text">UPSTDC</div>
+      <a class="navbar-brand" href="#">StaySearch</a>
+  
+      </div>
+      
+      
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">{{ 'HOME' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/listings'">{{ 'HOTELS' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACTUS' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUTUS' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" (click)="toggleModal()">
+              Login/Signup
+            </button>
+          </li>
+          <!-- Search Modal Component -->
+          <app-search-modal *ngIf="showModal" [showModal]="showModal" (close)="closeModal()"></app-search-modal>
+        </ul>
+      </div>
+      <div class="language-toggle">
+        <div class="input-container" (click)="toggleLanguage(currentLanguage === 'en' ? 'hi' : 'en')">
+          <img *ngIf="currentLanguage === 'en'" src="ukflag.png" alt="English" class="flag-icon" />
+          <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
+          <input type="text" readonly [value]="langText" />
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+
+
+
+
+
+
+
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
