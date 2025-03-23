@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
@@ -35,7 +35,8 @@ import { NgIf } from '@angular/common';
   ]
 })
 export class SearchModalComponent implements OnInit {
-  showModal: boolean = false;
+  @Input()  showModal: boolean = false;
+  @Output() close = new EventEmitter<void>();
   showForm: boolean = false;
   place: string = '';
   hotelName: string = '';
@@ -78,5 +79,6 @@ export class SearchModalComponent implements OnInit {
   closeModal(): void {
     console.log('Modal closed');
     this.showModal = false;
+    this.close.emit(); 
   }
 }

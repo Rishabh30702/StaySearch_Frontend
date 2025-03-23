@@ -1,3 +1,4 @@
-<app-navbar></app-navbar>
+<app-navbar *ngIf="!isHomePage"></app-navbar>
+
 <router-outlet />
 <app-footer></app-footer>
