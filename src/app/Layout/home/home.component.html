@@ -478,106 +478,42 @@
 
   
 <h5 class="heading">Feedback That matters</h5>
-
-<div class="rating">
-  <span class="star">⭐</span>
-  <span class="score">5.0</span> · <span class="reviews">7 reviews</span>
-</div>
-
-<div class="ratings-container">
-  <div class="rating-column">
-      <div class="rating-row">
-          <span>Cleanliness</span>
-          <div class="rating-bar"><div class="fill" style="width: 100%;"></div></div>
-          <span>5.0</span>
-      </div>
-      <div class="rating-row">
-          <span>Accuracy</span>
-          <div class="rating-bar"><div class="fill" style="width: 100%;"></div></div>
-          <span>5.0</span>
-      </div>
-      <div class="rating-row">
-          <span>Check-in</span>
-          <div class="rating-bar"><div class="fill" style="width: 100%;"></div></div>
-          <span>5.0</span>
-      </div>
-      <div class="rating-row">
-          <span>Value</span>
-          <div class="rating-bar"><div class="fill" style="width: 94%;"></div></div>
-          <span>4.7</span>
-      </div>
-  </div>
-
-  <div class="rating-column">
-      <div class="rating-row">
-          <span>Communication</span>
-          <div class="rating-bar"><div class="fill" style="width: 100%;"></div></div>
-          <span>5.0</span>
-      </div>
-      <div class="rating-row">
-          <span>Location</span>
-          <div class="rating-bar"><div class="fill" style="width: 98%;"></div></div>
-          <span>4.9</span>
-      </div>
-  </div>
+<div style="position: relative; width: 100%;">
+<button class="scroll-btn left" (click)="scrollLeft()">&#10094;</button>
+<div class="Feedback-container" #feedbackContainer>
+   
+ 
+    <div *ngFor="let feedback of feedbackList" class="feedback-card">
+        <div class="feedback-content">
+            <!-- <img class="feedback-image" src="assets/images/{{ feedback.hotelName | lowercase }}.jpg" alt="{{ feedback.hotelName }}"> -->
+            <h3 class="feedback-title">{{ feedback.hotelName }}</h3>
+    
+            <!-- Star Rating -->
+            <span *ngFor="let star of getStars(feedback.rating)">
+                <i *ngIf="star === 'full'" class="fa fa-star"></i>
+                <i *ngIf="star === 'half'" class="fa fa-star-half-alt"></i>
+                <i *ngIf="star === 'empty'" class="fa fa-star-o"></i>
+            </span>
+    
+            <p class="feedback-description">"{{ feedback.description }}"</p>
+    
+            <!-- Liked Amenities -->
+            <p class="feedback-amenities">
+                <strong>Loved Amenities:</strong> {{ feedback.likedAmenities.join(', ') }}
+            </p>
+    
+            <small class="feedback-date">Reviewed on {{ feedback.createdAt | date:'medium' }}</small>
+    
+           
+        </div>
+    </div>
+    
+   </div>
+   <button class="scroll-btn right" (click)="scrollRight()">&#10095;</button>
 </div>
 
 
 
 
-
-<div class="reviews-container">
-  <div class="review">
-      <img class="review-avatar" src="icProfile.jpg" alt="Jose" width="50" height="50">
-      <div>
-          <strong>Jose</strong> <br>
-          <small>December 2021</small>
-          <p>Host was very sweet.</p>
-      </div>
-  </div>
-  
-  <div class="review">
-      <div class="profile-pic">
-          <img class="profile-img " src="icProfile.jpg" alt="User">
-      </div>
-      <div class="review-text">
-          <strong>Luke</strong> <br>
-          <small>December 2021</small>
-          <p>Well designed and fun space.</p>
-      </div>
-  </div>
-
-  <div class="review">
-      <img class="profile-img " src="icProfile.jpg" alt="User">
-      <div class="review-text">
-          <strong>Shayna</strong> <br>
-          <small>December 2021</small>
-          <p>Wonderful neighborhood, easy access to restaurants and the subway...</p>
-          <span class="show-more">Show more ⬇</span>
-      </div>
-  </div>
-
-  <div class="review">
-      <img class="profile-img " src="icProfile.jpg" alt="User">
-      <div class="review-text">
-          <strong>Josh</strong> <br>
-          <small>November 2021</small>
-          <p>Well designed and fun space, neighborhood has lots of energy...</p>
-      </div>
-  </div>
-
-  <div class="review">
-      <img class="profile-img " src="icProfile.jpg" alt="User">
-      <div class="review-text">
-          <strong>Vladko</strong> <br>
-          <small>November 2021</small>
-          <p>This is amazing place. It has everything one needs for a comfy business stay.</p>
-          <span class="show-more">Show more ⬇</span>
-      </div>
-  </div>
-</div>
-
-<button class="all-reviews-btn">Show all 12 reviews</button>
-
-
+    
 
