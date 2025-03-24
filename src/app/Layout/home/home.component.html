@@ -44,7 +44,7 @@
         <div class="input-container" (click)="toggleLanguage(currentLanguage === 'en' ? 'hi' : 'en')">
           <img *ngIf="currentLanguage === 'en'" src="ukflag.png" alt="English" class="flag-icon" />
           <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
-          <input type="text" readonly [value]="langText" />
+          <input class="langtext form-control shadow-none" type="text" readonly [value]="langText" />
         </div>
       </div>
     </div>

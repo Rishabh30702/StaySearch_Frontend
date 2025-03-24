@@ -1010,7 +1010,7 @@ margin-bottom: 30px;
   height: 36px;
   border: 2px solid #FFD700;
   border-radius: 20px;  /* Rounded edges */
-  padding: 5px 12px;
+  padding: 5px 7px;
   cursor: pointer;
   background: white;
   transition: all 0.3s ease-in-out;
@@ -1027,7 +1027,14 @@ margin-bottom: 30px;
   color: white;
   transform: scale(1.05);
 }
-
+.langtext {
+  border: none !important;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 10px;
+  padding-right: 10px;
+}
 /* Flag Wrapper (Ensures Proper Alignment) */
 .flag-wrapper {
   display: flex;
