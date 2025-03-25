@@ -3,11 +3,14 @@ import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../Services/AuthService/services/auth.service';
+import { SpinnerComponent } from "../spinner/spinner.component";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-search-modal',
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule, NgIf, SpinnerComponent],
   templateUrl: './search-modal.component.html',
   styleUrls: ['./search-modal.component.css'],
   animations: [
@@ -41,7 +44,11 @@ export class SearchModalComponent implements OnInit {
   place: string = '';
   hotelName: string = '';
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+  user = { username: '', password: '', role: 'USER' }; // Default role is 'USER'
+  message: string = '';
+  isLoading: boolean = false;
+  constructor(private router: Router, private cdr: ChangeDetectorRef,
+    private authService: AuthService) {}
 
   ngOnInit(): void {
     console.log('SearchModalComponent initialized');
@@ -81,4 +88,40 @@ export class SearchModalComponent implements OnInit {
     this.showModal = false;
     this.close.emit(); 
   }
+
+  register() {
+    this.isLoading = true;
+    this.authService.register(this.user).subscribe(
+      response => {
+        this.message = response.message;
+        localStorage.setItem('token', response.token);
+        Swal.fire({title:'Success.',text:'Welcome to StaySearch. Register success.', icon:'success'})
+        this.router.navigate(['/listings']); // Redirect after registration
+      },
+      error => {
+        this.message = 'Registration failed';
+        Swal.fire({title:'Failed.',text:'Registration failed.', icon:'error'})
+        this.isLoading = false;
+      }
+    );
+  }
+
+  login() {
+    this.isLoading = true;
+    this.authService.login({ username: this.user.username, password: this.user.password }).subscribe(
+      (response: any) => {
+        localStorage.setItem('token', response.token);
+        Swal.fire({title:'Success.',text:'Welcome to StaySearch. Login success.', icon:'success'})
+        this.router.navigate(['/listings']);
+        this.isLoading = false;
+      },
+      error => {
+        this.message = 'Invalid credentials';
+        Swal.fire({title:'Failed.',text:'Login failed.', icon:'error'})
+        this.isLoading = false;
+      }
+    );
+  }
+  
+
 }

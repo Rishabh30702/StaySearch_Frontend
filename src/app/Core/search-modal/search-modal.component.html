@@ -1,3 +1,4 @@
+<app-spinner [isLoading]="isLoading"></app-spinner>
 <div *ngIf="showModal" class="modal-overlay">
     <div class="modal-content" @fadeSlideIn>
       <button class="close-btn" (click)="closeModal()">X</button>
@@ -13,14 +14,14 @@
             <h2>Welcome</h2>
             <label>
                 <span>Email</span>
-                <input type="email" />
+                <input type="email" [(ngModel)]="user.username" name="email" required />
             </label>
             <label>
                 <span>Password</span>
-                <input type="password" />
+                <input type="password" [(ngModel)]="user.password" name="password" required />
             </label>
             <p class="forgot-pass">Forgot password?</p>
-            <button type="button" class="submit">Sign In</button>
+            <button type="button" class="submit" (click)="login()">Sign In</button>
 
             <h4 class="py-4">Sign In with </h4>
 
@@ -61,13 +62,13 @@
                 </label>
                 <label>
                     <span>Email</span>
-                    <input type="email" />
+                    <input type="email" [(ngModel)]="user.username" name="email" required />
                 </label>
                 <label>
                     <span>Password</span>
-                    <input type="password" />
+                    <input type="password" [(ngModel)]="user.password" name="password" required />
                 </label>
-                <button type="button" class="submit">Sign Up</button>
+                <button type="button" class="submit" (click)="register()">Sign Up</button>
 
                 <h4 class="fs-4 pb-2">Sign Up with </h4>
 
