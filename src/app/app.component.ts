@@ -5,12 +5,13 @@ import { FooterComponent } from "./Layout/footer/footer.component";
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs';
+import { TopStripComponent } from "./Layout/top-strip/top-strip.component";
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, FooterComponent,CommonModule],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, CommonModule, TopStripComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

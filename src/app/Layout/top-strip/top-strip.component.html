@@ -1,0 +1,26 @@
+<div class="top-strip">
+  <!-- Left: Date & Time -->
+  <div class="date-time">
+    {{ currentDateTime }}
+  </div>
+
+  <!-- Center: Text Resize -->
+  <div class="text-resize">
+    <span (click)="resizeText('small')">A-</span>
+    <span (click)="resizeText('normal')">A</span>
+    <span (click)="resizeText('large')">A+</span>
+    <button class="fullscreen-btn" (click)="toggleFullscreen()">⛶</button>
+  </div>
+  <!-- Right: Social Media Icons -->
+  <div class="social-icons">
+    <a href="https://www.facebook.com" target="_blank">
+      <i class="fab fa-facebook"></i>
+    </a>
+    <a href="https://twitter.com" target="_blank">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="https://www.youtube.com" target="_blank">
+      <i class="fab fa-youtube"></i>
+    </a>
+  </div>
+</div>
