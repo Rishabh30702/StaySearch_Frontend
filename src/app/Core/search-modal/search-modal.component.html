@@ -12,30 +12,27 @@
       <div class="cont" [class.s--signup]="isSignup">
         <div class="form sign-in">
             <h2>Welcome</h2>
+            <form #form="ngForm">
             <label>
                 <span>Email</span>
-                <input type="email" [(ngModel)]="user.username" name="email" required />
+                <input type="email" [(ngModel)]="user.username"  #loginemail="ngModel" name="email" required />
             </label>
+
+            <small *ngIf="loginemail.touched && loginemail.errors?.['required']" style="color: red;">
+              Email is required!
+          </small>
             <label>
                 <span>Password</span>
-                <input type="password" [(ngModel)]="user.password" name="password" required />
+                <input type="password" [(ngModel)]="user.password" #loginpassword="ngModel" name="password" required />
             </label>
+
+            <small *ngIf="loginpassword.touched && loginpassword.errors?.['required']" style="color: red;">
+              password is required!
+          </small>
             <p class="forgot-pass">Forgot password?</p>
-            <button type="button" class="submit" (click)="login()">Sign In</button>
-
-            <h4 class="py-4">Sign In with </h4>
-
-            <div class="social-icons"> 
-               <!-- Google Icon -->
-                <a href="https://accounts.google.com/signin" target="_blank" class="google">
-                  <i class="fab fa-google"></i>
-                </a>
-              
-                <!-- Facebook Icon -->
-                <a href="https://www.facebook.com/login" target="_blank" class="facebook">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-              </div>
+            <button type="button" class="submit" (click)="login()"  [disabled]="loginpassword.invalid  || loginemail.invalid">Sign In</button>
+            </form>
+          
 
 
         </div>
@@ -48,7 +45,7 @@
                 <div class="img__text m--in">
                     <h3>If you already have an account, just sign in.</h3>
                 </div>
-                <div class="img__btn" (click)="toggleSignup()">
+                <div class="img__btn" (click)="toggleSignup(form,form2,password)">
                     <span class="m--up">Sign Up</span>
                     <span class="m--in">Sign In</span>
                 </div>
@@ -56,33 +53,49 @@
     
             <div class="form sign-up">
                 <h2>Create your Account</h2>
-                <label>
-                    <span>Name</span>
-                    <input type="text" />
-                </label>
-                <label>
+                
+                <form #form2="ngForm">
+                  <label>
                     <span>Email</span>
-                    <input type="email" [(ngModel)]="user.username" name="email" required />
+                    <input type="email" [(ngModel)]="user.username" name="email" #email="ngModel" required email />
                 </label>
+            
+                <!-- Required Email Error -->
+                <small *ngIf="email.touched && email.errors?.['required']" style="color: red;">
+                    Email is required!
+                </small>
+            
+                <!-- Invalid Email Format Error -->
+                <small *ngIf="email.touched && email.errors?.['email']" style="color: red;">
+                    Enter a valid email address!
+                </small>
+            
+                
+              
+              
                 <label>
-                    <span>Password</span>
+                  <span>Password</span>
+                  <input type="password" #password name="password" required />
+              </label>
+
+                <label>
+                    <span>Retype-Password</span>
                     <input type="password" [(ngModel)]="user.password" name="password" required />
                 </label>
-                <button type="button" class="submit" (click)="register()">Sign Up</button>
 
-                <h4 class="fs-4 pb-2">Sign Up with </h4>
 
-                <div class="social-icons"> 
-                   <!-- Google Icon -->
-                    <a href="https://accounts.google.com/signin" target="_blank" class="google">
-                      <i class="fab fa-google"></i>
-                    </a>
-                  
-                    <!-- Facebook Icon -->
-                    <a href="https://www.facebook.com/login" target="_blank" class="facebook">
-                      <i class="fab fa-facebook-f"></i>
-                    </a>
-                  </div>
+
+                <!-- Password Mismatch Error -->
+    <small *ngIf="user.password && user.password !== password.value" style="color: red;">
+      Passwords do not match!
+  </small>
+
+  <button type="button" class="submit" (click)="register()" 
+      [disabled]="user.password !== password.value  || email.invalid">
+      Sign Up
+  </button>
+</form>
+               
 
 
 
