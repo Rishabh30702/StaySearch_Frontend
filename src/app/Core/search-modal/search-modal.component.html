@@ -29,7 +29,7 @@
             <small *ngIf="loginpassword.touched && loginpassword.errors?.['required']" style="color: red;">
               password is required!
           </small>
-            <p class="forgot-pass">Forgot password?</p>
+            
             <button type="button" class="submit" (click)="login()"  [disabled]="loginpassword.invalid  || loginemail.invalid">Sign In</button>
             </form>
           
