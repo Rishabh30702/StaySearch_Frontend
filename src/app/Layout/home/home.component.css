@@ -22,6 +22,62 @@
   }
 
 
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .carousel {
+      height: 70vh; /* Reduce height for tablets */
+  }
+
+  .carousel-item {
+      height: 70vh;
+  }
+
+  .carousel-caption {
+      font-size: 3vw; /* Adjust text size for medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel {
+      height: 60vh; /* Reduce height for smaller devices */
+  }
+
+  .carousel-item {
+      height: 60vh;
+  }
+
+  .carousel-caption {
+      font-size: 3.5vw;
+      padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel {
+      height: 50vh; /* Further reduce height for mobile screens */
+  }
+
+  .carousel-item {
+      height: 50vh;
+  }
+
+  .carousel-caption {
+      font-size: 4vw; /* Increase text size for better readability */
+      padding: 6px;
+  }
+}
+
+
+  
+
+  @media (max-width: 1080px) {
+    p { font-size: 2vw; } /* Adjusts font size for tablets */
+}
+
+@media (max-width: 480px) {
+    p { font-size: 3vw; } /* Adjusts font size for mobile screens */
+}
+
   .search-filter-wrapper {
     display: flex;
     flex-direction: column;
@@ -192,7 +248,28 @@ h4.Find-Stay {
     to { transform: translateY(-10px); }
 }
 
+/* Responsive Adjustments */
+@media (max-width: 1080px) {
+  .text-container {
+      font-size: 5vw; /* Smaller font for tablets */
+  }
+  .heart {
+    top: 4px;
+      font-size: 5vw;
+      margin-left: 2px; /* Adjust spacing */
+  }
+}
 
+@media (max-width: 480px) {
+  .text-container {
+      font-size: 5vw; /* Smaller font for mobile screens */
+  }
+  .heart {
+      font-size: 5vw;
+      margin-left: 4px; /* Reduce spacing */
+      top: 4px;
+  }
+}
 
   
   .btn-primary {

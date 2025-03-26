@@ -85,7 +85,6 @@ export class SearchModalComponent implements OnInit {
     password.value = ''; 
     this.user.username = "";
     this.user.password = "";
-    this.user.role = "";
     this.isSignup = !this.isSignup;
   }
 
