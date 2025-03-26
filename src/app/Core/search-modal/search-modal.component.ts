@@ -77,8 +77,15 @@ export class SearchModalComponent implements OnInit {
 
   
   isSignup: boolean = false;
+ 
 
-  toggleSignup() {
+  toggleSignup(form:any, form2: any, password: any) {
+    form.resetForm(); 
+    form2.resetForm(); 
+    password.value = ''; 
+    this.user.username = "";
+    this.user.password = "";
+    this.user.role = "";
     this.isSignup = !this.isSignup;
   }
 
@@ -88,6 +95,8 @@ export class SearchModalComponent implements OnInit {
     this.showModal = false;
     this.close.emit(); 
   }
+
+  
 
   register() {
     this.isLoading = true;
@@ -108,6 +117,7 @@ export class SearchModalComponent implements OnInit {
 
   login() {
     this.isLoading = true;
+   
     this.authService.login({ username: this.user.username, password: this.user.password }).subscribe(
       (response: any) => {
         localStorage.setItem('token', response.token);
