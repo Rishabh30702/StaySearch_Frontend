@@ -179,8 +179,18 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     });
   }
   onHotelClick(hotel: any): void {
-    this.router.navigate(['listings/overview'], { queryParams: { hotelId: hotel.hotelId } });
+    // ✅ Reset filters by clearing query parameters
+    this.router.navigate(['listings/overview'], { 
+      queryParams: { hotelId: hotel.hotelId },
+      queryParamsHandling: 'merge'  // Keeps only `hotelId` and removes others
+    });
+  
+    // ✅ Reset filteredHotels to the full hotel list
+    this.filteredHotels = [...this.hotels];
+  
+    console.log("🔄 Filters Reset, Showing All Hotels");
   }
+  
   
   
   /**
@@ -208,25 +218,31 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     this.filteredHotels = this.hotels.filter(hotel => {
       const withinPriceRange = hotel.price >= 0 && hotel.price <= maxPrice;
   
-      // ✅ Fix for star rating: Show hotels with rating >= selected star
-      const matchesStar = !filters.star || Object.keys(filters.star).length === 0 || 
-        Object.keys(filters.star).some(star => filters.star[star] && hotel.rating >= Number(star));
+      // ✅ Fix: Star rating filter should match hotels with a rating >= selected value
+      let matchesStar = true;
+      if (filters.star && Object.keys(filters.star).length > 0) {
+        const selectedStars = Object.keys(filters.star)
+          .filter(star => filters.star[star])  // Get selected star ratings
+          .map(star => Number(star));         // Convert to numbers
+        
+        matchesStar = selectedStars.some(star => hotel.rating >= star);
+      }
   
-      const matchesAmenities = !filters.amenities || Object.keys(filters.amenities).every(
-        a => !filters.amenities[a] || (hotel.amenities && hotel.amenities.includes(a))
-      );
+      // ✅ Fix: Amenities filter should check if ALL selected amenities are present in the hotel
+      let matchesAmenities = true;
+      if (filters.amenities && Object.keys(filters.amenities).length > 0) {
+        const selectedAmenities = Object.keys(filters.amenities)
+          .filter(a => filters.amenities[a]); // Get selected amenities
+  
+        matchesAmenities = selectedAmenities.every(a => hotel.amenities?.includes(a));
+      }
   
       return withinPriceRange && matchesStar && matchesAmenities;
     });
   
-    // ✅ If no hotels match, show original list instead of an empty page
-    // if (this.filteredHotels.length === 0) {
-    //   console.warn("⚠️ No hotels matched the filters. Showing default list.");
-    //   this.filteredHotels = [...this.hotels];
-    // }
-  
     console.log("✅ Updated Hotel List:", this.filteredHotels);
   }
+  
   
   
   
