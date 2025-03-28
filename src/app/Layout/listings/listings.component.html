@@ -8,7 +8,7 @@
     </div>
 
     <!-- Listings Section (Middle) -->
-    <div class="col-md-6 listings-container">
+    <div class="col-md-5 listings-container">
       <h2>Listings</h2>
       <div class="row">
         <div class="col-md-12" *ngFor="let hotel of filteredHotels; let i = index">
@@ -35,11 +35,11 @@
               <div class="priceAndrating">
                 <div class="rating d-flex justify-content-between my-3">
                   <span style="color: gold; font-weight: bold;">
-                    {{ hotel.rating +' ⭐' + "&nbsp;&nbsp;&nbsp;&nbsp;("+ hotel.reviews+")" }}
+                    {{ hotel.rating +' ⭐' + "&nbsp;&nbsp;("+ hotel.reviews+")" }}
                   </span>
                   <strong class="price mx-5 px-5"
                           (mouseenter)="highlightHotelOnMap(hotel)">
-                    {{ hotel.price + "/night" }}
+                    {{ "₹"+hotel.price+"/-" }}
                   </strong>
                 </div>
               </div>
@@ -50,7 +50,7 @@
     </div>
 
     <!-- Map Section (Right) -->
-    <div class="col-md-3 map-container">
+    <div class="col-md-4 map-container">
       <div id="main-map"></div> 
     </div>
   </div>

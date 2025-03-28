@@ -78,7 +78,7 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     console.log("✅ Filtered Hotels (Searched on top):", this.filteredHotels);
   
     // ✅ Update the map to focus on the first search result
-    this.updateMapToFirstResult();
+    this.updateMapToNearbyHotels();
   }
   
   
@@ -120,36 +120,8 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     }, 500);
   }
 
-  updateMapToFirstResult(): void {
-    if (!this.map || this.filteredHotels.length === 0) return;
-  
-    const firstHotel = this.filteredHotels[0];
-  
-    // ✅ Ensure the hotel has valid coordinates
-    if (!firstHotel.lat || !firstHotel.lng) return;
-  
-    // ✅ Set the map to the top hotel’s location
-    this.map.setView([firstHotel.lat, firstHotel.lng], 13);
-  
-    // ✅ Update marker on the map
-    if (this.marker) {
-      this.map.removeLayer(this.marker);
-    }
-  
-    this.marker = L.marker([firstHotel.lat, firstHotel.lng], {
-      icon: L.divIcon({
-        className: 'custom-map-marker',
-        html: `<div style="background: white; padding: 5px 10px; border-radius: 8px; box-shadow: 0px 0px 8px rgba(0,0,0,0.2); font-weight: bold;">
-                ${firstHotel.price}/night
-               </div>`,
-        iconSize: [60, 20]
-      })
-    }).addTo(this.map);
-  }
-  
-  
 
-  highlightHotelOnMap(hotel: any): void {
+  highlightHotelOnMap(hotel: any, zoomLevel: number = 12): void {
     if (!this.map) return;
   
     // ✅ Remove previous marker
@@ -157,20 +129,67 @@ export class ListingsComponent implements AfterViewInit, OnInit {
       this.map.removeLayer(this.marker);
     }
   
-    // ✅ Create a new marker for the hovered hotel
+    // ✅ Create a new marker with highlighted style
     this.marker = L.marker([hotel.lat, hotel.lng], {
       icon: L.divIcon({
         className: 'custom-map-marker',
-        html: `<div style="background: white; padding: 5px 10px; border-radius: 8px; box-shadow: 0px 0px 8px rgba(0,0,0,0.2); font-weight: bold;">
+        html: `<div style="background: #761461; color: white; padding: 5px 10px;width:80px; border-radius: 8px; 
+                       box-shadow: 0px 0px 8px rgba(0,0,0,0.2); font-weight: bold;">
                 ${hotel.price}/night
-               </div>`,
+              </div>`,
         iconSize: [60, 20]
       })
     }).addTo(this.map);
   
-    // ✅ Move map to hovered hotel’s location
-    this.map.setView([hotel.lat, hotel.lng], 13);
+    // ✅ Zoom out slightly to show nearby hotels
+    this.map.setView([hotel.lat, hotel.lng], zoomLevel);
   }
+  
+  
+
+  updateMapToNearbyHotels(): void {
+    if (!this.map || this.filteredHotels.length === 0) return;
+  
+    // ✅ Ensure all lat/lng values are valid numbers
+    const hotelLocations: [number, number][] = this.filteredHotels
+      .filter(hotel => typeof hotel.lat === 'number' && typeof hotel.lng === 'number')
+      .map(hotel => [hotel.lat, hotel.lng]);
+  
+    if (hotelLocations.length === 0) return;
+  
+    if (hotelLocations.length === 1) {
+      this.map.setView(hotelLocations[0], 13);
+    } else {
+      const bounds = L.latLngBounds(hotelLocations);
+      this.map.fitBounds(bounds, { padding: [50, 50] }); // ✅ Ensures all hotels are visible
+    }
+  
+    // ✅ Remove old markers before adding new ones
+    this.map.eachLayer((layer: L.Layer) => {
+      if (layer instanceof L.Marker) {
+        this.map.removeLayer(layer);
+      }
+    });
+  
+    // ✅ Add markers for all hotels
+    this.filteredHotels.forEach(hotel => {
+      if (typeof hotel.lat !== 'number' || typeof hotel.lng !== 'number') return;
+  
+      hotel.marker = L.marker([hotel.lat, hotel.lng], {
+        icon: L.divIcon({
+          className: 'custom-map-marker',
+          html: `<div id="marker-${hotel.hotelId}" 
+                  style="background: white; padding: 5px 10px; border-radius: 8px; 
+                         box-shadow: 0px 0px 8px rgba(0,0,0,0.2); font-weight: bold;">
+                  ${hotel.price}/night
+                 </div>`,
+          iconSize: [60, 20]
+        })
+      }).addTo(this.map);
+    });
+  }
+  
+  
   
 
   toggleLike(hotel: any): void {
