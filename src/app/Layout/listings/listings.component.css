@@ -43,6 +43,9 @@
   display: flex;
   justify-content: space-between;
 }
+.priceAndrating span{
+  font-size: 12px;
+}
 
 .hotel-map {
   width: 200px;
@@ -50,6 +53,25 @@
   background: #eee;
   border-radius: 8px;
 }
+.custom-map-marker div {
+  background: #761461;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 70px;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
 
 .heart-icon {
   color: red !important; /* Ensures the heart is always red */
