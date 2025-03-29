@@ -6,8 +6,8 @@
       
       <!-- Menu -->
       <div class="text-container2">
-        <div class="sub-text">UPSTDC</div>
-      <a class="navbar-brand" href="#">StaySearch</a>
+        <div class="sub-text">{{'UPSTDC'|translate}}</div>
+      <a class="navbar-brand" href="#">{{'StaySearch' |translate}}</a>
   
       </div>
       
@@ -44,7 +44,7 @@
         </div>
         <div class="auth-container">
             <button *ngIf="!isLoggedIn" (click)="toggleModal()">Login / Signup</button>
-            <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
+            <button *ngIf="isLoggedIn" (click)="logout()">{{'Logout'|translate}}</button>
           </div>
       </div>
     </div>
@@ -61,14 +61,15 @@
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img src="uttar-pradesh.jpg" class="d-block w-100 carousel-img" alt="First Slide">
+            <div class="carousel-overlay"></div>
             <div class="carousel-caption">
-                <div class="text-container">Uttar Pradesh Tourism <span class="heart">❤️</span></div>
+                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <span class="heart">❤️</span></div>
          
-                <p>{{ 'Good people. Good thinking. Good feeling.' |translate }}</p>
+                <h2 class="fw-bold" style>{{ 'Good people. Good thinking. Good feeling.' |translate }}</h2>
 <!-- Search Bar -->
 <div class="search-filter-wrapper">
     <!-- Transparent Header -->
-    <h4 class="Find-Stay">Find your stay</h4>
+    <h4 class="Find-Stay">{{'Find your stay' | translate}}</h4>
 <div class="search-filter d-flex align-items-center p-2 shadow-sm rounded animated-search">
   
     <!-- Destination -->
@@ -124,14 +125,15 @@
        
         <div class="carousel-item">
             <img src="jhansi.jpg" class="d-block w-100 carousel-img" alt="Third Slide">
+            <div class="carousel-overlay"></div>
             <div class="carousel-caption">
-                <div class="text-container">Uttar Pradesh Tourism <span class="heart">❤️</span></div>
+                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <span class="heart">❤️</span></div>
             <h2 class="fw-bold" style>{{ 'Relax. Travel. Repeat.' |translate }}</h2>
                   
 <!-- Search Bar -->
 <div class="search-filter-wrapper">
     <!-- Transparent Header -->
-    <h4 class="Find-Stay">Find your stay</h4>
+    <h4 class="Find-Stay">{{'Find your stay' | translate}}</h4>
 
     <!-- Search Bar -->
     <div class="search-filter d-flex align-items-center p-2 shadow-sm rounded animated-search">
@@ -476,7 +478,7 @@
 
 
   
-<h5 class="heading">Feedback That matters</h5>
+<h5 class="heading">{{'Feedback That matters' |translate}}</h5>
 <div style="position: relative; width: 100%;">
 <button class="scroll-btn left" (click)="scrollLeft()">&#10094;</button>
 <div class="Feedback-container" #feedbackContainer>
