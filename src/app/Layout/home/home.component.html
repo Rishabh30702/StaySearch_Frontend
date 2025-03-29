@@ -31,11 +31,7 @@
           <li class="nav-item">
             <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUTUS' | translate }}</a>
           </li>
-          <li class="nav-item">
-            <button class="nav-link" (click)="toggleModal()">
-              Login/Signup
-            </button>
-          </li>
+         
           <!-- Search Modal Component -->
           <app-search-modal *ngIf="showModal" [showModal]="showModal" (close)="closeModal()"></app-search-modal>
         </ul>
@@ -46,6 +42,10 @@
           <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
           <input class="langtext form-control shadow-none" type="text" readonly [value]="langText" />
         </div>
+        <div class="auth-container">
+            <button *ngIf="!isLoggedIn" (click)="toggleModal()">Login / Signup</button>
+            <button *ngIf="isLoggedIn" (click)="logout()">Logout</button>
+          </div>
       </div>
     </div>
   </nav>
