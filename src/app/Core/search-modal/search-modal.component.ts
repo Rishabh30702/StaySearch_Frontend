@@ -53,17 +53,20 @@ export class SearchModalComponent implements OnInit {
   ngOnInit(): void {
     console.log('SearchModalComponent initialized');
 
-    // ✅ Delay modal check to avoid slowing down page rendering
+  const isLoggedIn = this.authService.isLoggedIn(); // ✅ Check if user is logged in
+
+  if (!isLoggedIn) {
     setTimeout(() => {
       if (!sessionStorage.getItem('modalShown')) {
         this.showModal = true;
-        // sessionStorage.setItem('modalShown', 'true');
+        sessionStorage.setItem('modalShown', 'true'); // ✅ Store flag so it doesn't show again
         setTimeout(() => {
           this.showForm = true;
-          this.cdr.detectChanges(); // ✅ Prevents Angular from unnecessary UI checks
+          this.cdr.detectChanges(); // ✅ Prevents unnecessary UI checks
         }, 1000);
       }
     }, 500); // ✅ Reduced initial delay for smoother loading
+  }
   }
 
   search(event: Event): void {

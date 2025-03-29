@@ -1095,6 +1095,7 @@ margin-bottom: 30px;
   padding: 10px;
   padding-right: 10px;
 }
+
 /* Flag Wrapper (Ensures Proper Alignment) */
 .flag-wrapper {
   display: flex;
@@ -1115,6 +1116,36 @@ margin-bottom: 30px;
   font-weight: bold;
   color: black;
   text-align: center;
+}
+
+/* Authentication Button Styling */
+.auth-container {
+  margin-left: 1vh;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1vh;
+}
+
+/* Login / Logout Button */
+.auth-container button {
+  padding: 8px 16px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  outline: none;
+}
+
+/* Hover Effect */
+.auth-container button:hover {
+  background: #FFD700;
+  color: black;
+  border-color: #FFD700;
+  transform: scale(1.05);
 }
 
 
