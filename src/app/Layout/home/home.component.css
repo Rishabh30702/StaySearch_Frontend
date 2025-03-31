@@ -86,12 +86,22 @@
     p { font-size: 3vw; } /* Adjusts font size for mobile screens */
 }
 
-  .search-filter-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    position: relative;
+.search-filter-wrapper {
+  position: absolute; /* Make it overlap */
+  bottom: -75px; /* Adjust to move it just below the navbar */
+  left: 50%;
+  transform: translateX(-50%); /* Center it */
+  width: 90%; /* Adjust width for responsiveness */
+  z-index: 999; /* Ensure it appears above content */
 }
+
+.search-filter {
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 
 /* Transparent header styling */
 .Find-Stay {
@@ -103,15 +113,7 @@
     padding-left: 10px;
 }
 
-/* Search filter container */
-.search-filter {
-    background: rgba(255, 255, 255, 0.9); /* Slight transparency for blur effect */
-    border-radius: 10px;
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    align-items: center;
-}
+
 
 
 h4.Find-Stay {
@@ -164,6 +166,7 @@ h4.Find-Stay {
 }
 
 .offer-title {
+  padding-top: 5px;
   font-size: 24px;
   font-weight: 600;
   color: white;
@@ -218,16 +221,24 @@ h4.Find-Stay {
 
  /*Up Tourism heading styled*/
 
+ @font-face {
+  font-family: 'CustomFont';
+  src: url('/custom-font/Blacksword.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
  .text-container {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 60px;
+  font-family: 'CustomFont';
+  font-size: 90px;
+  padding-top: 70px;
   color: white;
   font-weight: bold;
   text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  border-right: 3px solid orange; /* Cursor effect */
+  border-right: 3px solid white; /* Cursor effect */
   animation: typing 7s steps(20, end) infinite, blink 0.6s infinite;
 }
 
@@ -241,16 +252,15 @@ h4.Find-Stay {
 /* Cursor Blinking Effect */
 @keyframes blink {
   0%, 100% { border-color: transparent; }
-  50% { border-color: orange; }
+  50% { border-color: white; }
 }
 
 .heart {
-    color: red;
-    font-size: 60px;
-    position: relative;
-    top: 10px;
+  width: 80px;
+  height: 65px;
+    top: 2px;
     left: 10px;
-    animation: bounce 1s infinite alternate;
+    
 }
 
 @keyframes bounce {
@@ -812,142 +822,6 @@ h4.Find-Stay {
 }
 
 
-
-/*Feedback and Ratings Section   */
-
-h5.heading{
-  text-align: center;
-  color: #570E49;
-font-size: 28px; /* Increased font size */
-font-weight: bold;
-margin-bottom: 30px;
-}
-
-
-.rating {
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  font-weight: bold;
-  color: black;
-  padding: 40px;
-}
-
-.star {
-  color: red; /* Red color for the star */
-  font-size: 18px; /* Slightly larger than text */
-  margin-right: 4px;
-}
-
-.score {
-  font-weight: bold;
-}
-
-.reviews {
-  font-weight: normal;
-  color: black;
-}
-
-
-
-.ratings-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
-  gap: 40px; /* Adjust spacing between columns */
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  padding: 40px;
-  width: 1000px; /* Adjust width as needed */
-}
-
-.rating-column {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.rating-row {
-  display: grid;
-  grid-template-columns: 1fr 120px 30px; /* Label, bar, and value */
-  align-items: center;
-  gap: 10px; /* Space between elements */
-}
-
-.rating-bar {
-  width: 120px;
-  height: 6px;
-  background: #e0e0e0;
-  border-radius: 3px;
-  position: relative;
-}
-
-.fill {
-  height: 100%;
-  background: black;
-  border-radius: 3px;
-}
-
-.rating-value {
-  min-width: 30px;
-  text-align: right;
-}
-
-
-
-
-
-.reviews-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  width: 90%;
-  margin: 20px;
-
-  padding: 20px;
-
-  
-}
-.review {
-  
-  display: flex;
-  gap: 15px;
-  align-items: flex-start;
-  max-width: 100%;
-}
-.profile-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-}
-.review-text {
-  font-size: 14px;
-  color: #333;
-}
-.show-more {
-  color: #0073E6;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-}
-.all-reviews-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 10px 15px;
-  border: 1px solid #000;
-  background-color: #570E49;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  
-  border-radius: 8px;
-}
-
-.all-reviews-btn:hover {
-  background: #8A206B;
-  transform: scale(1.05);
-}
-
-
 /* Search Bar Animation */
 .animated-search {
   background-color: #f8f9fa;
@@ -1159,7 +1033,18 @@ margin-bottom: 30px;
 }
 
 
-/*homepae navbar*/
+
+
+/*Feedback and Ratings Section   */
+
+h5.heading{
+  text-align: center;
+  color: #570E49;
+font-size: 28px; /* Increased font size */
+font-weight: bold;
+margin-bottom: 30px;
+}
+
 
 
 .Feedback-container {

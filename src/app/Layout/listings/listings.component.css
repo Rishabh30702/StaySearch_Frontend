@@ -8,8 +8,10 @@
 
 .filter-container {
   background: #f8f9fa;
-  padding: 5px;
+  padding: 10px;
   height: 100vh;
+  width: auto;
+  
   overflow-y: auto;
 }
 
@@ -95,7 +97,7 @@
 }
 #main-map {
   height: 100vh;  /* Ensure it has a height */
-  width: 100%;
+  width: 115%;
   position: sticky;
   top: 0;
   z-index: 1;
