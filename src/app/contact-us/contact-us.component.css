@@ -74,6 +74,11 @@ textarea {
 }
 
 .info-item {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 100%; /* or a specific width */
+    margin-right: 100px;
+    padding-top: 30px;
     text-align: center;
 }
 
@@ -97,6 +102,7 @@ textarea {
 
 .gallery-container {
     width: 90%;
+    padding: 10px;
     margin: 50px auto;
 }
 
@@ -118,6 +124,7 @@ textarea {
 }
 
 .image-gallery {
+    padding: 5px;
     display: flex;
     align-items: center;
     position: relative;
@@ -126,7 +133,7 @@ textarea {
 
 .gallery {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;

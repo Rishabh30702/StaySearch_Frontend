@@ -9,7 +9,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #571845, #C70039, #FF5733);
+  background: 
+  url("https://uptourism.gov.in/images/footer_bg.png");
+  /* linear-gradient(135deg, #571845, #C70039, #FF5733); */
   background-size: 200% 200%;
   animation: waveEffect 6s infinite ease-in-out;
   padding: 20px 5vw;

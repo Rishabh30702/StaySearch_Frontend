@@ -36,40 +36,11 @@
           <app-search-modal *ngIf="showModal" [showModal]="showModal" (close)="closeModal()"></app-search-modal>
         </ul>
       </div>
-      <div class="language-toggle">
-        <div class="input-container" (click)="toggleLanguage(currentLanguage === 'en' ? 'hi' : 'en')">
-          <img *ngIf="currentLanguage === 'en'" src="ukflag.png" alt="English" class="flag-icon" />
-          <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
-          <input class="langtext form-control shadow-none" type="text" readonly [value]="langText" />
-        </div>
-        <div class="auth-container">
-            <button *ngIf="!isLoggedIn" (click)="toggleModal()">Login / Signup</button>
-            <button *ngIf="isLoggedIn" (click)="logout()">{{'Logout'|translate}}</button>
-          </div>
-      </div>
-    </div>
-  </nav>
-  
 
-
-
-
-
-
-
-<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="uttar-pradesh.jpg" class="d-block w-100 carousel-img" alt="First Slide">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">
-                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <span class="heart">❤️</span></div>
-         
-                <h2 class="fw-bold" style>{{ 'Good people. Good thinking. Good feeling.' |translate }}</h2>
 <!-- Search Bar -->
 <div class="search-filter-wrapper">
     <!-- Transparent Header -->
-    <h4 class="Find-Stay">{{'Find your stay' | translate}}</h4>
+    <!-- <h4 class="Find-Stay">{{'Find your stay' | translate}}</h4> -->
 <div class="search-filter d-flex align-items-center p-2 shadow-sm rounded animated-search">
   
     <!-- Destination -->
@@ -119,7 +90,39 @@
   
   </div>
   </div>
+
+
+
+
+      <div class="language-toggle">
+        <div class="input-container" (click)="toggleLanguage(currentLanguage === 'en' ? 'hi' : 'en')">
+          <img *ngIf="currentLanguage === 'en'" src="ukflag.png" alt="English" class="flag-icon" />
+          <img *ngIf="currentLanguage === 'hi'" src="indflag.png" alt="Hindi" class="flag-icon" />
+          <input class="langtext form-control shadow-none" type="text" readonly [value]="langText" />
+        </div>
+        <div class="auth-container">
+            <button *ngIf="!isLoggedIn" (click)="toggleModal()">Login / Signup</button>
+            <button *ngIf="isLoggedIn" (click)="logout()">{{'Logout'|translate}}</button>
+          </div>
+      </div>
+    </div>
+  </nav>
   
+
+
+
+
+
+
+
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="uttar-pradesh.jpg" class="d-block w-100 carousel-img" alt="First Slide">
+            <div class="carousel-overlay"></div>
+            <div class="carousel-caption">
+                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <img class="heart" src="MDI.png" ></div>
+         
             </div>
         </div>
        
@@ -127,67 +130,8 @@
             <img src="jhansi.jpg" class="d-block w-100 carousel-img" alt="Third Slide">
             <div class="carousel-overlay"></div>
             <div class="carousel-caption">
-                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <span class="heart">❤️</span></div>
-            <h2 class="fw-bold" style>{{ 'Relax. Travel. Repeat.' |translate }}</h2>
-                  
-<!-- Search Bar -->
-<div class="search-filter-wrapper">
-    <!-- Transparent Header -->
-    <h4 class="Find-Stay">{{'Find your stay' | translate}}</h4>
-
-    <!-- Search Bar -->
-    <div class="search-filter d-flex align-items-center p-2 shadow-sm rounded animated-search">
-        
-        <!-- Destination -->
-        <div class="input-group mx-2 animated-input">
-            <span class="input-group-text">
-                <i class="fa fa-map-marker-alt"></i>
-            </span>
-            <input type="text" class="form-control" placeholder="Where to?" [(ngModel)]="searchData.destination">
-        </div>
-
-        <!-- Check-in Date -->
-        <div class="input-group mx-2 animated-input">
-            <span class="input-group-text">
-                <i class="fa fa-calendar-alt"></i>
-            </span>
-            <input type="date" class="form-control" [(ngModel)]="searchData.checkInDate">
-        </div>
-
-        <!-- Check-out Date -->
-        <div class="input-group mx-2 animated-input">
-            <span class="input-group-text">
-                <i class="fa fa-calendar-check"></i>
-            </span>
-            <input type="date" class="form-control" [(ngModel)]="searchData.checkOutDate">
-        </div>
-
-        <!-- Number of Guests -->
-        <div class="input-group mx-2 animated-input">
-            <span class="input-group-text">
-                <i class="fa fa-user"></i>
-            </span>
-            <input type="number" class="form-control" [(ngModel)]="searchData.guests" min="1" placeholder="Guests">
-        </div>
-
-        <!-- Number of Rooms -->
-        <div class="input-group mx-2 animated-input">
-            <span class="input-group-text">
-                <i class="fa fa-bed"></i>
-            </span>
-            <input type="number" class="form-control" [(ngModel)]="searchData.rooms" min="1" placeholder="Rooms">
-        </div>
-
-        <!-- Search Button -->
-        <button class="btn btn-primary mx-2 animated-button" (click)="searchHotels()">
-            <i class="fa fa-search"></i>
-        </button>
-    </div>
-</div>
-
-
-
-
+                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <img class="heart" src="MDI.png" ></div>
+                
         </div>
         </div>
     </div>
@@ -345,8 +289,8 @@
     <div class="offer-card purple">
         <span class="badge">APP EXCLUSIVE</span>
         <div class="offer-content">
-            <h3 class="offer-title">Save up to 45% OFF*</h3>
-            <p class="offer-description">Use Code: <span class="offer-code">EMTSTAY</span></p>
+            <h3 class="offer-title">Hotel JP Palace</h3>
+            <p class="offer-description">Flat 15% off</p>
             <p class="validity">Valid till: 31st Mar, 2025</p>
             <a href="#" class="book-now">Book Now</a>
         </div>
@@ -437,7 +381,7 @@
                 <h3 style="color: #570E49;">{{'Buddh International Circuit' | translate}}</h3>
                 <p>{{'The circuit is located on Yamuna Expressway and is easily accessible from the city....' | translate}}</p>
                 <div class="text-center">
-                    <button class="explore-button" >{{'View More' | translate}}</button>
+                   
                 </div>
             </div>
         </div>
@@ -451,9 +395,7 @@
                 <h3 style="color: #570E49;">{{'Blue World Theme Park' | translate}}</h3>
                 <p>Blue World, one of the biggest theme park, established by 'Blue World Corporation Pvt. Ltd.', is located at 
                     Mandhana - Bithoor Road, just a stone's throw distance from Mandhan Circle, just 22 k.m.</p>
-                <div class="text-center">
-                    <button class="explore-button">{{'View More' | translate}}</button>
-                </div>
+               
             </div>
         </div>
 
@@ -466,7 +408,7 @@
                 <p>It is situated between Sharda dam and canal. It is a beautiful tourist destination with one bamboo hut, one tree house and four Thara huts.
                      Best time to visit Chuka beach is between the month of October and April.</p>
                 <div class="text-center">
-                    <button class="explore-button">{{'View More' |translate}}</button>
+                   
                 </div>
             </div>
         </div>
