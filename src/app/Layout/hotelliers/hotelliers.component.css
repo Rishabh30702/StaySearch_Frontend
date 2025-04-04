@@ -1,0 +1,261 @@
+.full-page-layout {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+  
+  
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    transition: all 0.4s ease;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1;
+  }
+  
+  .sidebar.collapsed {
+    width: 70px;
+  }
+  
+  .sidebar .logo,
+  .sidebar .search-box input,
+  .sidebar .menu li span {
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar.collapsed .logo,
+  .sidebar.collapsed .search-box input,
+  .sidebar.collapsed .menu li span {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  
+  /* Top Bar */
+  .top-bar {
+    background-color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.6s ease;
+  }
+  
+  /* Logo & Toggle */
+  .logo-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    color: #761461;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+  
+  /* Search Box */
+  .search-box {
+    margin: 1rem 0;
+  }
+  
+  .search-box input {
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
+  }
+  
+  /* Menu */
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+  }
+  
+  .menu li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .menu li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .menu li:hover {
+    background-color: #f1e2f5;
+    transform: translateX(5px);
+  }
+  
+  .menu li.active,
+  .menu li:hover {
+    background-color: #761461;
+    color: white;
+  }
+  
+  /* Profile */
+  .profile {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    animation: dropdownFade 0.3s ease-out forwards;
+  }
+  
+  .dropdown button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  /* Cards */
+  .cards {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    flex: 1;
+    min-width: 150px;
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    animation: fadeIn 0.6s ease;
+  }
+  
+  .card h3 {
+    color: gray;
+    font-size: 14px;
+  }
+  
+  .card p {
+    font-size: 22px;
+    color: #761461;
+    font-weight: bold;
+  }
+  
+  /* Section Titles */
+  .section-title {
+    margin-top: 2rem;
+    font-size: 20px;
+    font-weight: bold;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Rooms */
+  .rooms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .room {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    width: calc(25% - 1rem);
+    box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    animation: fadeIn 0.5s ease;
+  }
+  
+  /* Status Section */
+  .status {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  /* Badge & Price */
+  .badge {
+    background-color: green;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  .price {
+    color: #761461;
+    font-weight: bold;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes dropdownFade {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

@@ -23,14 +23,19 @@ export class AppComponent {
   constructor(
     private router: Router,
     private translate: TranslateService) {
-    this.router.events
-    .pipe(filter(event => event instanceof NavigationEnd))
-    .subscribe((event: NavigationEnd) => {
-      console.log('Current Route:', event.url); // Debugging
-      this.isHomePage = event.url === '/' || event.url === '/home'; // Adjust for your homepage
-      this.isAdminPanel = event.url === '/adminAccess/adminPanel';
-    });
-    
+      this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const currentUrl = event.urlAfterRedirects;
+        console.log('Navigated to:', currentUrl);
+
+        // Match routes for admin or hotellier
+        this.isAdminPanel = currentUrl.startsWith('/adminAccess/adminPanel') || currentUrl.startsWith('/hotellier');
+
+        // Home page check
+        this.isHomePage = currentUrl === '/' || currentUrl === '/home';
+      });
+   
     const savedLang = localStorage.getItem('language') || 'hi';
     this.translate.setDefaultLang(savedLang);
     this.translate.use(savedLang);

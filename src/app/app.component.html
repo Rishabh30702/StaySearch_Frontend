@@ -1,5 +1,6 @@
 <app-top-strip *ngIf="!isAdminPanel"></app-top-strip>
 <app-navbar *ngIf="!isHomePage && !isAdminPanel"></app-navbar>
 
-<router-outlet />
+<router-outlet></router-outlet>
+
 <app-footer *ngIf="!isAdminPanel"></app-footer>
