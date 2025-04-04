@@ -7,6 +7,7 @@ import { AboutComponent } from './Layout/about/about.component';
 import { UserProfileComponent } from './Layout/user-profile/user-profile.component';
 import { AdminAccessComponent } from './Layout/admin-access/admin-access.component';
 import { AdminHomeComponent } from './admin-panel/Layout/admin-home/admin-home.component';
+import { HotelliersComponent } from './Layout/hotelliers/hotelliers.component';
 
 
 export const routes: Routes = [
@@ -49,6 +50,11 @@ export const routes: Routes = [
     {
         path: 'adminAccess/adminPanel', 
         component: AdminHomeComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'hotellier', 
+        component: HotelliersComponent,
         pathMatch: 'full'
     }
 

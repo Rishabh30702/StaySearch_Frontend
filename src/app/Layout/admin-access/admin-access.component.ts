@@ -35,6 +35,8 @@ export class AdminAccessComponent {
    
    if(this.selectedRole === 'admin'){
     this.router.navigate(['adminAccess/adminPanel']);
+   }else if(this.selectedRole === 'owner'){
+    this.router.navigate(['hotellier']);
    }
   }
 

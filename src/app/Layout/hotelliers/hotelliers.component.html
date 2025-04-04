@@ -1,0 +1,78 @@
+<div class="full-page-layout">
+<div class="container">
+    <!-- Sidebar -->
+    <div [class.collapsed]="isSidebarCollapsed" class="sidebar">
+      <div class="logo-toggle">
+        <span *ngIf="!isSidebarCollapsed" class="logo">StaySearch</span>
+        <button (click)="toggleSidebar()" class="toggle-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+  
+      <ul class="menu">
+        <li *ngFor="let item of menuItems" 
+            [class.active]="selectedMenu === item.key"
+            (click)="selectMenu(item.key)">
+          <i class="{{ item.icon }}"></i>
+          <span *ngIf="!isSidebarCollapsed">{{ item.label }}</span>
+        </li>
+      </ul>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="top-bar">
+        <span>{{ todayDate }}</span>
+        <div class="profile" (click)="toggleProfileDropdown()">
+          <img src="https://i.pravatar.cc/40" alt="Profile" />
+          <div *ngIf="showDropdown" class="dropdown">
+            <button (click)="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Dashboard -->
+      <div *ngIf="selectedMenu === 'dashboard'" class="fade-in">
+        <div class="cards">
+          <div class="card" *ngFor="let stat of overviewStats">
+            <h3>{{ stat.label }}</h3>
+            <p>{{ stat.value }}</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Rooms -->
+      <div *ngIf="selectedMenu === 'rooms'" class="fade-in">
+        <h2 class="section-title">Rooms</h2>
+        <div class="rooms">
+          <div class="room" *ngFor="let room of rooms">
+            <span *ngIf="room.deal" class="badge">Deals</span>
+            <h4>{{ room.type }}</h4>
+            <p>{{ room.available }}/{{ room.total }}</p>
+            <p class="price">₹{{ room.price }}/day</p>
+          </div>
+        </div>
+  
+        <div class="status">
+          <div class="card">
+            <h3>Room Status</h3>
+            <p>Occupied: {{ roomStatus.occupied }}</p>
+            <p>Available: {{ roomStatus.available }}</p>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Deals -->
+      <div *ngIf="selectedMenu === 'deal'" class="fade-in">
+        <h2 class="section-title">Deals</h2>
+        <p>You can manage and add hotel deals here.</p>
+      </div>
+  
+      <!-- Rates -->
+      <div *ngIf="selectedMenu === 'rate'" class="fade-in">
+        <h2 class="section-title">Rates</h2>
+        <p>Update pricing details for rooms and packages.</p>
+      </div>
+    </div>
+  </div>
+</div>
