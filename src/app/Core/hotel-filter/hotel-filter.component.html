@@ -28,6 +28,15 @@
   </div>
 
   <hr>
+     <!-- Types of Accomodation -->
+  <label class="form-label">Type Of Accomodation</label>
+  <div class="d-flex flex-wrap gap-2">
+    <div *ngFor="let type of typeAccomodation" class="form-check">
+      <input type="checkbox" class="form-check-input custom-checkbox form-group shadow-none" >
+      <label class="form-check-label">{{ type }}</label>
+    </div>
+  </div>
+  <hr>
 
   <!-- Apply Filter Button -->
   <button class="btn btn-primary w-100 mt-3" (click)="applyFilters()">Apply Filters</button>

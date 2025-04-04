@@ -30,6 +30,36 @@
   }
 
 
+
+  .profile-container {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+  }
+  
+  .profile-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .profile-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  
+  
+  
+
+
+
+
+
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
   .carousel {
@@ -1002,12 +1032,33 @@ h4.Find-Stay {
   text-align: center;
 }
 
+.admin{
+  padding: 8px 16px;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  outline: none;
+  margin: 10px;
+}
+
+.admin:hover {
+  background: #FFD700;
+  color: black;
+  border-color: #FFD700;
+  transform: scale(1.05);
+}
+
 /* Authentication Button Styling */
 .auth-container {
   margin-left: 1vh;
   display: flex;
   align-items: center;
-  margin-bottom: 1vh;
+  margin-bottom: 0vh;
 }
 
 /* Login / Logout Button */
