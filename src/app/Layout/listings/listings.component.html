@@ -23,12 +23,12 @@
             <div class="hotel-details">
               <div class="nameAndfav d-flex justify-content-between">
                 <h4>{{ hotel.name }}</h4>
-                <!-- <button class="btn" style="border: none;">
+                <button class="btn" style="border: none;">
                   <i class="fa-heart heart-icon"
                      [ngClass]="{ 'fas': hotel.liked, 'far': !hotel.liked }"
                      (click)="$event.stopPropagation(); toggleLike(hotel)">
                   </i>
-                </button> -->
+                </button> 
               </div>
               <p>{{ getShortDescription(hotel.description) }}</p>
 

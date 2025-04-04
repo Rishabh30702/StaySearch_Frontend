@@ -17,6 +17,7 @@ import { TopStripComponent } from "./Layout/top-strip/top-strip.component";
 })
 export class AppComponent {
   isHomePage = false;
+  isAdminPanel = false;
   title = 'StaySearchFrontend';
   
   constructor(
@@ -27,6 +28,7 @@ export class AppComponent {
     .subscribe((event: NavigationEnd) => {
       console.log('Current Route:', event.url); // Debugging
       this.isHomePage = event.url === '/' || event.url === '/home'; // Adjust for your homepage
+      this.isAdminPanel = event.url === '/adminAccess/adminPanel';
     });
     
     const savedLang = localStorage.getItem('language') || 'hi';

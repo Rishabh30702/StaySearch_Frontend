@@ -18,6 +18,7 @@ export class HotelFilterComponent implements OnInit {
     amenities: {} as { [key: string]: boolean }
   };
   amenitiesList: string[] = ['Wi-Fi', 'Parking', 'Pool', 'Gym'];
+ /*added this*/ typeAccomodation: string[] = ['Private', 'Government'];
   hotels: any[] = [];
 
   constructor(private hotelListingService: HotelListingService) {}
