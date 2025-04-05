@@ -105,11 +105,8 @@
               <img src="7915522.png" alt="Profile" class="profile-icon" />
             </button>
           </div>
-
-          <button class="admin" *ngIf="!isLoggedIn" [routerLink]="'/adminAccess'">admin/hotelowner</button>
         <div class="auth-container">
             <button *ngIf="!isLoggedIn" (click)="toggleModal()">Login / Signup</button>
-            <button *ngIf="isLoggedIn" (click)="logout()">{{'Logout'|translate}}</button>
           </div>
       </div>
     </div>

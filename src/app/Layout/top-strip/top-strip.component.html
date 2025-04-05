@@ -11,8 +11,10 @@
     <span (click)="resizeText('large')">A+</span>
     <button class="fullscreen-btn" (click)="toggleFullscreen()">⛶</button>
   </div>
+ 
   <!-- Right: Social Media Icons -->
   <div class="social-icons">
+    <button class="admin-btn"  [routerLink]="'/adminAccess'">Management</button>
     <a href="https://www.facebook.com" target="_blank">
       <i class="fab fa-facebook"></i>
     </a>

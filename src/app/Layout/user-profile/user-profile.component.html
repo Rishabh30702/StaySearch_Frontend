@@ -3,6 +3,8 @@
   <div class="container">
     <div class="left-content">
       <!-- Hotel Booking Form -->
+
+      <button *ngIf="isLoggedIn" (click)="logout()">{{'Logout'|translate}}</button>
       
 <form class="form">
     <h2>User Profile</h2>
