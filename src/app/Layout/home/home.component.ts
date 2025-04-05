@@ -132,31 +132,6 @@ export class HomeComponent {
       this.feedbackContainer.nativeElement.scrollBy({ left: 300, behavior: 'smooth' });
     }
   }
-  logout() {
-    Swal.fire({
-      title: 'Logout',
-      text: "Are you sure you want to logout?",
-      icon: 'question',
-      showCancelButton: true, // ✅ Adds "No" button
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      confirmButtonColor: "#761461",
-      cancelButtonColor: "red"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.authService.logout();
-        this.isLoggedIn = false; // Update state
-        this.toggleModal() // Redirect to login page
-        this.router.navigate(['/']).then(() => {
-          window.location.reload(); // ✅ Refresh UI
-        });
-      }
-    });
-}
-
-
-
-
-
+ 
 }
 

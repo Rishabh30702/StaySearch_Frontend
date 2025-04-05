@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-top-strip',
+  imports: [RouterModule],
   templateUrl: './top-strip.component.html',
   styleUrls: ['./top-strip.component.css']
 })
