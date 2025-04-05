@@ -224,61 +224,56 @@ export class ListingsComponent implements AfterViewInit, OnInit {
    */
   applyFilter(filters: any): void {
     console.log("Filters received:", filters);
-
+  
     if (!this.hotels || this.hotels.length === 0) {
-        console.warn("⚠️ No hotels available to filter.");
-        this.filteredHotels = [];
-        return;
+      console.warn("⚠️ No hotels available to filter.");
+      this.filteredHotels = [];
+      return;
     }
-
+  
     const maxPrice: number = filters.price ?? Infinity;
-    console.log("🔍 Filtering hotels with price <= ", maxPrice);
-
+    const selectedTypes: string[] = filters.accommodationTypes ?? []; // new line
+  
     this.filteredHotels = this.hotels.filter((hotel: any) => {
-        const withinPriceRange = hotel.price >= 0 && hotel.price <= maxPrice;
-
-        console.log(`🔎 Checking Hotel: ${hotel.name}`);
-        console.log("Hotel Amenities:", hotel.amenities);
-
-        // ✅ Star rating check (Fixed)
-        let matchesStar = true;
-        if (filters.star && Object.keys(filters.star).length > 0) {
-            const selectedStars: number[] = Object.keys(filters.star)
-                .filter((star: string) => filters.star[star])
-                .map((star: string) => Number(star));
-
-            // If no star is selected, allow all hotels
-            matchesStar = selectedStars.length === 0 || selectedStars.some((star: number) => hotel.rating >= star);
+      const withinPriceRange = hotel.price >= 0 && hotel.price <= maxPrice;
+  
+      // ⭐ Star filter
+      let matchesStar = true;
+      if (filters.star && Object.keys(filters.star).length > 0) {
+        const selectedStars: number[] = Object.keys(filters.star)
+          .filter((star: string) => filters.star[star])
+          .map((star: string) => Number(star));
+        matchesStar = selectedStars.length === 0 || selectedStars.some((star: number) => hotel.rating >= star);
+      }
+  
+      // 🧼 Amenities filter
+      let matchesAmenities = true;
+      if (filters.amenities && Object.keys(filters.amenities).length > 0) {
+        const selectedAmenities: string[] = Object.keys(filters.amenities)
+          .filter((a: string) => filters.amenities[a])
+          .map((a: string) => a.toLowerCase().replace(/-/g, ""));
+        if (!Array.isArray(hotel.amenities)) {
+          matchesAmenities = false;
+        } else {
+          const hotelAmenitiesNormalized: string[] = hotel.amenities.map((a: string) =>
+            a.toLowerCase().replace(/-/g, "")
+          );
+          matchesAmenities = selectedAmenities.length === 0 || selectedAmenities.every((a: string) => hotelAmenitiesNormalized.includes(a));
         }
-
-        // ✅ Amenities filter (Fixed)
-        let matchesAmenities = true;
-        if (filters.amenities && Object.keys(filters.amenities).length > 0) {
-            const selectedAmenities: string[] = Object.keys(filters.amenities)
-                .filter((a: string) => filters.amenities[a])
-                .map((a: string) => a.toLowerCase().replace(/-/g, "")); // 🔥 Normalize filter input
-
-            console.log("Selected Amenities (normalized):", selectedAmenities);
-
-            if (!Array.isArray(hotel.amenities)) {
-                console.warn(`🚨 Hotel ${hotel.name} has invalid amenities field!`);
-                matchesAmenities = false;
-            } else {
-                const hotelAmenitiesNormalized: string[] = hotel.amenities.map((a: string) =>
-                    a.toLowerCase().replace(/-/g, "")
-                ); // 🔥 Normalize hotel amenities
-
-                matchesAmenities = selectedAmenities.length === 0 || selectedAmenities.every((a: string) => hotelAmenitiesNormalized.includes(a));
-            }
-
-            console.log(`✅ Hotel ${hotel.name} matches amenities: ${matchesAmenities}`);
+      }
+  
+     // 🏨 Accommodation type filter
+        let matchesAccomodationType = true;
+        if (selectedTypes.length > 0) {
+          matchesAccomodationType = selectedTypes.includes(hotel.accommodationType);
         }
-
-        return withinPriceRange && matchesStar && matchesAmenities;
+          
+      return withinPriceRange && matchesStar && matchesAmenities && matchesAccomodationType;
     });
-
+  
     console.log("✅ Filtered Hotels:", this.filteredHotels);
-}
+  }
+  
 
 }
 
