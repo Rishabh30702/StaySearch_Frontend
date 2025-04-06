@@ -34,12 +34,13 @@ export class AuthService {
 
   getUserProfile(): Observable<any> {
     const token = this.getToken();
+    console.log('📦 Token being sent:', token); // ✅ Log token for debug
   
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
   
-    return this.http.get(`${this.baseUrl}/auth/me`, { headers });
+    return this.http.get(`${this.testUrl}/auth/me`, { headers });
   }
 
 }

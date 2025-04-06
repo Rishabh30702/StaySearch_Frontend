@@ -4,7 +4,8 @@ import { AppComponent } from './app/app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { provideHttpClient, HttpClient } from '@angular/common/http';
+import { provideHttpClient, HttpClient, withInterceptors } from '@angular/common/http';
+import { AuthInterceptor } from './app/Core/Services/AuthService/services/AuthInterceptor';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, "/Language/", ".json"); // ✅ Ensures correct translation path
@@ -16,7 +17,7 @@ const updatedConfig = {
   providers: [
     ...(appConfig.providers ?? []),
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
     ...(TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
