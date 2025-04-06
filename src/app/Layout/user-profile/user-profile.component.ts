@@ -13,9 +13,23 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class UserProfileComponent {
   isLoggedIn = false;
+  userEmail: string = '';
   
-  constructor(private authService:AuthService, private router:Router){
-    this.isLoggedIn = this.authService.isLoggedIn(); 
+  constructor(private authService:AuthService, private router:Router){ }
+
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+
+    if (this.isLoggedIn) {
+      this.authService.getUserProfile().subscribe({
+        next: (data) => {
+          this.userEmail = data.email // depending on your backend
+        },
+        error: (err) => {
+          console.error('Failed to load user profile:', err);
+        }
+      });
+    }
   }
 
   logout() {

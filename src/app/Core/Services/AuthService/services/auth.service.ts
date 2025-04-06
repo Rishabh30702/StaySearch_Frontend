@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class AuthService {
   
   private baseUrl = 'https://staysearchbackend.onrender.com';
+  private testUrl = 'http://localhost:8080'; // Localhost URL for testing
 
   constructor(private http: HttpClient) { }
 
@@ -29,6 +30,16 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getUserProfile(): Observable<any> {
+    const token = this.getToken();
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.get(`${this.baseUrl}/auth/me`, { headers });
   }
 
 }
