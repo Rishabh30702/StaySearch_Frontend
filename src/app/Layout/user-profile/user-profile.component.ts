@@ -32,6 +32,10 @@ export class UserProfileComponent {
           console.error('Failed to load user profile:', err);
           this.isLoading = false; // ✅ Stop loading spinner
           Swal.fire({text: 'Failed to load user profile', icon: 'error'});
+          this.router.navigate(['/']).then(() => {
+            this.authService.logout(); // ✅ Logout user
+            window.location.reload(); // ✅ Refresh UI
+          });
         }
       });
     }
