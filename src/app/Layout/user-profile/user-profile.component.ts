@@ -4,16 +4,18 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
+import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule,TranslateModule, RouterModule],
+  imports: [CommonModule, TranslateModule, RouterModule, SpinnerComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
 export class UserProfileComponent {
   isLoggedIn = false;
   userEmail: string = '';
+   isLoading: boolean = true;
   
   constructor(private authService:AuthService, private router:Router){ }
 
@@ -24,9 +26,12 @@ export class UserProfileComponent {
       this.authService.getUserProfile().subscribe({
         next: (data) => {
           this.userEmail = data.email // depending on your backend
+          this.isLoading = false; // ✅ Stop loading spinner
         },
         error: (err) => {
           console.error('Failed to load user profile:', err);
+          this.isLoading = false; // ✅ Stop loading spinner
+          Swal.fire({text: 'Failed to load user profile', icon: 'error'});
         }
       });
     }
