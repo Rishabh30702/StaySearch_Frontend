@@ -40,7 +40,7 @@ export class AuthService {
       Authorization: `Bearer ${token}`
     });
   
-    return this.http.get(`${this.testUrl}/auth/me`, { headers });
+    return this.http.get(`${this.baseUrl}/auth/me`, { headers });
   }
 
 }
