@@ -7,6 +7,8 @@ import { debounceTime } from 'rxjs/operators';
 import { HotelFilterComponent } from "../../Core/hotel-filter/hotel-filter.component";
 import { HotelListingService } from '../../Core/Services/hotel-listing.service';
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
+import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-listings',
@@ -26,7 +28,8 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     private sanitizer: DomSanitizer, 
     private router: Router,
     private route: ActivatedRoute, 
-    private hotelListingService: HotelListingService
+    private hotelListingService: HotelListingService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -193,10 +196,44 @@ export class ListingsComponent implements AfterViewInit, OnInit {
   
 
   toggleLike(hotel: any): void {
-    setTimeout(() => {
-      hotel.liked = !hotel.liked;
-    });
+    const hotelId = hotel.hotelId;
+    
+    if (!hotelId) {
+      console.error('❌ Hotel ID is missing!');
+      Swal.fire({ text: '❌ Hotel ID is missing!', title: 'Error', icon: 'error' });
+      return;
+    }
+  
+    hotel.loading = true; // loader for this specific hotel item
+  
+    if (hotel.liked) {
+      this.authService.removeFromWishlist(hotelId).subscribe({
+        next: () => {
+          hotel.liked = false;
+          Swal.fire({ text: '❌ Removed from wishlist', title: 'Success', icon: 'success' });
+          hotel.loading = false;
+        },
+        error: (err) => {
+          console.error('Error removing from wishlist:', err);
+          hotel.loading = false;
+        }
+      });
+    } else {
+      this.authService.addToWishlist(hotelId).subscribe({
+        next: () => {
+          hotel.liked = true;
+          Swal.fire({ text: '❤️ Added to wishlist', title: 'Success', icon: 'success' });
+          hotel.loading = false;
+        },
+        error: (err) => {
+          console.error('Error adding to wishlist:', err);
+          hotel.loading = false;
+        }
+      });
+    }
   }
+  
+  
   onHotelClick(hotel: any): void {
     // ✅ Reset filters by clearing query parameters
     this.router.navigate(['listings/overview'], { 

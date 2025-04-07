@@ -21,15 +21,26 @@
 
             <!-- Hotel Details -->
             <div class="hotel-details">
-              <div class="nameAndfav d-flex justify-content-between">
+              <div class="nameAndfav d-flex justify-content-between align-items-center">
                 <h4>{{ hotel.name }}</h4>
-                <button class="btn" style="border: none;">
-                  <i class="fa-heart heart-icon"
-                     [ngClass]="{ 'fas': hotel.liked, 'far': !hotel.liked }"
-                     (click)="$event.stopPropagation(); toggleLike(hotel)">
-                  </i>
-                </button> 
+                <div class="d-flex align-items-center">
+                  <button class="btn p-0" style="border: none;" [disabled]="hotel.loading">
+                    <ng-container *ngIf="!hotel.loading; else loadingTemplate">
+                      <i class="fa-heart heart-icon"
+                         [ngClass]="{
+                           'fas text-danger': hotel.liked,  
+                           'far text-muted': !hotel.liked   
+                         }"
+                         (click)="$event.stopPropagation(); toggleLike(hotel)">
+                      </i>
+                    </ng-container>
+                    <ng-template #loadingTemplate>
+                      <span class="spinner-border spinner-border-sm text-secondary"></span>
+                    </ng-template>
+                  </button>
+                </div>
               </div>
+              
               <p>{{ getShortDescription(hotel.description) }}</p>
 
               <div class="priceAndrating">
