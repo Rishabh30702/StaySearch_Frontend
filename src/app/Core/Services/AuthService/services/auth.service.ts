@@ -96,10 +96,10 @@ export class AuthService {
 
   //get All  users
   getAllUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.testUrl}/auth/allUsers`);
+    return this.http.get<any[]>(`${this.baseUrl}/auth/allUsers`);
   }
   
   deleteUser(userId: number): Observable<any> {
-    return this.http.delete(`${this.testUrl}/auth/delete/${userId}`);
+    return this.http.delete(`${this.baseUrl}/auth/delete/${userId}`);
   }
 }
