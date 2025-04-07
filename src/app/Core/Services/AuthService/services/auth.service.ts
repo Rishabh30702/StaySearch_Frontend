@@ -93,4 +93,13 @@ export class AuthService {
   getWishlist(): Observable<any> {
     return this.http.get(`${this.baseUrl}/auth/wishlist`, this.getAuthHeaders());
   }
+
+  //get All  users
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.testUrl}/auth/allUsers`);
+  }
+  
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(`${this.testUrl}/auth/delete/${userId}`);
+  }
 }

@@ -1,152 +1,99 @@
 <!-- admin-sidebar.component.html -->
+<app-spinner [isLoading]="isLoading"></app-spinner>
 <div class="admin-container">
-    <aside class="sidebar" [class.collapsed]="isCollapsed">
-      <div class="logo">
-        <span *ngIf="!isCollapsed" class="big-logo">Admin</span>
-        <span *ngIf="isCollapsed" class="small-logo">SA</span>
-      </div>
-      <ul class="nav-list">
-        <li 
-    (click)="switchView('dashboard')"> 
-    <i class="fas fa-home"></i>
-    <span *ngIf="!isCollapsed">Dashboard</span>
-        </li>
+  <aside class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="logo">
+      <span *ngIf="!isCollapsed" class="big-logo">Admin</span>
+      <span *ngIf="isCollapsed" class="small-logo">SA</span>
+    </div>
+    <ul class="nav-list">
+      <li (click)="switchView('dashboard')">
+        <i class="fas fa-home"></i>
+        <span *ngIf="!isCollapsed">Dashboard</span>
+      </li>
 
-        <li 
-        (click)="switchView('users')"> 
+      <li (click)="switchView('users')">
         <i class="fas fa-users"></i>
         <span *ngIf="!isCollapsed">Users</span>
-            </li>
+      </li>
 
-            <li 
-            (click)="switchView('hotels')"> 
-            <i class="fas fa-bed"></i>
-            <span *ngIf="!isCollapsed">Hotels Management</span>
-                </li>
+      <li (click)="switchView('hotels')">
+        <i class="fas fa-bed"></i>
+        <span *ngIf="!isCollapsed">Hotels Management</span>
+      </li>
 
-                <li 
-                (click)="switchView('content')"> 
-                <i class="fas fa-file-alt"></i>
-                <span *ngIf="!isCollapsed">Content Management</span>
-                    </li>
+      <li (click)="switchView('content')">
+        <i class="fas fa-file-alt"></i>
+        <span *ngIf="!isCollapsed">Content Management</span>
+      </li>
 
-                    <li 
-                    (click)="switchView('platform')"> 
-                    <i class="fas fa-eye"></i>
-                    <span *ngIf="!isCollapsed">Platform Moderation</span>
-                        </li>
+      <li (click)="switchView('platform')">
+        <i class="fas fa-eye"></i>
+        <span *ngIf="!isCollapsed">Platform Moderation</span>
+      </li>
 
-                        <li 
-                        (click)="switchView('security')"> 
-                        <i class="fas fa-shield-alt"></i>
-                        <span *ngIf="!isCollapsed">Security and Access Controls</span>
-                            </li>
+      <li (click)="switchView('security')">
+        <i class="fas fa-shield-alt"></i>
+        <span *ngIf="!isCollapsed">Security and Access Controls</span>
+      </li>
 
-                            <li 
-                            (click)="switchView('plaform-content')"> 
-                            <i class="fas fa-sync"></i>
-                            <span *ngIf="!isCollapsed">Platform Content Updates</span>
-                                </li>
+      <li (click)="switchView('plaform-content')">
+        <i class="fas fa-sync"></i>
+        <span *ngIf="!isCollapsed">Platform Content Updates</span>
+      </li>
 
-                                <li 
-                                (click)="switchView('configuration')"> 
-                                <i class="fas fa-cogs"></i>
-                                <span *ngIf="!isCollapsed">Configuration Settings</span>
-                                    </li>
+      <li (click)="switchView('configuration')">
+        <i class="fas fa-cogs"></i>
+        <span *ngIf="!isCollapsed">Configuration Settings</span>
+      </li>
+    </ul>
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+  </aside>
 
-                                  
-      </ul>
-      <button class="toggle-btn" (click)="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-      </button>
-    </aside>
+  <main class="dashboard-content">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <h1 class="dashboard-title">Platform Overview</h1>
+      </div>
+
+      <div class="top-bar-right">
+        <button class="icon-btn">
+          <i class="fas fa-bell"></i>
+        </button>
+        <button class="icon-btn">
+          <i class="fas fa-user-circle"></i>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="activeView === 'users'" class="user-section">
+
+      <h2 class="dashboard-title">Registered Users</h2>
     
-    <main class="dashboard-content">
-        <div class="top-bar">
-            <div class="top-bar-left"><h1 class="dashboard-title">Platform Overview</h1></div>
-            
-            <div class="top-bar-right">
-              <button class="icon-btn">
-                <i class="fas fa-bell"></i>
-              </button>
-              <button class="icon-btn">
-                <i class="fas fa-user-circle"></i>
-              </button>
-            </div>
-          </div>
+      <div class="user-list-container">
+        <div class="user-card" *ngFor="let user of paginatedUsers">
+          <span class="user-info">{{ user.username }}</span>
+          <button class="btn btn-danger" (click)="deleteUser(user.id)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    
+      <div class="pagination-controls mt-3">
+        <button class="btn btn-outline-primary me-2" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+        <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
+        <button class="btn btn-outline-primary ms-2" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+      </div>
+    
+    </div>
 
-          <div *ngIf="activeView === 'dashboard'">
-
-            <div class="dashboard-grid">
-                <!-- Total Visitors -->
-                <div class="dashboard-card">
-                  <i class="fas fa-users icon blue"></i>
-                  <div class="info">
-                    <h2>Total Visitors</h2>
-                    <p>154,200</p>
-                  </div>
-                </div>
-            
-                <!-- Bookings -->
-                <div class="dashboard-card">
-                  <i class="fas fa-suitcase-rolling icon green"></i>
-                  <div class="info">
-                    <h2>Bookings</h2>
-                    <p>3,680 this month</p>
-                  </div>
-                </div>
-            
-                <!-- Hotels & Stays -->
-                <div class="dashboard-card">
-                  <i class="fas fa-hotel icon yellow"></i>
-                  <div class="info">
-                    <h2>Registered Hotels</h2>
-                    <p>720 listings</p>
-                  </div>
-                </div>
-            
-                <!-- Content Approvals -->
-                <div class="dashboard-card">
-                  <i class="fas fa-file-alt icon purple"></i>
-                  <div class="info">
-                    <h2>Pending Approvals</h2>
-                    <p>48 content items</p>
-                  </div>
-                </div>
-            
-                <!-- Platform Moderation -->
-                <div class="dashboard-card">
-                  <i class="fas fa-gavel icon red"></i>
-                  <div class="info">
-                    <h2>Moderation Reports</h2>
-                    <p>12 flagged users</p>
-                  </div>
-                </div>
-            
-                <!-- Access Controls -->
-                <div class="dashboard-card">
-                  <i class="fas fa-user-shield icon gray"></i>
-                  <div class="info">
-                    <h2>Access Controls</h2>
-                    <p>5 admin roles</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-
-          <div *ngIf="activeView === 'content'">Content Management</div>
-          <div *ngIf="activeView === 'hotels'">Hotels Management</div>
-          <div *ngIf="activeView === 'users'">Users</div>
-          <div *ngIf="activeView === 'platform'">Platform Moderation</div>
-          <div *ngIf="activeView === 'security'">Security and Access Controls</div>
-          <div *ngIf="activeView === 'plaform-content'">Platform Content Updates</div>
-          <div *ngIf="activeView === 'configuration'">Configuration Settings</div>
-        
-      
-        
-      </main>
-      
+    <div *ngIf="activeView === 'content'">Content Management</div>
+    <div *ngIf="activeView === 'hotels'">Hotels Management</div>
+    <div *ngIf="activeView === 'platform'">Platform Moderation</div>
+    <div *ngIf="activeView === 'security'">Security and Access Controls</div>
+    <div *ngIf="activeView === 'plaform-content'">Platform Content Updates</div>
+    <div *ngIf="activeView === 'configuration'">Configuration Settings</div>
+  </main>
 </div>
-      
