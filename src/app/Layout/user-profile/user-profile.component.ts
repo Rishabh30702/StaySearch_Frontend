@@ -5,10 +5,11 @@ import { AuthService } from '../../Core/Services/AuthService/services/auth.servi
 import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
+import { FormsModule } from '@angular/forms'; 
 
 @Component({
   selector: 'app-user-profile',
-  imports: [CommonModule, TranslateModule, RouterModule, SpinnerComponent],
+  imports: [CommonModule, TranslateModule, RouterModule, SpinnerComponent,FormsModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -16,7 +17,13 @@ export class UserProfileComponent {
   isLoggedIn = false;
   userEmail: string = '';
    isLoading: boolean = true;
+
+   fullName: string = '';
+   phoneNumber: string = '';
   
+   oldPassword: string = '';
+   newPassword: string = '';
+
   constructor(private authService:AuthService, private router:Router){ }
 
   ngOnInit(): void {
@@ -26,6 +33,8 @@ export class UserProfileComponent {
       this.authService.getUserProfile().subscribe({
         next: (data) => {
           this.userEmail = data.email // depending on your backend
+          this.fullName = data.fullName;
+          this.phoneNumber = data.phoneNumber;
           this.isLoading = false; // ✅ Stop loading spinner
         },
         error: (err) => {
@@ -61,4 +70,66 @@ export class UserProfileComponent {
       }
     });
 }
+
+updateProfile() {
+  this.isLoading = true
+  const payload = {
+    fullname: this.fullName,
+    phonenumber: this.phoneNumber
+  };
+
+  this.authService.updateUserProfile(payload).subscribe({
+    next: (response) => {
+      console.log('Profile updated successfully:', response);
+      Swal.fire({
+        title: 'Success',
+        text: 'Profile updated successfully',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      this.isLoading = false
+    },
+    error: (error) => {
+      console.error('Error updating profile:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Failed to update profile',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      this.isLoading = false
+    }
+  });
+}
+
+updatePassword() {
+  this.isLoading = true;
+
+  if (this.oldPassword && this.newPassword) {
+    this.authService.updatePassword(this.oldPassword, this.newPassword).subscribe({
+      next: (res) => {
+        Swal.fire({ text: res.message, icon: 'success' });
+        this.oldPassword = '';
+        this.newPassword = '';
+        this.isLoading = false;
+      },
+      error: (err) => {
+        let errorMessage = 'Failed to update password.';
+
+        if (typeof err.error === 'string') {
+          errorMessage = err.error;
+        } else if (err.error?.message) {
+          errorMessage = err.error.message;
+        }
+
+        Swal.fire({ text: errorMessage, icon: 'error' });
+        this.isLoading = false;
+      }
+    });
+  } else {
+    Swal.fire({ text: 'Please fill in both password fields.', icon: 'warning' });
+    this.isLoading = false;
+  }
+}
+
 }

@@ -43,4 +43,29 @@ export class AuthService {
     return this.http.get(`${this.baseUrl}/auth/me`, { headers });
   }
 
+  //Update the data in the user-profile
+  updateUserProfile(updatedData: { fullname: string; phonenumber: string }): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    // Observe full HTTP response
+    return this.http.post(`${this.baseUrl}/auth/me/update`, updatedData, {
+      headers,
+      observe: 'response'  // 👈 THIS IS IMPORTANT
+    });
+  }
+
+  updatePassword(oldPassword: string, newPassword: string): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    return this.http.post(`${this.baseUrl}/auth/me/password`, {
+      oldPassword,
+      newPassword
+    }, { headers });
+  }
 }
