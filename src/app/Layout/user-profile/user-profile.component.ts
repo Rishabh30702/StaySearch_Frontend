@@ -24,26 +24,39 @@ export class UserProfileComponent {
    oldPassword: string = '';
    newPassword: string = '';
 
+   wishlist: any[] = [];
+
   constructor(private authService:AuthService, private router:Router){ }
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
-
+  
     if (this.isLoggedIn) {
       this.authService.getUserProfile().subscribe({
         next: (data) => {
-          this.userEmail = data.email // depending on your backend
+          this.userEmail = data.email;
           this.fullName = data.fullName;
           this.phoneNumber = data.phoneNumber;
-          this.isLoading = false; // ✅ Stop loading spinner
+  
+          // ✅ Load wishlist
+          this.authService.getWishlist().subscribe({
+            next: (wishlistData) => {
+              this.wishlist = wishlistData;
+              this.isLoading = false;
+            },
+            error: () => {
+              Swal.fire({text: 'Failed to load wishlist', icon: 'error'});
+              this.isLoading = false;
+            }
+          });
         },
         error: (err) => {
           console.error('Failed to load user profile:', err);
-          this.isLoading = false; // ✅ Stop loading spinner
+          this.isLoading = false;
           Swal.fire({text: 'Failed to load user profile', icon: 'error'});
           this.router.navigate(['/']).then(() => {
-            this.authService.logout(); // ✅ Logout user
-            window.location.reload(); // ✅ Refresh UI
+            this.authService.logout();
+            window.location.reload();
           });
         }
       });
@@ -131,5 +144,37 @@ updatePassword() {
     this.isLoading = false;
   }
 }
+
+goToOverview(hotelId: string) {
+  this.router.navigate(['/listings/overview'], { queryParams: { hotelId } });
+}
+
+removeFromWishlist(hotelId: any, event: MouseEvent) {
+  event.stopPropagation(); // prevent navigation
+  Swal.fire({
+    title: 'Remove from Wishlist?',
+    text: 'Do you want to remove this hotel from your wishlist?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#761461',
+    cancelButtonColor: '#aaa',
+    confirmButtonText: 'Yes, remove it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.authService.removeFromWishlist(hotelId).subscribe({
+        next: () => {
+          // 👇 Important: create a new array reference
+          this.wishlist = this.wishlist.filter(item => item.hotelId !== hotelId);
+          Swal.fire('Removed!', 'Hotel removed from your wishlist.', 'success');
+        },
+        error: (err) => {
+          console.error('Failed to remove from wishlist:', err);
+          Swal.fire('Error', 'Failed to remove hotel. Try again.', 'error');
+        }
+      });
+    }
+  });
+}
+
 
 }

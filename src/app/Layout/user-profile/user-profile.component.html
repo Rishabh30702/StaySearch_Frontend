@@ -61,7 +61,7 @@
     
     <div class="right-sidebar">
        <!-- User Feedback Card -->
-  <div class="card">
+  <!-- <div class="card">
     <h3>⭐ User Feedbacks</h3>
     <div class="feedback">
       <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
@@ -87,35 +87,24 @@
       <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
      
     </div>
-  </div>
+  </div> -->
 
   <!-- Wishlist Card -->
-  <div class="card">
+  <div class="wishlist-card">
     <h3>📌 Wishlist</h3>
-    <ul>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-      <li>🏨 Ocean View Resort</li>
-      <li>🏨 Paradise Hotel</li>
-
+    <ul *ngIf="wishlist.length > 0; else noWishlist">
+      <li *ngFor="let hotel of wishlist">
+        <span (click)="goToOverview(hotel.hotelId)" class="hotel-name">
+          🏨 {{ hotel.name }}
+        </span>
+        <button class="delete-btn" (click)="removeFromWishlist(hotel.hotelId, $event)">
+          ❌
+        </button>
+      </li>
     </ul>
+    <ng-template #noWishlist>
+      <p>No hotels in your wishlist.</p>
+    </ng-template>
   </div>
+  
   </div>
