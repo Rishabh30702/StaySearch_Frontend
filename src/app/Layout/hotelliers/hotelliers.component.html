@@ -1,5 +1,5 @@
 <div class="full-page-layout">
-<div class="container">
+  <div class="container">
     <!-- Sidebar -->
     <div [class.collapsed]="isSidebarCollapsed" class="sidebar">
       <div class="logo-toggle">
@@ -8,7 +8,7 @@
           <i class="fas fa-bars"></i>
         </button>
       </div>
-  
+
       <ul class="menu">
         <li *ngFor="let item of menuItems" 
             [class.active]="selectedMenu === item.key"
@@ -18,7 +18,7 @@
         </li>
       </ul>
     </div>
-  
+
     <!-- Main Content -->
     <div class="main-content">
       <div class="top-bar">
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-  
+
       <!-- Dashboard -->
       <div *ngIf="selectedMenu === 'dashboard'" class="fade-in">
         <div class="cards">
@@ -40,39 +40,119 @@
           </div>
         </div>
       </div>
+
+<!-- Rooms -->
+<div *ngIf="selectedMenu === 'rooms'" class="fade-in">
+  <h2 class="section-title">Room Management</h2>
+
+  <!-- Add Room Toggle -->
+  <button (click)="showAddRoomForm = !showAddRoomForm" class="add-room-btn">
+    {{ showAddRoomForm ? 'Cancel' : '➕ Add New Room' }}
+  </button>
+
+  <!-- Add Room Form -->
+  <div *ngIf="showAddRoomForm" class="add-room-form">
+    <h3>Add Room Details</h3>
+
+    <input type="text" [(ngModel)]="newRoom.name" placeholder="Room Name (e.g. Executive Deluxe)" />
+    <input type="number" [(ngModel)]="newRoom.total" placeholder="Total Rooms" min="1" />
+    <input type="number" [(ngModel)]="newRoom.available" placeholder="Available Rooms" min="0" />
+    <input type="number" [(ngModel)]="newRoom.price" placeholder="Price per Day (₹)" min="1" />
+    <!-- For newRoom -->
+<label>Description</label>
+<textarea [(ngModel)]="newRoom.description" name="roomDesc"></textarea>
+
+
+
+    <label class="deal-label">
+      <input type="checkbox" [(ngModel)]="newRoom.deal" />
+      Deal Available
+    </label>
+
+    <!-- Image Upload -->
+    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+
+    <button (click)="addRoom()" class="submit-btn">✅ Add Room</button>
+  </div>
+
+  <!-- Room Cards -->
+  <div class="rooms">
+    <div class="room" *ngFor="let room of rooms">
+      <span *ngIf="room.deal" class="badge">DEAL</span>
+      <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
+      <h4>{{ room.name }}</h4>
+      <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
+      <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
+      <p *ngIf="room.description"><strong>Description:</strong> {{ room.description }}</p>
+    </div>
+  </div>
+
+  <!-- Room Status Summary -->
+  <div class="status">
+    <div class="card">
+      <h3>Room Status</h3>
+      <p><strong>Occupied:</strong> {{ roomStatus.occupied }}</p>
+      <p><strong>Available:</strong> {{ roomStatus.available }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Deals -->
+<div *ngIf="selectedMenu === 'deal'" class="fade-in">
+  <h2 class="section-title">Deals</h2>
+  <button (click)="toggleDealForm()" class="create-deal-btn">+ Create New Deal</button>
+
+  <div *ngIf="showDealForm" class="deal-form">
+    <input [(ngModel)]="newDeal.name" placeholder="Room Name" />
+    <input type="number" [(ngModel)]="newDeal.price" placeholder="Price" />
+    <input type="number" [(ngModel)]="newDeal.total" placeholder="Total Rooms" />
+    <input type="number" [(ngModel)]="newDeal.available" placeholder="Available Rooms" />
+
+<!-- For newDeal -->
+<label>Description</label>
+<textarea [(ngModel)]="newDeal.description" name="dealDesc"></textarea>
+    <button (click)="createDeal()">Add Deal</button>
+  </div>
   
-      <!-- Rooms -->
-      <div *ngIf="selectedMenu === 'rooms'" class="fade-in">
-        <h2 class="section-title">Rooms</h2>
-        <div class="rooms">
-          <div class="room" *ngFor="let room of rooms">
-            <span *ngIf="room.deal" class="badge">Deals</span>
-            <h4>{{ room.type }}</h4>
-            <p>{{ room.available }}/{{ room.total }}</p>
-            <p class="price">₹{{ room.price }}/day</p>
-          </div>
-        </div>
-  
-        <div class="status">
-          <div class="card">
-            <h3>Room Status</h3>
-            <p>Occupied: {{ roomStatus.occupied }}</p>
-            <p>Available: {{ roomStatus.available }}</p>
-          </div>
-        </div>
+<!-- Deal Cards -->
+<div class="rooms">
+  <div class="room" *ngFor="let room of filteredDeals">
+    <span class="badge">Deal</span>
+    <h4>{{ room.name }}</h4>
+    <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
+    <p class="price"><strong>Special Price:</strong> ₹{{ room.price }}/day</p>
+    <p *ngIf="room.description"><strong>Description:</strong> {{ room.description }}</p>
+  </div>
+</div>
+</div>
+
+<!-- Rates -->
+<div *ngIf="selectedMenu === 'rate'" class="fade-in">
+  <h2 class="section-title">Rates</h2>
+  <div class="rooms">
+    <div class="room" *ngFor="let room of rooms; let i = index">
+      <h4>{{ room.name }}</h4>
+
+      <div *ngIf="editMode && selectedRoomIndex === i">
+        <input
+          type="number"
+          [(ngModel)]="updatedPrice"
+          min="0"
+          placeholder="Enter new price"
+        />
+        <button (click)="saveRate(i)">Save</button>
+        <button (click)="cancelEdit()">Cancel</button>
       </div>
-  
-      <!-- Deals -->
-      <div *ngIf="selectedMenu === 'deal'" class="fade-in">
-        <h2 class="section-title">Deals</h2>
-        <p>You can manage and add hotel deals here.</p>
+
+      <div *ngIf="!(editMode && selectedRoomIndex === i)">
+        <p>Current Price: ₹{{ room.price }}/day</p>
+        <button (click)="enableEdit(i, room.price)">Edit</button>
       </div>
-  
-      <!-- Rates -->
-      <div *ngIf="selectedMenu === 'rate'" class="fade-in">
-        <h2 class="section-title">Rates</h2>
-        <p>Update pricing details for rooms and packages.</p>
-      </div>
+    </div>
+  </div>
+</div>
+
+
     </div>
   </div>
 </div>
