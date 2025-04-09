@@ -10,9 +10,7 @@
       </div>
 
       <ul class="menu">
-        <li *ngFor="let item of menuItems" 
-            [class.active]="selectedMenu === item.key"
-            (click)="selectMenu(item.key)">
+        <li *ngFor="let item of menuItems" [class.active]="selectedMenu === item.key" (click)="selectMenu(item.key)">
           <i class="{{ item.icon }}"></i>
           <span *ngIf="!isSidebarCollapsed">{{ item.label }}</span>
         </li>
@@ -41,118 +39,186 @@
         </div>
       </div>
 
-<!-- Rooms -->
-<div *ngIf="selectedMenu === 'rooms'" class="fade-in">
-  <h2 class="section-title">Room Management</h2>
+      <!-- Rooms -->
+      <div *ngIf="selectedMenu === 'rooms'" class="fade-in">
+        <h2 class="section-title">Room Management</h2>
 
-  <!-- Add Room Toggle -->
-  <button (click)="showAddRoomForm = !showAddRoomForm" class="add-room-btn">
-    {{ showAddRoomForm ? 'Cancel' : '➕ Add New Room' }}
-  </button>
+        <!-- Add Room Toggle -->
+        <button (click)="showAddRoomForm = !showAddRoomForm" class="add-room-btn">
+          {{ showAddRoomForm ? 'Cancel' : '➕ Add New Room' }}
+        </button>
 
-  <!-- Add Room Form -->
-  <div *ngIf="showAddRoomForm" class="add-room-form">
-    <h3>Add Room Details</h3>
+        <!-- Add Room Form -->
+        <div *ngIf="showAddRoomForm" class="add-room-form">
+          <h3>Add Room Details</h3>
 
-    <input type="text" [(ngModel)]="newRoom.name" placeholder="Room Name (e.g. Executive Deluxe)" />
-    <input type="number" [(ngModel)]="newRoom.total" placeholder="Total Rooms" min="1" />
-    <input type="number" [(ngModel)]="newRoom.available" placeholder="Available Rooms" min="0" />
-    <input type="number" [(ngModel)]="newRoom.price" placeholder="Price per Day (₹)" min="1" />
-    <!-- For newRoom -->
-<label>Description</label>
-<textarea [(ngModel)]="newRoom.description" name="roomDesc"></textarea>
+          <input type="text" [(ngModel)]="newRoom.name" placeholder="Room Name (e.g. Executive Deluxe)" />
+          <input type="number" [(ngModel)]="newRoom.total" placeholder="Total Rooms" min="1" />
+          <input type="number" [(ngModel)]="newRoom.available" placeholder="Available Rooms" min="0" />
+          <input type="number" [(ngModel)]="newRoom.price" placeholder="Price per Day (₹)" min="1" />
+          <!-- For newRoom -->
+          <label>Description</label>
+          <textarea [(ngModel)]="newRoom.description" name="roomDesc"></textarea>
 
 
 
-    <label class="deal-label">
-      <input type="checkbox" [(ngModel)]="newRoom.deal" />
-      Deal Available
-    </label>
+          <label class="deal-label">
+            <input type="checkbox" [(ngModel)]="newRoom.deal" />
+            Deal Available
+          </label>
 
-    <!-- Image Upload -->
-    <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+          <!-- Image Upload -->
+          <input type="file" (change)="onFileSelected($event)" accept="image/*" />
 
-    <button (click)="addRoom()" class="submit-btn">✅ Add Room</button>
-  </div>
+          <button (click)="addRoom()" class="submit-btn">✅ Add Room</button>
+        </div>
 
-  <!-- Room Cards -->
-  <div class="rooms">
-    <div class="room" *ngFor="let room of rooms">
-      <span *ngIf="room.deal" class="badge">DEAL</span>
-      <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
-      <h4>{{ room.name }}</h4>
-      <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
-      <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
-      <p *ngIf="room.description"><strong>Description:</strong> {{ room.description }}</p>
-    </div>
-  </div>
+        <!-- Room Cards -->
+        <div class="rooms">
+          <div class="room" *ngFor="let room of rooms; let i = index">
+            <span *ngIf="room.deal" class="badge">DEAL</span>
+            <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
 
-  <!-- Room Status Summary -->
-  <div class="status">
-    <div class="card">
-      <h3>Room Status</h3>
-      <p><strong>Occupied:</strong> {{ roomStatus.occupied }}</p>
-      <p><strong>Available:</strong> {{ roomStatus.available }}</p>
-    </div>
-  </div>
-</div>
+            <h4>{{ room.name }}</h4>
+            <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
+            <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
 
-<!-- Deals -->
-<div *ngIf="selectedMenu === 'deal'" class="fade-in">
-  <h2 class="section-title">Deals</h2>
-  <button (click)="toggleDealForm()" class="create-deal-btn">+ Create New Deal</button>
+            <!-- Description with toggle -->
+            <div class="description-container" *ngIf="room.description">
+              <p class="description-text" [ngClass]="{ 'clamped': !room.showFullDesc }">
+                <strong>Description:</strong> {{ room.description }}
+              </p>
 
-  <div *ngIf="showDealForm" class="deal-form">
-    <input [(ngModel)]="newDeal.name" placeholder="Room Name" />
-    <input type="number" [(ngModel)]="newDeal.price" placeholder="Price" />
-    <input type="number" [(ngModel)]="newDeal.total" placeholder="Total Rooms" />
-    <input type="number" [(ngModel)]="newDeal.available" placeholder="Available Rooms" />
+              <button *ngIf="room.description && room.description.length > 150" (click)="toggleDescription(i)"
+                class="toggle-btn">
+                {{ room.showFullDesc ? 'Show Less ▲' : 'Show More ▼' }}
+              </button>
+            </div>
 
-<!-- For newDeal -->
-<label>Description</label>
-<textarea [(ngModel)]="newDeal.description" name="dealDesc"></textarea>
-    <button (click)="createDeal()">Add Deal</button>
-  </div>
-  
+            <!-- Buttons -->
+            <div class="room-actions">
+              <button (click)="editRoom(i)" class="edit-btn">✏️ Edit</button>
+              <button *ngIf="room.id !== undefined" (click)="deleteRoom(room.id!)" class="delete-btn">🗑️
+                Delete</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room Status Summary -->
+        <div class="status">
+          <div class="card">
+            <h3>Room Status</h3>
+            <p><strong>Occupied:</strong> {{ roomStatus.occupied }}</p>
+            <p><strong>Available:</strong> {{ roomStatus.available }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deals -->
+      <div *ngIf="selectedMenu === 'deal'" class="fade-in">
+        <h2 class="section-title">Deals</h2>
+        <!-- <button (click)="toggleDealForm()" class="create-deal-btn">+ Create New Deal</button> -->
+
+        <div *ngIf="showDealForm" class="deal-form">
+          <input [(ngModel)]="newDeal.name" placeholder="Room Name" />
+          <input type="number" [(ngModel)]="newDeal.price" placeholder="Price" />
+          <input type="number" [(ngModel)]="newDeal.total" placeholder="Total Rooms" />
+          <input type="number" [(ngModel)]="newDeal.available" placeholder="Available Rooms" />
+
+          <!-- For newDeal -->
+          <label>Description</label>
+          <textarea [(ngModel)]="newDeal.description" name="dealDesc"></textarea>
+          <button (click)="createDeal()">Add Deal</button>
+        </div>
+
 <!-- Deal Cards -->
 <div class="rooms">
-  <div class="room" *ngFor="let room of filteredDeals">
-    <span class="badge">Deal</span>
+  <div class="room" *ngFor="let room of filteredDeals; let i = index">
+    <span class="badge">DEAL</span>
+    <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
+
     <h4>{{ room.name }}</h4>
     <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
-    <p class="price"><strong>Special Price:</strong> ₹{{ room.price }}/day</p>
-    <p *ngIf="room.description"><strong>Description:</strong> {{ room.description }}</p>
-  </div>
-</div>
-</div>
+    <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
 
-<!-- Rates -->
-<div *ngIf="selectedMenu === 'rate'" class="fade-in">
-  <h2 class="section-title">Rates</h2>
-  <div class="rooms">
-    <div class="room" *ngFor="let room of rooms; let i = index">
-      <h4>{{ room.name }}</h4>
+    <!-- Description with toggle -->
+    <div class="description-container" *ngIf="room.description">
+      <p class="description-text" [ngClass]="{ 'clamped': !room.showFullDesc }">
+        <strong>Description:</strong> {{ room.description }}
+      </p>
 
-      <div *ngIf="editMode && selectedRoomIndex === i">
-        <input
-          type="number"
-          [(ngModel)]="updatedPrice"
-          min="0"
-          placeholder="Enter new price"
-        />
-        <button (click)="saveRate(i)">Save</button>
-        <button (click)="cancelEdit()">Cancel</button>
-      </div>
+      <button *ngIf="room.description.length > 150" (click)="toggleDescription(i)"
+        class="toggle-btn">
+        {{ room.showFullDesc ? 'Show Less ▲' : 'Show More ▼' }}
+      </button>
+    </div>
 
-      <div *ngIf="!(editMode && selectedRoomIndex === i)">
-        <p>Current Price: ₹{{ room.price }}/day</p>
-        <button (click)="enableEdit(i, room.price)">Edit</button>
-      </div>
+    <!-- Buttons -->
+    <div class="room-actions">
+      <button (click)="editRoomById(room.id!)" class="edit-btn">✏️ Edit</button>
+      <button (click)="deleteRoom(room.id!)" class="delete-btn">🗑️ Delete</button>
     </div>
   </div>
 </div>
 
+      </div>
 
+      <!-- Rates -->
+      <div *ngIf="selectedMenu === 'rate'" class="fade-in">
+        <h2 class="section-title">Rates</h2>
+        <div class="rooms">
+          <div class="room" *ngFor="let room of rooms; let i = index">
+            <h4>{{ room.name }}</h4>
+
+            <div *ngIf="editMode && selectedRoomIndex === i">
+              <input type="number" [(ngModel)]="updatedPrice" min="0" placeholder="Enter new price" />
+              <button (click)="saveRate(i)">Save</button>
+              <button (click)="cancelEdit()">Cancel</button>
+            </div>
+
+            <div *ngIf="!(editMode && selectedRoomIndex === i)">
+              <p>Current Price: ₹{{ room.price }}/day</p>
+              <button (click)="enableEdit(i, room.price)">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+
+    <!-- =============================================== -->
+    <!-- Edit Room Popup Form -->
+    <!-- =============================================== -->
+    <div *ngIf="editIndex !== null" class="edit-room-popup">
+      <div class="edit-room-modal">
+        <h3>Edit Room Details</h3>
+
+        <input type="text" [(ngModel)]="newRoom.name" placeholder="Room Name" />
+        <input type="number" [(ngModel)]="newRoom.total" placeholder="Total Rooms" />
+        <input type="number" [(ngModel)]="newRoom.available" placeholder="Available Rooms" />
+        <input type="number" [(ngModel)]="newRoom.price" placeholder="Price per Day" />
+
+        <label>Description</label>
+        <textarea [(ngModel)]="newRoom.description" placeholder="Description"></textarea>
+
+        <label>Update Image</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+
+        <img *ngIf="newRoom.imageUrl" [src]="newRoom.imageUrl" alt="Room Image" class="room-image-preview" />
+
+
+        <label>
+          <input type="checkbox" [(ngModel)]="newRoom.deal" />
+          <span style="color: black;">Deal Available</span>
+        </label>
+
+        <div class="modal-buttons">
+          <button (click)="updateRoom()">✅ Update</button>
+          <button (click)="cancelEditRoomPopup()">❌ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </div>

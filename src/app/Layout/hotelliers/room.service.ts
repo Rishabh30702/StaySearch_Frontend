@@ -23,4 +23,17 @@ export class RoomService {
   
     return this.http.post<Room>(`${this.baseURL}/hotels/${hotelId}/rooms`, formData);
   }
+
+  addRoom(hotelId: number, formData: FormData): Observable<Room> {
+    return this.http.post<Room>(`${this.baseURL}/hotels/${hotelId}/rooms`, formData);
+  }
+
+  deleteRoom(roomId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseURL}/rooms/${roomId}`);
+  }
+
+  updateRoom(roomId: number, roomData: FormData): Observable<Room> {
+    return this.http.put<Room>(`${this.baseURL}/rooms/${roomId}`, roomData);
+  }
+
 }
