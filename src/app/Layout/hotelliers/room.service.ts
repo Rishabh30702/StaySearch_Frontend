@@ -8,11 +8,12 @@ import { Room } from './room.modal';
 })
 export class RoomService {
   private testURL = 'http://localhost:8080/api/hotelier';
+  private baseURL = 'https://staysearchbackend.onrender.com/api/hotelier';
 
   constructor(private http: HttpClient) {}
 
   getRooms(hotelId: number): Observable<Room[]> {
-    return this.http.get<Room[]>(`${this.testURL}/hotels/${hotelId}/rooms`);
+    return this.http.get<Room[]>(`${this.baseURL}/hotels/${hotelId}/rooms`);
   }
 
   addRoomWithoutImage(hotelId: number, room: Room): Observable<Room> {
@@ -20,6 +21,6 @@ export class RoomService {
     const roomBlob = new Blob([JSON.stringify(room)], { type: 'application/json' });
     formData.append('room', roomBlob); // sending as RequestPart
   
-    return this.http.post<Room>(`${this.testURL}/hotels/${hotelId}/rooms`, formData);
+    return this.http.post<Room>(`${this.baseURL}/hotels/${hotelId}/rooms`, formData);
   }
 }
