@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RoomService } from './room.service';
 import { Room } from './room.modal';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-hotelliers',
@@ -25,6 +26,8 @@ export class HotelliersComponent implements OnInit {
   rooms: Room[] = [];
   roomStatus = { occupied: 0, available: 0 };
 
+  editIndex: number | null = null;
+
   menuItems = [
     { key: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
@@ -43,8 +46,23 @@ export class HotelliersComponent implements OnInit {
 
   hotelId: number = 1; // Static hotel ID for now
 
-  newDeal: Room = { name: '', price: 0, total: 0, available: 0, deal: true, description: '' };
-  newRoom: Room = { name: '', price: 0, total: 0, available: 0, deal: false, description: '' };
+  newDeal: Room = {
+    name: '',
+    price: 0,
+    total: 0,
+    available: 0,
+    deal: true,
+    description: '',
+    imageUrl: ''
+  };
+  newRoom: Room = {
+    name: '',
+    available: 0,
+    total: 0,
+    price: 0,
+    deal: false,
+    imageUrl: ''
+  };
   
   selectedFile!: File;
 
@@ -89,7 +107,7 @@ export class HotelliersComponent implements OnInit {
         .subscribe({
           next: (addedRoom: Room) => {
             this.rooms.push(addedRoom);
-            this.newDeal = { name: '', price: 0, total: 0, available: 0, deal: true };
+            this.newDeal = { name: '', price: 0, total: 0, available: 0, deal: true, description: '', imageUrl: '' };
             this.showDealForm = false;
             this.selectedFile = undefined!;
             alert('Deal added successfully!');
@@ -131,36 +149,172 @@ export class HotelliersComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
+  toggleDescription(index: number) {
+  this.rooms[index].showFullDesc = !this.rooms[index].showFullDesc;
+}
+
+
+onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  if (input.files && input.files.length > 0) {
+    this.selectedFile = input.files[0];
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.newRoom.imageUrl = reader.result as string; // Data URL
+    };
+    reader.readAsDataURL(this.selectedFile);
   }
+}
+
 
   addRoom() {
-    if (this.newRoom.name && this.newRoom.available >= 0 && this.newRoom.total > 0 && this.newRoom.price > 0) {
-      this.roomService.addRoomWithoutImage(this.hotelId, this.newRoom).subscribe({
+    if (this.newRoom.name && this.newRoom.available >= 0 && this.newRoom.total > 0 && this.newRoom.price > 0 && this.selectedFile) {
+
+      const formData = new FormData();
+      formData.append('room', new Blob([JSON.stringify(this.newRoom)], { type: 'application/json' }));
+      formData.append('imageUrl', this.selectedFile);
+
+      this.roomService.addRoom(this.hotelId, formData).subscribe({
         next: (addedRoom: Room) => {
           this.rooms.push(addedRoom);
-          this.newRoom = { name: '', available: 0, total: 0, price: 0, deal: false };
+          this.newRoom = { name: '', available: 0, total: 0, price: 0, deal: false, imageUrl: '' };
+          this.selectedFile = null!;
           this.showAddRoomForm = false;
           alert('Room added successfully!');
           this.updateStats();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error(err);
           alert('Failed to add room.');
         }
       });
     } else {
-      alert('Please fill all fields correctly!');
+      alert('Please fill all fields and select an image!');
     }
   }
 
+
+  deleteRoom(roomId: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This room will be permanently deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.roomService.deleteRoom(roomId).subscribe({
+          next: () => {
+            this.rooms = this.rooms.filter(r => r.id !== roomId);
+            Swal.fire('Deleted!', 'The room has been deleted.', 'success');
+          },
+          error: (err) => {
+            console.error(err);
+            Swal.fire('Error', 'Failed to delete room.', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  editRoom(index: number) {
+    this.editIndex = index;
+    // You can deep copy the room if you want to isolate it
+    this.newRoom = { ...this.rooms[index] };
+  }
+
+  cancelEditRoomPopup(): void {
+    this.editIndex = null;
+  this.newRoom = {
+    name: '',
+    price: 0,
+    total: 0,
+    available: 0,
+    deal: false,
+    description: '',
+    imageUrl: ''
+  };
+  }
+  
+
+
+  updateRoom() {
+    if (this.newRoom.id === undefined) return;
+  
+    if (
+      this.newRoom.name &&
+      this.newRoom.available >= 0 &&
+      this.newRoom.total > 0 &&
+      this.newRoom.price > 0
+    ) {
+      // Create a shallow copy excluding the preview image URL
+      const roomDataToSend = { ...this.newRoom, imageUrl: null }; // remove base64
+  
+      const formData = new FormData();
+      formData.append(
+        'room',
+        new Blob([JSON.stringify(roomDataToSend)], {
+          type: 'application/json',
+        })
+      );
+  
+      if (this.selectedFile) {
+        formData.append('imageUrl', this.selectedFile);
+      }
+  
+      this.roomService.updateRoom(this.newRoom.id, formData).subscribe({
+        next: (updatedRoom: Room) => {
+          if (this.editIndex !== null) {
+            this.rooms[this.editIndex] = updatedRoom;
+          }
+          this.editIndex = null;
+          this.newRoom = {
+            name: '',
+            price: 0,
+            total: 0,
+            available: 0,
+            deal: false,
+            description: '',
+            imageUrl: '',
+          };
+          this.selectedFile = null!;
+          Swal.fire('Success', 'Room updated successfully!', 'success');
+          this.updateStats();
+        },
+        error: (err: any) => {
+          console.error(err);
+          Swal.fire('Error', 'Failed to update room.', 'error');
+        },
+      });
+    } else {
+      alert('Please fill all fields!');
+    }
+  }
+  
+  //deals crd
+  editRoomById(roomId: number) {
+    const index = this.rooms.findIndex(r => r.id === roomId);
+    if (index !== -1) {
+      this.editRoom(index);
+    }
+  }
+  
+
+
   loadRooms() {
     this.roomService.getRooms(this.hotelId).subscribe((data: Room[]) => {
-      this.rooms = data;
+      this.rooms = data.map(room => ({
+        ...room,
+        showFullDesc: false // 👈 Add this UI field
+      }));
       this.updateStats();
     });
   }
+  
 
   updateStats() {
     const available = this.rooms.reduce((sum, r) => sum + r.available, 0);
