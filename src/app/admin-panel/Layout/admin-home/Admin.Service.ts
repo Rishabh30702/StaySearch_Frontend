@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AdminService {
-  private testUrl = 'http://localhost:8080/auth'; // Adjust if needed
+  // private testUrl = 'http://localhost:8080/auth';
   private baseUrl = 'https://staysearchbackend.onrender.com';
   constructor(private http: HttpClient) {}
 
