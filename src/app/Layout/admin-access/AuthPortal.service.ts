@@ -7,16 +7,16 @@ import { Observable } from 'rxjs';
 })
 export class AuthPortalService {
 
-  private baseUrl = 'https://staging.valliento.tech/api'; // Update this if needed
-  private testUrl = 'http://localhost:8080/auth/';
+  private baseUrl = 'https://staysearchbackend.onrender.com/auth/';
+  // private testUrl = 'http://localhost:8080/auth/';
 
   constructor(private http: HttpClient) { }
 
   registerHotelier(data: any): Observable<any> {
-    return this.http.post(`${this.testUrl}register/hotelier`, data);
+    return this.http.post(`${this.baseUrl}register/hotelier`, data);
   }
 
   loginHotelier(credentials: any): Observable<any> {
-    return this.http.post(`${this.testUrl}login/hotelier`, credentials); // assuming login is same for all roles
+    return this.http.post(`${this.baseUrl}login/hotelier`, credentials); // assuming login is same for all roles
   }
 }
