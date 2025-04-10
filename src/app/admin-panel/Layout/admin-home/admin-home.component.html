@@ -1,4 +1,3 @@
-<!-- admin-sidebar.component.html -->
 <app-spinner [isLoading]="isLoading"></app-spinner>
 <div class="admin-container">
   <aside class="sidebar" [class.collapsed]="isCollapsed">
@@ -11,37 +10,30 @@
         <i class="fas fa-home"></i>
         <span *ngIf="!isCollapsed">Dashboard</span>
       </li>
-
       <li (click)="switchView('users')">
         <i class="fas fa-users"></i>
         <span *ngIf="!isCollapsed">Users</span>
       </li>
-
       <li (click)="switchView('hotels')">
         <i class="fas fa-bed"></i>
         <span *ngIf="!isCollapsed">Hotels Management</span>
       </li>
-
       <li (click)="switchView('content')">
         <i class="fas fa-file-alt"></i>
         <span *ngIf="!isCollapsed">Content Management</span>
       </li>
-
       <li (click)="switchView('platform')">
         <i class="fas fa-eye"></i>
         <span *ngIf="!isCollapsed">Platform Moderation</span>
       </li>
-
       <li (click)="switchView('security')">
         <i class="fas fa-shield-alt"></i>
         <span *ngIf="!isCollapsed">Security and Access Controls</span>
       </li>
-
       <li (click)="switchView('plaform-content')">
         <i class="fas fa-sync"></i>
         <span *ngIf="!isCollapsed">Platform Content Updates</span>
       </li>
-
       <li (click)="switchView('configuration')">
         <i class="fas fa-cogs"></i>
         <span *ngIf="!isCollapsed">Configuration Settings</span>
@@ -68,10 +60,88 @@
       </div>
     </div>
 
-    <div *ngIf="activeView === 'users'" class="user-section">
+<!-- DASHBOARD VIEW WITH STATUS CARDS -->
+<div *ngIf="activeView === 'dashboard'" class="dashboard-section">
 
+  <!-- Approved Hoteliers -->
+  <div class="status-group mb-4">
+    <h2 class="section-heading d-flex justify-content-between align-items-center toggle-header"
+        (click)="toggleGroup('approved')">
+      ✅ Approved Hoteliers
+      <i class="fas transition-icon"
+         [ngClass]="{'fa-chevron-down': showApproved, 'fa-chevron-right': !showApproved}"></i>
+    </h2>
+    <div class="collapse-wrapper" [ngClass]="{'expanded': showApproved}">
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let user of approvedHoteliers">
+          <div class="card shadow-sm border-0 h-100 animate-card">
+            <div class="card-body">
+              <h5 class="card-title text-success fw-bold">{{ user.fullname }}</h5>
+              <p class="card-text mb-1"><strong>Email:</strong> {{ user.username }}</p>
+              <p class="card-text mb-0"><span class="badge bg-success">Approved</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Hoteliers -->
+  <div class="status-group mb-4">
+    <h2 class="section-heading d-flex justify-content-between align-items-center toggle-header"
+        (click)="toggleGroup('pending')">
+      ⏳ Pending Hoteliers
+      <i class="fas transition-icon"
+         [ngClass]="{'fa-chevron-down': showPending, 'fa-chevron-right': !showPending}"></i>
+    </h2>
+    <div class="collapse-wrapper" [ngClass]="{'expanded': showPending}">
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let user of pendingHoteliers">
+          <div class="card shadow-sm border-0 h-100 animate-card">
+            <div class="card-body">
+              <h5 class="card-title text-warning fw-bold">{{ user.fullname }}</h5>
+              <p class="card-text mb-1"><strong>Email:</strong> {{ user.username }}</p>
+              <p class="card-text mb-3"><span class="badge bg-warning text-dark">Pending</span></p>
+              <button class="btn btn-outline-success w-100 mb-2" (click)="approveHotelier(user.id)">Approve</button>
+              <button class="btn btn-outline-danger w-100 mb-2" (click)="rejectHotelier(user.id)">Reject</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rejected Hoteliers -->
+  <div class="status-group mb-4">
+    <h2 class="section-heading d-flex justify-content-between align-items-center toggle-header"
+        (click)="toggleGroup('rejected')">
+      ❌ Rejected Hoteliers
+      <i class="fas transition-icon"
+         [ngClass]="{'fa-chevron-down': showRejected, 'fa-chevron-right': !showRejected}"></i>
+    </h2>
+    <div class="collapse-wrapper" [ngClass]="{'expanded': showRejected}">
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let user of rejectedHoteliers">
+          <div class="card shadow-sm border-0 h-100 animate-card">
+            <div class="card-body">
+              <h5 class="card-title text-danger fw-bold">{{ user.fullname }}</h5>
+              <p class="card-text mb-1"><strong>Email:</strong> {{ user.username }}</p>
+              <p class="card-text mb-3"><span class="badge bg-danger">Rejected</span></p>
+              <button class="btn btn-outline-warning w-100" (click)="makePending(user.id)">Make Pending</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+    <!-- USER VIEW -->
+    <div *ngIf="activeView === 'users'" class="user-section">
       <h2 class="dashboard-title">Registered Users</h2>
-    
       <div class="user-list-container">
         <div class="user-card" *ngFor="let user of paginatedUsers">
           <span class="user-info">{{ user.username }}</span>
@@ -80,20 +150,20 @@
           </button>
         </div>
       </div>
-    
       <div class="pagination-controls mt-3">
         <button class="btn btn-outline-primary me-2" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
         <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
         <button class="btn btn-outline-primary ms-2" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
       </div>
-    
     </div>
 
+    <!-- OTHER SECTIONS -->
     <div *ngIf="activeView === 'content'">Content Management</div>
     <div *ngIf="activeView === 'hotels'">Hotels Management</div>
     <div *ngIf="activeView === 'platform'">Platform Moderation</div>
     <div *ngIf="activeView === 'security'">Security and Access Controls</div>
     <div *ngIf="activeView === 'plaform-content'">Platform Content Updates</div>
     <div *ngIf="activeView === 'configuration'">Configuration Settings</div>
+
   </main>
 </div>
