@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { FeedbackServiceService } from '../../Core/Services/feedback-service.service';
 
 @Component({
   selector: 'app-overview',
@@ -38,7 +39,9 @@ amenities = [
 
 stars = Array(5).fill(0);
   
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  constructor(private route: ActivatedRoute, private http: HttpClient,
+    private feedbackService:FeedbackServiceService
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -179,21 +182,23 @@ rateHotel(rating: number) {
 // Function to submit feedback
 submitFeedback() {
   this.isLoading = true;
+
   if (!this.hotelRating) {
     Swal.fire({ title: 'Warning', text: 'Please give a rating before submitting!', icon: 'warning' });
+    this.isLoading = false;
     return;
   }
 
   if (!this.hotel || !this.hotel.name) {
     Swal.fire({ title: 'Error', text: 'Hotel data is missing. Please try again!', icon: 'error' });
+    this.isLoading = false;
     return;
   }
 
   const selectedAmenities = this.amenities.filter(a => a.selected).map(a => a.name);
 
-  // Prepare feedback data with the dynamically fetched hotel name
   const feedbackData = {
-    hotelName: this.hotel.name, // Using fetched hotel name dynamically
+    hotelName: this.hotel.name,
     likedAmenities: selectedAmenities,
     rating: this.hotelRating,
     description: this.feedbackText
@@ -201,20 +206,18 @@ submitFeedback() {
 
   console.log("Submitting feedback:", feedbackData);
 
-  // Send data to backend
-  this.http.post('https://staysearchbackend.onrender.com/v1/feedbacks/submit', feedbackData).subscribe({
+  this.feedbackService.submitFeedback(feedbackData).subscribe({
     next: (response) => {
       console.log("Feedback submitted successfully!", response);
       Swal.fire({ title: 'Success', text: 'Thank you for your feedback!', icon: 'success' });
 
       this.isFeedbackPopupVisible = false;
-      document.documentElement.style.overflow = ""; // Enable scrolling
-      
+      document.documentElement.style.overflow = "";
+
       // Reset form
       this.hotelRating = 0;
       this.amenities.forEach(a => a.selected = false);
       this.feedbackText = "";
-      this.isFeedbackPopupVisible = false;
       this.isLoading = false;
     },
     error: (error) => {
@@ -224,6 +227,8 @@ submitFeedback() {
     }
   });
 }
+
+
 
 }
 

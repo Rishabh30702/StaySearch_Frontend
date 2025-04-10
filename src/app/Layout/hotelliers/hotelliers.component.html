@@ -183,6 +183,60 @@
           </div>
         </div>
       </div>
+
+
+    <!-- Feedbacks and reviews -->
+    <div *ngIf="selectedMenu === 'feedbacks'" class="fade-in feedback-wrapper">
+      <h2 class="section-title">🌟 Feedback & Reviews</h2>
+    
+      <div class="feedbacks">
+        <div class="feedback-card animate-card" *ngFor="let feedback of feedbacks">
+          <div class="header">
+            <h3>{{ feedback.hotelName }}</h3>
+    
+            
+    
+            <!-- ⭐ Star Rating -->
+            <div class="rating">
+              <ng-container *ngFor="let star of createStarArray(feedback.rating)">
+                <i class="fas fa-star star-icon"></i>
+              </ng-container>
+            </div>
+          </div>
+    
+          <!-- 📝 Feedback Description -->
+           <!-- 👤 User Info -->
+           <div *ngIf="feedback.user">
+            <i class="fa fa-user"></i> user: {{ feedback.user.fullname || feedback.user.username }}
+          </div>
+          <p class="description">"{{ feedback.description || 'No description provided.' }}"</p>
+    
+          <!-- ❤️ Liked Amenities -->
+          <div *ngIf="feedback.likedAmenities?.length">
+            <p class="amenities-label">❤️ Liked Amenities:</p>
+            <div class="amenities">
+              <span class="amenity-tag" *ngFor="let amenity of feedback.likedAmenities">
+                {{ amenity }}
+              </span>
+            </div>
+          </div>
+    
+          <!-- 🕒 Timestamp -->
+          <p class="timestamp">🕒 {{ feedback.createdAt | date: 'medium' }}</p>
+    
+          <!-- 🗑️ Delete Button -->
+          <button (click)="deleteFeedback(feedback.id)" class="btn btn-danger mt-2">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+    
+
     </div>
 
 
