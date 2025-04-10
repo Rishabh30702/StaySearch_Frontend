@@ -68,10 +68,174 @@
       </div>
     </div>
 
+    <div *ngIf="activeView === 'dashboard'">
+
+      <div class="dashboard-grid">
+          <!-- Total Visitors -->
+          <div class="dashboard-card">
+            <i class="fas fa-users icon blue"></i>
+            <div class="info">
+              <h2>Total Visitors</h2>
+              <p>154,200</p>
+            </div>
+          </div>
+      
+          <!-- Bookings -->
+          <div class="dashboard-card">
+            <i class="fas fa-suitcase-rolling icon green"></i>
+            <div class="info">
+              <h2>Bookings</h2>
+              <p>3,680 this month</p>
+            </div>
+          </div>
+      
+          <!-- Hotels & Stays -->
+          <div class="dashboard-card">
+            <i class="fas fa-hotel icon yellow"></i>
+            <div class="info">
+              <h2>Registered Hotels</h2>
+              <p>720 listings</p>
+            </div>
+          </div>
+      
+          <!-- Content Approvals -->
+          <div class="dashboard-card">
+            <i class="fas fa-file-alt icon purple"></i>
+            <div class="info">
+              <h2>Pending Approvals</h2>
+              <p>48 content items</p>
+            </div>
+          </div>
+      
+          <!-- Platform Moderation -->
+          <div class="dashboard-card">
+            <i class="fas fa-gavel icon red"></i>
+            <div class="info">
+              <h2>Moderation Reports</h2>
+              <p>12 flagged users</p>
+            </div>
+          </div>
+      
+          <!-- Access Controls -->
+          <div class="dashboard-card">
+            <i class="fas fa-user-shield icon gray"></i>
+            <div class="info">
+              <h2>Access Controls</h2>
+              <p>5 admin roles</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
     <div *ngIf="activeView === 'users'" class="user-section">
 
       <h2 class="dashboard-title">Registered Users</h2>
+
+      <input
+      type="text"
+      placeholder="Search..."
+      [(ngModel)]="searchTerm"
+      class="search-input"
+    />
     
+    <div class="scrollable-table">
+      <table class="userstb" border="2" cellpadding="8" cellspacing="0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ID</th>
+              <th>Hash#</th>
+              <th>Address</th>
+              <th>Full Name</th>
+              <th>Contact Number</th>
+              <th>id</th>
+              <th>Role</th>
+              <th>Edit</th>
+              <th>Deletion</th>
+            </tr>
+          </thead>
+        
+          <tbody>
+              <tr *ngFor="let row of filteredData()">
+                <td>{{ row.Sno }}</td>
+                <td>{{ row.col1 }}</td>
+                <td>{{ row.col2 }}</td>
+                <td>{{ row.col3 }}</td>
+                <td>{{ row.col4}}</td>
+                <td>{{ row.col5 }}</td>
+                <td>{{ row.id }}</td>
+                <td>{{ row.col7 }}</td>
+                <td><button (click)="showModal = true" class="edit-btn">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <div *ngIf="showModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close-btn" (click)="closeModal()">&times;</span>
+                    <h2>Updation Form</h2>
+                    <form #updateForm="ngForm" (ngSubmit)="onUpdate()">
+                      <label>Full Name</label>
+                      <input
+                        type="text"
+                        [(ngModel)]="updateData.fullName"
+                        #name="ngModel"
+                        name="fullName"
+                        required
+                      />
+                    
+                      <label>Phone Number</label>
+                      <input
+                        type="tel"
+                        [(ngModel)]="updateData.phoneNumber"
+                        name="phoneNumber"
+                        pattern="^[0-9]{10}$"
+                        #phoneNumber="ngModel"
+                        maxlength="10"
+                        required
+                      />
+                      <div *ngIf="phoneNumber.touched && phoneNumber.invalid">
+                        <small *ngIf="phoneNumber.errors?.['required']">Phone number is required</small>
+                        <small *ngIf="phoneNumber.errors?.['pattern']">Enter exactly 10 digits (numbers only)</small>
+                      </div>
+                    
+                      <label>New Password</label>
+                      <input
+                        type="password"
+                        [(ngModel)]="updateData.newPassword"
+                        #pass="ngModel"
+                        name="newPassword"
+                        required
+                      />
+                    
+                      <button
+                        type="submit"
+                        [disabled]="updateForm.invalid"
+                        class="submit-btn"
+                      >
+                        Update
+                      </button>
+                    </form>
+                    
+                  </div>
+                </div>
+              
+              </td>
+                <td> <button (click)="deleteUser(row.id)" class="delete-btn">
+                  <i class="fas fa-trash"></i> Delete
+                </button></td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+    <!--
       <div class="user-list-container">
         <div class="user-card" *ngFor="let user of paginatedUsers">
           <span class="user-info">{{ user.username }}</span>
@@ -85,12 +249,45 @@
         <button class="btn btn-outline-primary me-2" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
         <span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
         <button class="btn btn-outline-primary ms-2" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
-      </div>
+      </div>  -->
     
     </div>
 
     <div *ngIf="activeView === 'content'">Content Management</div>
-    <div *ngIf="activeView === 'hotels'">Hotels Management</div>
+    <div *ngIf="activeView === 'hotels'">Hotels Management
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Hotel Name</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hotel of hotelRegistrations">
+            <td>{{ hotel.id }}</td>
+            <td>{{ hotel.hotelName }}</td>
+            <td>{{ hotel.ownerName }}</td>
+            <td>
+              <span >{{ hotel.status }}</span>
+            </td>
+            <td>
+              <button >Verify</button>
+              <button >Approve</button>
+              <button >Reject</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+
+
+
+    </div>
     <div *ngIf="activeView === 'platform'">Platform Moderation</div>
     <div *ngIf="activeView === 'security'">Security and Access Controls</div>
     <div *ngIf="activeView === 'plaform-content'">Platform Content Updates</div>

@@ -77,6 +77,22 @@ export class AuthService {
       newPassword
     }, { headers });
   }
+  
+
+  // for updating password from admin side not working currently
+  adminUpdatePassword( newPassword: string): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  console.log("working");
+    return this.http.post(`${this.baseUrl}/auth/me/password`, {
+      newPassword
+    }, { headers });
+
+    
+  }
+
   addToWishlist(hotelId: number): Observable<any> {
     const token = localStorage.getItem('token');
   

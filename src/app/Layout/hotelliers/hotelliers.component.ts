@@ -38,7 +38,8 @@ export class HotelliersComponent implements OnInit {
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
     { key: 'deal', label: 'Deal', icon: 'fas fa-tags' },
     { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
-    { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' }
+    { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' },
+    { key: 'hotels', label: 'Hotels', icon: 'fas fa-hotel' }
   ];
 
   overviewStats = [
@@ -68,6 +69,12 @@ export class HotelliersComponent implements OnInit {
     price: 0,
     deal: false,
     imageUrl: ''
+  };
+
+
+  user ={
+    phone: '',
+    email:''
   };
   
   selectedFile!: File;

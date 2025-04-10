@@ -14,6 +14,30 @@
   border-radius: 0; /* No rounded corners */
 }
 
+.profile-container {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.profile-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.profile-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+
+
 /* Logo and UP Tourism Branding */
 .text-container {
   display: flex;
