@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AdminService {
   // private testUrl = 'http://localhost:8080/auth';
-  private baseUrl = 'https://staysearchbackend.onrender.com';
+  private baseUrl = 'https://staysearchbackend.onrender.com/auth';
   constructor(private http: HttpClient) {}
 
   // Approve a hotelier
