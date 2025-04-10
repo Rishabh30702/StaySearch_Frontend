@@ -553,5 +553,97 @@ p.clamped {
 }
 
 
+.feedback-wrapper {
+  padding: 20px;
+  background: white;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #761461;
+  font-weight: bold;
+}
+
+.feedbacks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+.feedback-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feedback-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(118, 20, 97, 0.2);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rating .star-icon {
+  color: gold;
+  margin-left: 2px;
+}
+
+.description {
+  margin: 10px 0;
+  font-style: italic;
+  color: #555;
+}
+
+.amenities-label {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #444;
+}
+
+.amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.amenity-tag {
+  background: #761461;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.timestamp {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #999;
+}
+
+.animate-card {
+  animation: fadeInUp 0.4s ease-in-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+
   
   

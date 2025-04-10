@@ -5,6 +5,8 @@ import { RoomService } from './room.service';
 import { Room } from './room.modal';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { Feedback } from './feedback.modal';
+import { FeedbackService } from './feedback.service';
 
 @Component({
   selector: 'app-hotelliers',
@@ -27,12 +29,16 @@ export class HotelliersComponent implements OnInit {
   roomStatus = { occupied: 0, available: 0 };
 
   editIndex: number | null = null;
+  //Review and Feedbacks
+  feedbacks: Feedback[] = [];
+
 
   menuItems = [
     { key: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
     { key: 'deal', label: 'Deal', icon: 'fas fa-tags' },
     { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
+    { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' }
   ];
 
   overviewStats = [
@@ -66,11 +72,55 @@ export class HotelliersComponent implements OnInit {
   
   selectedFile!: File;
 
-  constructor(private roomService: RoomService, private http: HttpClient) {}
+  constructor(private roomService: RoomService, private http: HttpClient,
+    private feedbackService: FeedbackService) {}
 
   ngOnInit(): void {
     this.loadRooms();
+    this.fetchFeedbacks();
   }
+
+ 
+  fetchFeedbacks(): void {
+    this.feedbackService.getAllFeedbacks().subscribe({
+      next: (data) => {
+        this.feedbacks = data;
+      },
+      error: (err) => {
+        console.error('Error fetching feedbacks:', err);
+      }
+    });
+  }
+
+  createStarArray(rating: number): number[] {
+    return Array(rating).fill(0);
+  }
+
+  deleteFeedback(id: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this feedback!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.feedbackService.deleteFeedback(id, { responseType: 'text' as 'json' }).subscribe({
+          next: () => {
+            this.feedbacks = this.feedbacks.filter(f => f.id !== id);
+            Swal.fire('Deleted!', 'Feedback has been deleted.', 'success');
+          },
+          error: () => {
+            Swal.fire('Error!', 'Could not delete feedback.', 'error');
+          }
+        });
+      }
+    });
+  }
+  
+  
+
 
   toggleSidebar() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
