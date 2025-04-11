@@ -6,7 +6,8 @@ import Swal from 'sweetalert2';
 import { Router, RouterModule } from '@angular/router';
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 import { FormsModule } from '@angular/forms'; 
-
+import { Feedback } from '../overview/feedback.modal';
+import { FeedbackService } from '../overview/feedback.service';
 @Component({
   selector: 'app-user-profile',
   imports: [CommonModule, TranslateModule, RouterModule, SpinnerComponent,FormsModule],
@@ -26,7 +27,33 @@ export class UserProfileComponent {
 
    wishlist: any[] = [];
 
-  constructor(private authService:AuthService, private router:Router){ }
+  feedbackList: Feedback[] = [];
+  newFeedback: Feedback = {
+    description: '',
+    likedAmenities: [],
+    rating: 5,
+    hotelName: ''
+  };
+  
+  editFeedback: Feedback = {
+    description: '',
+    likedAmenities: [],
+    rating: 5,
+    hotelName: ''
+  };
+  
+  
+  editing = false;
+  editingId: number | null = null;
+
+  showEditModal = false;
+likedAmenitiesText = '';
+
+expandedWishlistIndex: number | null = null;
+
+  constructor(private authService:AuthService, private router:Router,
+    private feedbackService: FeedbackService
+  ){ }
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
@@ -61,8 +88,113 @@ export class UserProfileComponent {
         }
       });
     }
+
+    this.loadFeedback();
+
   }
 
+  toggleWishlistPanel(index: number): void {
+    if (this.expandedWishlistIndex === index) {
+      this.expandedWishlistIndex = null; // collapse if already open
+    } else {
+      this.expandedWishlistIndex = index; // open selected
+    }
+  }
+
+  toggleExpand(feedback: Feedback) {
+    this.feedbackList.forEach(fb => fb.expanded = false); // collapse others
+    feedback.expanded = !feedback.expanded;
+  }
+  
+  openEditModal(feedback: Feedback) {
+    this.editFeedback = { ...feedback };
+    this.likedAmenitiesText = feedback.likedAmenities?.join(', ') || '';
+    this.editingId = feedback.id!;
+    this.showEditModal = true;
+  }
+  
+  closeEditModal() {
+    this.showEditModal = false;
+    this.editingId = null;
+  }
+
+  loadFeedback() {
+    this.feedbackService.getUserFeedback().subscribe((res) => {
+      // Sort feedbacks by date safely
+      this.feedbackList = res
+        .filter(fb => !!fb.createdAt) // Filter out undefined/null createdAt
+        .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
+  
+      // Expand first feedback if available
+      if (this.feedbackList.length > 0) {
+        this.feedbackList[0].expanded = true;
+      }
+    });
+  }
+  
+  
+  
+  // onSubmit() {
+  //   this.feedbackService.submitFeedback(this.newFeedback).subscribe(() => {
+  //     this.newFeedback = { comment: '', rating: 5 }; // no userId
+  //     this.loadFeedback();
+  //   });
+  // }
+  
+  edit(feedback: Feedback) {
+    this.editFeedback = {
+      ...feedback,
+      likedAmenities: [...feedback.likedAmenities], // clone the array
+    };
+    this.editingId = feedback.id!;
+    this.editing = true;
+  }
+  
+  update() {
+    if (this.editFeedback.rating > 5) {
+      this.editFeedback.rating = 5;
+    } else if (this.editFeedback.rating < 1) {
+      this.editFeedback.rating = 1;
+    } if (this.editingId !== null) {
+      this.editFeedback.likedAmenities = this.likedAmenitiesText.split(',').map(a => a.trim());
+      this.feedbackService.updateFeedback(this.editingId, this.editFeedback).subscribe(() => {
+        this.loadFeedback();
+        this.closeEditModal();
+      });
+    }
+  }
+
+  
+  cancelEdit() {
+    this.editing = false;
+    this.editingId = null;
+  }
+  
+  delete(id: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You want to delete this feedback?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.feedbackService.deleteFeedback(id).subscribe({
+          next: (response: string) => {
+            Swal.fire('Deleted!', response, 'success');
+            this.loadFeedback();
+          },
+          error: (error) => {
+            Swal.fire('Failed!', error.error || 'Failed to delete the feedback.', 'error');
+          }
+        });
+      }
+    });
+  }
+  
+
+  
   logout() {
     Swal.fire({
       title: 'Logout',
@@ -174,6 +306,16 @@ removeFromWishlist(hotelId: any, event: MouseEvent) {
       });
     }
   });
+}
+
+formatAmenities(amenities: any): string {
+  if (Array.isArray(amenities)) {
+    return amenities.join(', ');
+  } else if (typeof amenities === 'string') {
+    return amenities;
+  } else {
+    return '';
+  }
 }
 
 

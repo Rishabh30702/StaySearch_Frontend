@@ -1,110 +1,142 @@
 <app-spinner [isLoading]="isLoading"></app-spinner>
 
-  <div class="container">
-    <div class="left-content">
-      <!-- Hotel Booking Form -->
+<div class="container">
+  <div class="left-content">
+    <!-- Hotel Booking Form -->
+    <button *ngIf="isLoggedIn" (click)="logout()">{{ 'Logout' | translate }}</button>
 
-      <button *ngIf="isLoggedIn" (click)="logout()">{{'Logout'|translate}}</button>
-      
-<form class="form">
-    <h2>User Profile</h2>
-    <div class="form-group">
-        <label for="email">Full Name:</label>
+    <form class="form">
+      <h2>User Profile</h2>
+
+      <div class="form-group">
+        <label for="name">Full Name:</label>
         <div class="relative">
-            <input class="form-control" id="name" type="text" name="fullName" [(ngModel)]="fullName" pattern="[a-zA-Z\s]+" required="" autofocus="" title="Username should only contain letters. e.g. Piyush Gupta" autocomplete="" placeholder="Type your name here...">
-            <i class="fa fa-user"></i>
+          <input class="form-control" id="name" type="text" name="fullName" [(ngModel)]="fullName" pattern="[a-zA-Z\s]+" required title="Username should only contain letters. e.g. Piyush Gupta" placeholder="Type your name here...">
+          <i class="fa fa-user"></i>
         </div>
-    </div>
-    <div class="form-group">
+      </div>
+
+      <div class="form-group">
         <label for="email">Email address:</label>
         <div class="relative">
-            <input class="form-control" type="email"  [value]="userEmail" placeholder="Email" disabled>
-            <i class="fa fa-envelope"></i>
+          <input class="form-control" type="email" [value]="userEmail" placeholder="Email" disabled>
+          <i class="fa fa-envelope"></i>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="email">Contact Number:</label>
-        <div class="relative">
-            <input class="form-control" type="text" name="phoneNumber" maxlength="10" [(ngModel)]="phoneNumber" oninput="this.value=this.value.replace(/[^0-9]/g,'');" required="" placeholder="Type your Mobile Number...">
-            <i class="fa fa-phone"></i>
-        </div>
-    </div>
-   
-    <div class="form-group">
-        <label for="email">Old Password:</label>
-        <div class="relative">
-        <input class="form-control" type="text" id="oldpass" name="oldPassword" [(ngModel)]="oldPassword" required="" placeholder="Type your old Password...">
-        <i class="fa fa-key"></i>
-    </div>	
-    </div>
-      <div class="form-group">
-          <label for="email">New Password:</label>
-        <div class="relative">
-            <input class="form-control" type="text" id="newpass" name="newPassword" [(ngModel)]="newPassword" required="" placeholder="Type your new Password...">
-            <i class="fa fa-key"></i>
-        </div>
-        <a href=""><button class="movebtn movebtnsu"(click)="updatePassword()"  type="Submit">Update Password </button></a>
-    </div>
-      
-                    
-    <div class="tright">
-        <a href=""><button class="movebtn movebtnre" type="Reset"><i class="fa fa-fw fa-refresh"></i> Reset </button></a>
-        <a href=""><button class="movebtn movebtnsu"(click)="updateProfile()"  type="Submit">Update </button></a>
-    </div>
-  </form>
+      </div>
 
-  <div class="thanks" style="display: none;">
+      <div class="form-group">
+        <label for="phone">Contact Number:</label>
+        <div class="relative">
+          <input class="form-control" type="text" name="phoneNumber" maxlength="10" [(ngModel)]="phoneNumber" oninput="this.value=this.value.replace(/[^0-9]/g,'');" required placeholder="Type your Mobile Number...">
+          <i class="fa fa-phone"></i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="oldpass">Old Password:</label>
+        <div class="relative">
+          <input class="form-control" type="password" id="oldpass" name="oldPassword" [(ngModel)]="oldPassword" required placeholder="Type your old Password...">
+          <i class="fa fa-key"></i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="newpass">New Password:</label>
+        <div class="relative">
+          <input class="form-control" type="password" id="newpass" name="newPassword" [(ngModel)]="newPassword" required placeholder="Type your new Password...">
+          <i class="fa fa-key"></i>
+        </div>
+        <button class="movebtn movebtnsu" (click)="updatePassword()" type="button">Update Password</button>
+      </div>
+
+      <div class="tright">
+        <button class="movebtn movebtnre" type="reset"><i class="fa fa-fw fa-refresh"></i> Reset </button>
+        <button class="movebtn movebtnsu" (click)="updateProfile()" type="button">Update</button>
+      </div>
+    </form>
+
+    <div class="thanks" style="display: none;">
       <h4>Thank you!</h4>
       <p><small>Your message has been successfully sent.</small></p>
+    </div>
   </div>
+
+  <div class="right-sidebar">
+    <!-- Wishlist Card -->
+    <div class="wishlist-card">
+      <h3>📌 Favourites</h3>
+
+      <div class="accordion" *ngIf="wishlist.length > 0; else noWishlist">
+        <div class="accordion-item" *ngFor="let hotel of wishlist; let i = index">
+          <div class="accordion-header" (click)="toggleWishlistPanel(i)">
+            <span class="hotel-name">🏨 {{ hotel.name }}</span>
+            <span class="toggle-icon">{{ expandedWishlistIndex === i ? '−' : '+' }}</span>
+          </div>
+
+          <div class="accordion-body" [class.show]="expandedWishlistIndex === i">
+            <button class="view-btn" (click)="goToOverview(hotel.hotelId)">🔍 View</button>
+            <button class="delete-btn" (click)="removeFromWishlist(hotel.hotelId, $event)">❌ Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noWishlist>
+        <p>No hotels in your wishlist.</p>
+      </ng-template>
+    </div>
+
+    <!-- Feedback Section -->
+    <div class="feedback-card">
+      <h3>🗣️ Your Feedback</h3>
+
+      <div class="feedback-scroll-container">
+        <div *ngIf="feedbackList.length > 0; else noFeedback">
+          <div *ngFor="let feedback of feedbackList" class="feedback-item" [class.expanded]="feedback.expanded">
+            <div class="feedback-header" (click)="toggleExpand(feedback)">
+              <h4>{{ feedback.hotelName }}</h4>
+              <span class="rating">{{ feedback.rating }} ★</span>
+            </div>
+
+            <div *ngIf="feedback.expanded" class="feedback-details">
+              <p><strong>Description:</strong> {{ feedback.description }}</p>
+              <p><strong>Liked Amenities:</strong> {{ formatAmenities(feedback.likedAmenities) }}</p>
+              <p><strong>Date:</strong> {{ feedback.createdAt | date: 'medium' }}</p>
+
+              <div class="btn-group">
+                <button class="btn edit" (click)="openEditModal(feedback)">✏️ Edit</button>
+                <button class="btn delete" (click)="delete(feedback.id!)">❌ Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #noFeedback>
+          <p class="no-feedback-text">No feedback provided yet.</p>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" *ngIf="showEditModal">
+      <div class="modal-content animate-fadeIn">
+        <span class="close" (click)="closeEditModal()">&times;</span>
+        <h3>Edit Feedback</h3>
+    
+        <label>Rating:</label>
+        <input type="number" [(ngModel)]="editFeedback.rating" name="editRating" min="1" max="5" />
+    
+        <label>Description:</label>
+        <textarea [(ngModel)]="editFeedback.description" name="editDescription"></textarea>
+    
+        <label>Liked Amenities (comma separated):</label>
+        <input type="text" [(ngModel)]="likedAmenitiesText" name="editLikedAmenities" />
+    
+        <div class="modal-buttons">
+          <button class="update-btn" (click)="update()">Update</button>
+          <button class="cancel-btn" (click)="closeEditModal()">Cancel</button>
+        </div>
+      </div>
     </div>
     
-    <div class="right-sidebar">
-       <!-- User Feedback Card -->
-  <!-- <div class="card">
-    <h3>⭐ User Feedbacks</h3>
-    <div class="feedback">
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-     
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-      <p>⭐⭐⭐⭐⭐ "Amazing stay!"</p>
-      <p>⭐⭐⭐⭐ "Loved the ambiance!"</p>
-     
-    </div>
-  </div> -->
-
-  <!-- Wishlist Card -->
-  <div class="wishlist-card">
-    <h3>📌 Wishlist</h3>
-    <ul *ngIf="wishlist.length > 0; else noWishlist">
-      <li *ngFor="let hotel of wishlist">
-        <span (click)="goToOverview(hotel.hotelId)" class="hotel-name">
-          🏨 {{ hotel.name }}
-        </span>
-        <button class="delete-btn" (click)="removeFromWishlist(hotel.hotelId, $event)">
-          ❌
-        </button>
-      </li>
-    </ul>
-    <ng-template #noWishlist>
-      <p>No hotels in your wishlist.</p>
-    </ng-template>
   </div>
-  
-  </div>
+</div>
