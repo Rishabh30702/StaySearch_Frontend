@@ -251,12 +251,13 @@ height: 50%;
   }
 
   .wishlist-card {
+    max-height: 400px; /* or whatever suits your layout */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 8px;
     background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    margin: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
   
   .wishlist-card h3 {
@@ -306,4 +307,440 @@ height: 50%;
   .delete-btn:hover {
     transform: scale(1.2);
   }
+  
+  .feedback-item {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.feedback-details {
+  margin-top: 10px;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 400px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+.wishlist-card {
+  margin-bottom: 2rem;
+}
+
+.accordion {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.accordion-item {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background-color: #fafafa;
+}
+
+.accordion-header {
+  padding: 12px 16px;
+  background-color: #eaeaea;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.accordion-body {
+  display: none;
+  padding: 12px 16px;
+  background-color: #fff;
+}
+
+.accordion-body.show {
+  display: block;
+}
+
+/* Button styling */
+.view-btn {
+  background-color: #0066cc;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #c62828;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Hotel name styling */
+.hotel-name {
+  color: #761461;
+  cursor: pointer;
+}
+
+.toggle-icon {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.feedback-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  border-radius: 10px;
+  max-height: 450px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: #761461;
+}
+
+.feedback-scroll-container {
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.feedback-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.feedback-scroll-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.feedback-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+  cursor: pointer;
+}
+
+.feedback-item:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #333;
+}
+
+.feedback-header h4 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.rating {
+  background: #ffd700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: #000;
+}
+
+.feedback-details {
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease;
+  color: #555;
+}
+
+.btn-group {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 5px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn.edit {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn.edit:hover {
+  background-color: #0056b3;
+}
+
+.btn.delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn.delete:hover {
+  background-color: #a71d2a;
+}
+
+.no-feedback-text {
+  color: gray;
+  text-align: center;
+  padding: 1rem;
+}
+
+.feedback-scroll-container {
+  max-height: 350px;
+  overflow-y: scroll !important;
+  padding-right: 8px;
+  padding-bottom: 3rem; /* ✅ Increased for bottom buffer */
+  margin-bottom: 1rem;   /* ✅ Add this for extra breathing room outside */
+  scrollbar-gutter: stable;
+}
+
+/* For Webkit browsers (Chrome, Safari) */
+.feedback-scroll-container::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f0f0f0;
+}
+
+.feedback-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #b0b0b0;
+  border-radius: 6px;
+}
+
+.feedback-scroll-container::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+
+.feedback-scroll-container::-webkit-scrollbar-track {
+  background-color: #f4f4f4;
+}
+
+/* For Firefox */
+.feedback-scroll-container {
+  scrollbar-color: #b0b0b0 #f4f4f4;
+  scrollbar-width: thin;
+}
+
+
+/* Smooth fade-in animation for expanded content */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.feedback-scroll-container {
+  max-height: 340px;
+  overflow-y: scroll;
+  padding-right: 8px;
+  padding-bottom: 1rem;
+}
+
+.feedback-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.feedback-scroll-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.btn-group {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.edit {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+/* Modal Background */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* translucent dark bg */
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal Content Box */
+.modal-content {
+  background: #fff;
+  padding: 25px 30px;
+  border-radius: 16px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: #761461; /* your theme color */
+  font-size: 20px;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.modal-content textarea {
+  min-height: 80px;
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  right: 15px;
+  top: 12px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: #000;
+}
+
+/* Button Group */
+.modal-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.update-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.update-btn {
+  background-color: #761461;
+  color: #fff;
+}
+
+.update-btn:hover {
+  background-color: #5a104b;
+}
+
+.cancel-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #c0c0c0;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.feedback-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px; /* Adjust height as needed */
+  padding: 1rem;
+}
+
+
   
