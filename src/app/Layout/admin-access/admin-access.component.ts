@@ -45,6 +45,8 @@ export class AdminAccessComponent {
     this.showRecoverPassword = form === 'recover';
   }
   login() {
+      // Clear old token before any new login
+  localStorage.removeItem('token');
     if (this.selectedRole === 'admin') {
       // Admin logic (for now just routing)
       this.router.navigate(['adminAccess/adminPanel']);

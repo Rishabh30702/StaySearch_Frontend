@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit,  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RoomService } from './room.service';
@@ -15,7 +15,14 @@ import { FeedbackService } from './feedback.service';
   templateUrl: './hotelliers.component.html',
   styleUrl: './hotelliers.component.css'
 })
-export class HotelliersComponent implements OnInit {
+export class HotelliersComponent implements OnInit,OnDestroy {
+
+  @HostListener('window:unload', ['$event'])
+  unloadHandler(event: any) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+  }
+
   isSidebarCollapsed = false;
   selectedMenu: string = 'dashboard';
   showDropdown = false;
@@ -75,9 +82,63 @@ export class HotelliersComponent implements OnInit {
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService) {}
 
+
+  ngOnDestroy(): void {
+    this.destroy();
+  }
+
   ngOnInit(): void {
     this.loadRooms();
     this.fetchFeedbacks();
+
+    history.pushState(null, '', location.href);
+    window.onpopstate = () => {
+      history.pushState(null, '', location.href);
+    };
+
+
+    const token = localStorage.getItem('token');
+  if (token) {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const role = payload.role;
+
+    if (role === 'Hotelier') {
+      // This is a hotelier trying to access user home
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Session Ended',
+        text: 'You were logged in as a hotelier. Please log in as a user.',
+        confirmButtonText: 'OK'
+      }).then(() => {
+        location.reload(); // or navigate to login
+      });
+    }
+  }
+
+  }
+
+  destroy(){
+    Swal.fire({
+      title: 'You are about to sign out!',
+      text: 'Do you want to clear your session?',
+      icon: 'warning',
+      allowEscapeKey() {
+        return false;
+      },
+      allowOutsideClick() {
+        return false;
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Yes, I know',
+      cancelButtonText: 'Stay'
+    }).then(result => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token');
+      }
+    });
   }
 
  
@@ -138,7 +199,18 @@ export class HotelliersComponent implements OnInit {
   }
 
   logout() {
-    alert('Logged out!');
+    Swal.fire({
+      title: 'You are about to sign out!',
+      text: 'Do you want to clear your session?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, I know',
+      cancelButtonText: 'Stay'
+    }).then(result => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token');
+      }
+    });
   }
 
   toggleDealForm() {

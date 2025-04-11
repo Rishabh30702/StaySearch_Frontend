@@ -32,14 +32,15 @@ export class AdminHomeComponent implements OnInit {
   isLoading: boolean = true;
 
   showApproved = true;
-showPending = true;
-showRejected = true;
+  showPending = true;
+  showRejected = true;
 
+  selectedStatus: string = 'pending';
 
   constructor(
     private authService: AuthService,
     private adminService: AdminService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -100,7 +101,7 @@ showRejected = true;
       }
     });
   }
-  
+
   rejectHotelier(id: number): void {
     Swal.fire({
       title: 'Reject Hotelier?',
@@ -133,9 +134,9 @@ showRejected = true;
       next: (res) => {
         // Sort by createdAt (latest first)
         this.users = res.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  
+
         console.log('All users (sorted):', this.users);
-  
+
         // Filter users after sorting
         this.filterHotelierGroups();
         this.isLoading = false;
@@ -146,18 +147,18 @@ showRejected = true;
       }
     });
   }
-  
+
 
   filterHotelierGroups(): void {
     const allHoteliers = this.users.filter(user =>
       user.role?.toLowerCase() === 'hotelier'
     );
-  
+
     this.approvedHoteliers = allHoteliers.filter(user => user.status === 'APPROVED');
     this.pendingHoteliers = allHoteliers.filter(user => user.status === 'PENDING');
     this.rejectedHoteliers = allHoteliers.filter(user => user.status === 'REJECTED');
   }
-  
+
 
   // Delete a user with confirmation
   deleteUser(userId: number): void {
