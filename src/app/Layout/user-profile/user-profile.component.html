@@ -88,7 +88,10 @@
     <!-- Feedback Section -->
     <div class="feedback-card">
       <h3>🗣️ Your Feedback</h3>
-
+ <!-- Spinner shown while loading -->
+ <div *ngIf="isLoading" class="feedback-spinner">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+</div>
       <div class="feedback-scroll-container">
         <div *ngIf="feedbackList.length > 0; else noFeedback">
           <div *ngFor="let feedback of feedbackList" class="feedback-item" [class.expanded]="feedback.expanded">

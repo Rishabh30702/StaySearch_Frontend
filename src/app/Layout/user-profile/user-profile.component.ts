@@ -119,15 +119,17 @@ expandedWishlistIndex: number | null = null;
   }
 
   loadFeedback() {
+    this.isLoading = true
     this.feedbackService.getUserFeedback().subscribe((res) => {
       // Sort feedbacks by date safely
       this.feedbackList = res
         .filter(fb => !!fb.createdAt) // Filter out undefined/null createdAt
         .sort((a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime());
-  
+        this.isLoading = false
       // Expand first feedback if available
       if (this.feedbackList.length > 0) {
         this.feedbackList[0].expanded = true;
+        this.isLoading = false
       }
     });
   }
@@ -151,15 +153,19 @@ expandedWishlistIndex: number | null = null;
   }
   
   update() {
+    this.isLoading = true
     if (this.editFeedback.rating > 5) {
       this.editFeedback.rating = 5;
+      this.isLoading = false
     } else if (this.editFeedback.rating < 1) {
       this.editFeedback.rating = 1;
+      this.isLoading = false
     } if (this.editingId !== null) {
       this.editFeedback.likedAmenities = this.likedAmenitiesText.split(',').map(a => a.trim());
       this.feedbackService.updateFeedback(this.editingId, this.editFeedback).subscribe(() => {
         this.loadFeedback();
         this.closeEditModal();
+        this.isLoading = false
       });
     }
   }
@@ -180,13 +186,16 @@ expandedWishlistIndex: number | null = null;
       cancelButtonText: 'Cancel'
     }).then(result => {
       if (result.isConfirmed) {
+        this.isLoading= true
         this.feedbackService.deleteFeedback(id).subscribe({
           next: (response: string) => {
             Swal.fire('Deleted!', response, 'success');
             this.loadFeedback();
+            this.isLoading= false
           },
           error: (error) => {
             Swal.fire('Failed!', error.error || 'Failed to delete the feedback.', 'error');
+            this.isLoading= false
           }
         });
       }

@@ -734,6 +734,13 @@ height: 50%;
   }
 }
 
+.feedback-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px; /* Adjust height as needed */
+  padding: 1rem;
+}
 
 
   
