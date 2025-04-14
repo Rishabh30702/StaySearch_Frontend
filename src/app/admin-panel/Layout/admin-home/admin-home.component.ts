@@ -4,11 +4,12 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../../Core/Services/AuthService/services/auth.service';
 import { SpinnerComponent } from "../../../Core/spinner/spinner.component";
 import { AdminService } from './Admin.Service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, SpinnerComponent],
+  imports: [CommonModule, SpinnerComponent, FormsModule],
   templateUrl: './admin-home.component.html',
   styleUrls: ['./admin-home.component.css']
 })
@@ -36,6 +37,9 @@ export class AdminHomeComponent implements OnInit {
   showRejected = true;
 
   selectedStatus: string = 'pending';
+
+  showModal: boolean = false;
+  oldPassword:string = '';
 
   constructor(
     private authService: AuthService,
@@ -139,6 +143,7 @@ export class AdminHomeComponent implements OnInit {
 
         // Filter users after sorting
         this.filterHotelierGroups();
+        this.updateDataFromUsers(); //added to the table
         this.isLoading = false;
       },
       error: (err) => {
@@ -205,25 +210,137 @@ export class AdminHomeComponent implements OnInit {
     this.pendingHoteliers = this.users.filter(user => (user.status || '').toLowerCase() === 'pending');
   }
 
-  // Pagination helpers (for users list)
-  get paginatedUsers(): any[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.users.slice(start, start + this.pageSize);
+
+  updateData = {
+    fullName: '',
+    phoneNumber: '',
+    newPassword: ''
+  };
+
+  onUpdate() {
+    console.log('Updated data:', this.updateData);
+    // perform update logic here
+     this.updateProfile();
+     this.updatePassword();
+    
+    this.showModal = false;
+    this.updateData.fullName = '';
+    this.updateData.phoneNumber = '';
+    this.updateData.newPassword = '';
+
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.users.length / this.pageSize);
-  }
 
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+updateProfile() {
+  this.isLoading = true
+  const payload = {
+    fullname: this.updateData.fullName,
+    phonenumber: this.updateData.phoneNumber
+  };
+
+  this.authService.updateUserProfile(payload).subscribe({
+    next: (response) => {
+      console.log('Profile updated successfully:', response);
+      Swal.fire({
+        title: 'Success',
+        text: 'Profile updated successfully',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      this.isLoading = false
+    },
+    error: (error) => {
+      console.error('Error updating profile:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Failed to update profile',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      this.isLoading = false
+    }
+  });
+}
+  
+   updatePassword() {
+    this.isLoading = true;
+  
+    if (this.updateData.newPassword) {
+      
+      this.authService.updatePassword(this.oldPassword, this.updateData.newPassword).subscribe({
+        next: (res) => {
+          Swal.fire({ text: res.message, icon: 'success' });
+        
+          this.isLoading = false;
+        },
+        error: (err) => {
+          let errorMessage = 'Failed to update password.';
+  
+          if (typeof err.error === 'string') {
+            errorMessage = err.error;
+          } else if (err.error?.message) {
+            errorMessage = err.error.message;
+          }
+  
+          Swal.fire({ text: errorMessage, icon: 'error' });
+          this.isLoading = false;
+        }
+      });
+    } else {
+      Swal.fire({ text: 'Please fill in both password fields.', icon: 'warning' });
+      this.isLoading = false;
     }
   }
 
-  prevPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
+
+
+
+  closeModal(): void {
+    this.showModal = false;
+  
+    this.updateData.fullName = '';
+    this.updateData.phoneNumber = '';
+    this.updateData.newPassword = '';
   }
+
+updateDataFromUsers(): void {
+  this.data = this.users.map((user, index) => ({
+    
+    Sno: index + 1,
+    col1: user.username || 'N/A',
+    col2: user.password.slice(0,10),
+    col3: '43/125 Sikandra,Agra -282007 U.P India',
+    col4: user.fullname || 'N/A' ,
+    col5: user.phonenumber || 'N/A',
+    id: user.id,
+    col7: user.role,
+    col8: 'Data',
+    col9: 'Data',
+    
+  }));
+} 
+
+
+searchTerm = '';
+
+data = [
+  {
+    Sno: 1,
+    col1: 'Data', col2: 'Data', col3: 'Data', col4: 'Data',
+    col5: 'Data', id: 1, col7: 'Data', col8: 'Data', col9: 'Data',
+ 
+  },
+  // Structure of user data table
+];
+
+filteredData() {
+  if (!this.searchTerm) return this.data;
+  const term = this.searchTerm.toLowerCase();
+  return this.data.filter(row =>
+    Object.values(row).some(val =>
+      String(val).toLowerCase().includes(term)
+    )
+  );
+}
+
 }

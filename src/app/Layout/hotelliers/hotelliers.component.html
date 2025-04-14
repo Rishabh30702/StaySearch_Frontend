@@ -39,6 +39,156 @@
         </div>
       </div>
 
+             <!-- ------------ -->
+    <!-- Hotel registration -->
+     <!-- ------------ -->
+    <div *ngIf="selectedMenu === 'hotels'" class="fade-in">
+      <div class="form-container">
+        <h1>List a New Property</h1>
+    
+        <form id="property-form" action="/your-server-endpoint-here" method="POST" enctype="multipart/form-data">
+    
+          <!-- Property Identification -->
+          <fieldset>
+            <legend>Property Identification</legend>
+            <div class="form-group">
+              <label for="propertyName">Property Name:</label>
+              <input type="text" id="propertyName" name="propertyName" required maxlength="100" placeholder="e.g., The Oberoi Amar Villas" />
+              <div class="validation-note">Maximum 100 characters.</div>
+            </div>
+          </fieldset>
+    
+          <!-- Property Address & Location -->
+          <fieldset>
+            <legend>Property Address & Location</legend>
+    
+            <div class="form-group">
+              <label for="propertyAddress">Full Street Address:</label>
+              <input type="text" id="propertyAddress" name="propertyAddress" required placeholder="e.g., Taj East Gate Rd,Paktola,Agra" />
+            </div>
+    
+            <div class="form-group">
+              <label for="district">District:</label>
+              <select id="district" name="district" required>
+                <option value="" disabled selected>-- Select District --</option>
+                <option value="district_1">Central District</option>
+                <option value="district_2">Northern Heights</option>
+                <option value="district_3">Riverside</option>
+                <option value="district_4">West End</option>
+              </select>
+            </div>
+    
+            <div class="form-group">
+              <label for="village">Village / Area:</label>
+              <select id="village" name="village" required>
+                <option value="" disabled selected>-- Select Village/Area --</option>
+                <option value="village_a">Lucknow (Central)</option>
+                <option value="village_b">Ayodhya (Northern)</option>
+                <option value="village_c">Varanasi (Riverside)</option>
+                <option value="village_d">Agra (Western)</option>
+              </select>
+            </div>
+          </fieldset>
+    
+          <!-- Property Photos -->
+          <fieldset>
+            <legend>Property Photos</legend>
+            <div class="form-group">
+              <label for="propertyPhotos">Upload Photos:</label>
+              <input type="file" id="propertyPhotos" name="propertyPhotos[]" multiple accept=".jpg, .jpeg, .png" />
+              <div class="validation-note">Allowed formats: JPG or PNG</div>
+              <div id="image-preview"></div>
+            </div>
+          </fieldset>
+    
+          <!-- Descriptions -->
+          <fieldset>
+            <legend>Descriptions</legend>
+            <div class="form-group">
+              <label for="shortDescription">Short Description:</label>
+              <textarea id="shortDescription" name="shortDescription" rows="3" required maxlength="250"></textarea>
+              <div class="validation-note">Max 250 characters.</div>
+            </div>
+    
+            <div class="form-group">
+              <label for="longDescription">Long Description:</label>
+              <textarea id="longDescription" name="longDescription" rows="6" placeholder="Detailed description of the property..."></textarea>
+              <div class="field-description">Provide full details.</div>
+            </div>
+          </fieldset>
+    
+          <!-- Amenities -->
+          <fieldset>
+            <legend>Amenities</legend>
+            <div class="form-group amenities-group">
+              <label>Check all available amenities:</label><br />
+              <label><input type="checkbox" name="amenities[]" value="wifi" /> Wi-Fi</label>
+              <label><input type="checkbox" name="amenities[]" value="pool" /> Pool</label>
+              <label><input type="checkbox" name="amenities[]" value="gym" /> Gym</label>
+              <label><input type="checkbox" name="amenities[]" value="parking" /> Parking</label>
+              <label><input type="checkbox" name="amenities[]" value="ac" /> Air Conditioning</label>
+              <label><input type="checkbox" name="amenities[]" value="heating" /> Heating</label>
+              <label><input type="checkbox" name="amenities[]" value="laundry" /> Laundry (In-Unit)</label>
+              <label><input type="checkbox" name="amenities[]" value="balcony" /> Balcony/Patio</label>
+              <label><input type="checkbox" name="amenities[]" value="furnished" /> Furnished</label>
+            </div>
+            <div class="field-description">Select all features available at the property.</div>
+          </fieldset>
+    
+          <!-- Contact Info -->
+          <fieldset>
+            <legend>Contact Information</legend>
+    
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label for="phoneInput">Phone Number</label>
+              <input
+                type="tel"
+                id="phoneInput"
+                class="form-control"
+                name="phone"
+                [(ngModel)]="user.phone"
+                #phoneInput="ngModel"
+                required
+                maxlength="10"
+                pattern="^\d{10}$"
+                placeholder="Enter 10-digit phone number"
+              />
+              <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)" class="alert alert-danger error-message">
+                <small *ngIf="phoneInput.errors?.['required']">Phone number is required!</small>
+                <small *ngIf="phoneInput.errors?.['pattern']">Please enter a valid 10-digit phone number (digits only).</small>
+                <small *ngIf="phoneInput.errors?.['maxlength']">
+                  Phone number cannot exceed {{ phoneInput.errors?.['maxlength'].requiredLength }} digits.
+                </small>
+              </div>
+            </div>
+    
+            <!-- Email -->
+            <div class="form-group">
+              <label for="emailInput">Email</label>
+              <input
+                type="email"
+                id="emailInput"
+                class="form-control"
+                name="email"
+                [(ngModel)]="user.email"
+                #emailInput="ngModel"
+                required
+                email
+                placeholder="Enter your email"
+              />
+              <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="alert alert-danger error-message">
+                <small *ngIf="emailInput.errors?.['required']">Email is required!</small>
+                <small *ngIf="emailInput.errors?.['email']">Please enter a valid email address.</small>
+              </div>
+            </div>
+          </fieldset>
+    
+        </form>
+      </div>
+    </div>
+
+
       <!-- Rooms -->
       <div *ngIf="selectedMenu === 'rooms'" class="fade-in">
         <h2 class="section-title">Room Management</h2>

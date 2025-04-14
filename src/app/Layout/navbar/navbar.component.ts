@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 
 
 @Component({
@@ -15,12 +16,17 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent {
   currentLanguage = 'en';
   langText = 'English';
+  isLoggedIn = false;
+
  
 
-  constructor(private translate: TranslateService) { 
+  constructor(private translate: TranslateService,
+    private authService:AuthService
+  ) { 
     this.currentLanguage = localStorage.getItem('language') || 'en';
     this.translate.use(this.currentLanguage);
     this.updateLangText();
+    this.isLoggedIn = this.authService.isLoggedIn();
   }
 
   toggleLanguage(lang: string) {
