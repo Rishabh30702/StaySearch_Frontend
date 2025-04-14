@@ -39,9 +39,14 @@ export class HotelliersComponent implements OnInit,OnDestroy {
   //Review and Feedbacks
   feedbacks: Feedback[] = [];
 
+  user ={
+    phone: '',
+    email:''
+  };
 
   menuItems = [
     { key: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
+    { key: 'hotels', label: 'Hotels', icon: 'fas fa-hotel' },
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
     { key: 'deal', label: 'Deal', icon: 'fas fa-tags' },
     { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
@@ -305,6 +310,9 @@ onFileSelected(event: Event) {
           this.selectedFile = null!;
           this.showAddRoomForm = false;
           alert('Room added successfully!');
+         
+            this.selectedMenu = 'deal';
+        
           this.updateStats();
         },
         error: (err: any) => {

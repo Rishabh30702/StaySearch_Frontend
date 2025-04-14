@@ -38,6 +38,11 @@
           <input class="langtext form-control shadow-none" type="text" readonly [value]="langText" />
         </div>
       </div>
+      <div *ngIf="isLoggedIn"  class="profile-container">
+        <button class="profile-btn" [routerLink]="'/userProfile'">
+          <img src="7915522.png" alt="Profile" class="profile-icon" />
+        </button>
+      </div>
     </div>
     
   </nav>

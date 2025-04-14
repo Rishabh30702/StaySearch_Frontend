@@ -176,49 +176,134 @@
   color: #1f2937;
 }
 
-.user-section {
-  padding: 20px;
-  max-width: 100%;
-  overflow-y: auto;
+.userstb{
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
-.user-list-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-height: 500px; /* Optional: make scrollable */
-  overflow-y: auto;
-  gap: 12px;
-  padding: 10px;
+thead {
+  background-color: #f2f2f2;
 }
 
-.user-card {
-  width: 80%;
-  max-width: 600px;
-  background-color: #fff;
+.search-input {
+  margin-top: 10px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 400px;
   border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.scrollable-table {
+  max-height: 450px; /* adjust height as needed */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Custom scrollbar for Webkit browsers */
+.scrollable-table::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scrollable-table::-webkit-scrollbar-track {
+  background: #f1f1f1;
   border-radius: 10px;
-  padding: 15px 20px;
+}
+
+.scrollable-table::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.scrollable-table::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Optional: For Firefox */
+.scrollable-table {
+  scrollbar-width: thin;
+  scrollbar-color: #7C8547 #f1f1f1;
+}
+
+.userstb thead th {
+  position: sticky;
+  top: 0;
+  background-color: #f9f9f9;
+  z-index: 1;
+}
+
+
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.user-info {
-  font-weight: 500;
-}
-
-.pagination-controls {
-  margin-top: 20px;
-  display: flex;
   justify-content: center;
-  gap: 15px;
+  z-index: 1000;
 }
 
-.page-number {
-  align-self: center;
-  font-weight: 500;
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.open-btn {
+  margin: 20px;
+  padding: 10px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .status-group {

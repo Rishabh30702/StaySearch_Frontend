@@ -260,26 +260,26 @@ updatePassword() {
   this.isLoading = true;
 
   if (this.oldPassword && this.newPassword) {
-    this.authService.updatePassword(this.oldPassword, this.newPassword).subscribe({
-      next: (res) => {
-        Swal.fire({ text: res.message, icon: 'success' });
-        this.oldPassword = '';
-        this.newPassword = '';
-        this.isLoading = false;
-      },
-      error: (err) => {
-        let errorMessage = 'Failed to update password.';
+    // this.authService.updatePassword(this.oldPassword, this.newPassword).subscribe({
+    //   next: (res) => {
+    //     Swal.fire({ text: res.message, icon: 'success' });
+    //     this.oldPassword = '';
+    //     this.newPassword = '';
+    //     this.isLoading = false;
+    //   },
+    //   error: (err) => {
+    //     let errorMessage = 'Failed to update password.';
 
-        if (typeof err.error === 'string') {
-          errorMessage = err.error;
-        } else if (err.error?.message) {
-          errorMessage = err.error.message;
-        }
+    //     if (typeof err.error === 'string') {
+    //       errorMessage = err.error;
+    //     } else if (err.error?.message) {
+    //       errorMessage = err.error.message;
+    //     }
 
-        Swal.fire({ text: errorMessage, icon: 'error' });
-        this.isLoading = false;
-      }
-    });
+    //     Swal.fire({ text: errorMessage, icon: 'error' });
+    //     this.isLoading = false;
+    //   }
+    // });
   } else {
     Swal.fire({ text: 'Please fill in both password fields.', icon: 'warning' });
     this.isLoading = false;
