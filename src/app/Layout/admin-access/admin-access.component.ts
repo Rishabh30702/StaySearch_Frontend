@@ -4,11 +4,12 @@ import { FormsModule } from "@angular/forms";
 import { Router } from '@angular/router';
 import { AuthPortalService } from "./AuthPortal.service";
 import Swal from "sweetalert2";
+import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 
 @Component({
   selector: 'app-admin-access',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,SpinnerComponent],
   templateUrl: './admin-access.component.html',
   styleUrl: './admin-access.component.css'
 })
@@ -16,6 +17,8 @@ export class AdminAccessComponent {
   constructor(private router: Router, private hotelierService: AuthPortalService) {}
 
   selectedRole: string = 'owner';
+
+  isLoading: boolean = false;
 
   // Form visibility
   showLogin: boolean = true;
@@ -53,25 +56,31 @@ export class AdminAccessComponent {
       return;
     }
   
+    this.isLoading =true;
     const payload = {
       username: this.loginUsername,
       password: this.loginPassword
     };
   
     this.hotelierService.loginHotelier(payload).subscribe({
+      
       next: (res: any) => {
         if (res.token) {
+         
           // Approved hotelier, store token and route
           localStorage.setItem('token', res.token);
+          this.isLoading =false;
           this.router.navigate(['hotellier']);
         } else if (res.message && res.message.includes('pending')) {
           // Pending approval case
+          this.isLoading =false;
           Swal.fire({
             icon: 'info',
             title: 'Pending Approval',
             text: res.message
           });
         } else {
+          this.isLoading =false;
           // Other unexpected responses
           Swal.fire({
             icon: 'error',
@@ -81,6 +90,7 @@ export class AdminAccessComponent {
         }
       },
       error: (err: any) => {
+        this.isLoading =false;
         Swal.fire({
           icon: 'error',
           title: 'Login Failed',

@@ -20,6 +20,16 @@ export class AdminHomeComponent implements OnInit {
 
   users: any[] = [];
 
+  hotels = [
+    {
+      Sno: 1,
+      col1: 'Data', col2: 'Data', col3: 'Data', col4: 'Data',
+      col5: 'Data', id: 1 , col8: 'user', col9: 'Data', status: 'pending'
+   
+    },
+    // Structure of user data table
+  ];
+
   // Grouped hoteliers
   approvedHoteliers: any[] = [];
   pendingHoteliers: any[] = [];
@@ -341,6 +351,17 @@ filteredData() {
       String(val).toLowerCase().includes(term)
     )
   );
+}
+//hotel approval 
+approveHotel(){
+  console.log("hotel aaproved");
+
+}
+
+//review 
+review(){
+  console.log("review success");
+
 }
 
 }
