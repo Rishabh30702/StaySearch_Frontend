@@ -226,7 +226,109 @@
 
     <!-- OTHER SECTIONS -->
     <div *ngIf="activeView === 'content'">Content Management</div>
-    <div *ngIf="activeView === 'hotels'">Hotels Management</div>
+    
+
+<!-- hotel management -->
+<div *ngIf="activeView === 'hotels'">
+  <h2>Hotels Management</h2>
+
+  <div class="scrollable-table">
+    <table class="userstb" border="2" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ID</th>
+          <th>Hash#</th>
+          <th>Address</th>
+          <th>Full Name</th>
+          <th>Contact Number</th>
+          <th>User ID</th>
+          <th>Review</th>
+          <th>Approval</th>
+          <th>Status</th>
+         
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of hotels">
+          <td>{{ row.Sno }}</td>
+          <td>{{ row.col1 }}</td>
+          <td>{{ row.col2 }}</td>
+          <td>{{ row.col3 }}</td>
+          <td>{{ row.col4 }}</td>
+          <td>{{ row.col5 }}</td>
+          <td>{{ row.id }}</td>
+          
+            <td><button (click)="showModal = true" class="edit-btn">
+              <i class="fas fa-edit "></i> Review
+            </button>
+
+            <div *ngIf="showModal" class="modal">
+              <div class="modal-content">
+                <span class="close-btn" (click)="closeModal()">&times;</span>
+                <h2>review form</h2>
+                <label>Hotel Name</label>
+                <input
+                  type="text"
+                  [(ngModel)]="updateData.fullName"
+                  #name="ngModel"
+                  name="HotelName"
+                  required
+                />
+                <label>Hotel Location</label>
+                <input
+                  type="text"
+                  [(ngModel)]="updateData.fullName"
+                  #name="ngModel"
+                  name="HotelLocation"
+                  required
+                />
+              
+                <label>Contact us</label>
+                <input
+                  type="tel"
+                  [(ngModel)]="updateData.phoneNumber"
+                  name="contactus"
+                  pattern="^[0-9]{10}$"
+                  #phoneNumber="ngModel"
+                  maxlength="10"
+                  required
+                />
+               
+              
+                <label>Facilites</label>
+                <input
+                  type="text"
+                  [(ngModel)]="updateData.fullName"
+                  #name="ngModel"
+                  name="Facilites"
+                  required
+                /> 
+                <button 
+                type="submit" 
+                (click)="review()" 
+                class="submit-btn">
+                Done
+              </button>
+              
+                
+              </div>
+            </div>
+
+          </td>
+          <td>
+            <button (click)="approveHotel()" class="approve-btn">
+              <i class="fas fa-trash"></i> Approve
+            </button>
+          </td>
+          <td>{{ row.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+    </div>
     <div *ngIf="activeView === 'platform'">Platform Moderation</div>
     <div *ngIf="activeView === 'security'">Security and Access Controls</div>
     <div *ngIf="activeView === 'plaform-content'">Platform Content Updates</div>
