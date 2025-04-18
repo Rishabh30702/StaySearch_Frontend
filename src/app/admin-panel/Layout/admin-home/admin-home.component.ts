@@ -30,6 +30,15 @@ export class AdminHomeComponent implements OnInit {
     // Structure of user data table
   ];
 
+
+  showNotificationDropdown = false;
+
+  notifications: { title: string, message: string, time: Date, read: boolean }[] = [
+    { title: 'New User Registered', message: 'A new user has registered on your platform.', time: new Date(), read: false },
+    { title: 'Booking Received', message: 'You have received a new booking.', time: new Date(), read: false },
+    { title: 'Payment Successful', message: 'The payment for booking #12345 has been successfully processed.', time: new Date(), read: true }
+  ];
+  unreadNotificationsCount: number = 0;
   // Grouped hoteliers
   approvedHoteliers: any[] = [];
   pendingHoteliers: any[] = [];
@@ -54,7 +63,9 @@ export class AdminHomeComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private adminService: AdminService
-  ) { }
+  ) {
+    this.updateUnreadCount();
+   }
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -116,6 +127,17 @@ export class AdminHomeComponent implements OnInit {
     });
   }
 
+  
+  markAsRead(notification: any): void {
+    notification.read = true;
+    this.updateUnreadCount();
+  }
+
+  // Method to update the count of unread notifications
+  updateUnreadCount(): void {
+    this.unreadNotificationsCount = this.notifications.filter(notification => !notification.read).length;
+  }
+
   rejectHotelier(id: number): void {
     Swal.fire({
       title: 'Reject Hotelier?',
@@ -154,6 +176,7 @@ export class AdminHomeComponent implements OnInit {
         // Filter users after sorting
         this.filterHotelierGroups();
         this.updateDataFromUsers(); //added to the table
+        this.showPendingToast();
         this.isLoading = false;
       },
       error: (err) => {
@@ -163,6 +186,20 @@ export class AdminHomeComponent implements OnInit {
     });
   }
 
+  showPendingToast(): void {
+    if (this.pendingHoteliers.length > 0) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'info',
+        title: `You have ${this.pendingHoteliers.length} pending hotelier request(s)!`,
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true
+      });
+    }
+  }
+  
 
   filterHotelierGroups(): void {
     const allHoteliers = this.users.filter(user =>

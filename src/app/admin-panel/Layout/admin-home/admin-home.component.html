@@ -49,15 +49,34 @@
       <div class="top-bar-left">
         <h1 class="dashboard-title">Platform Overview</h1>
       </div>
-
-      <div class="top-bar-right">
-        <button class="icon-btn">
-          <i class="fas fa-bell"></i>
-        </button>
-        <button class="icon-btn">
-          <i class="fas fa-user-circle"></i>
+      <div class="top-bar-right d-flex align-items-center">
+        <!-- Notification Bell Icon with Dropdown -->
+        <div class="dropdown me-3">
+          <button class="btn btn-light position-relative" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell fs-5"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ unreadNotificationsCount }}
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="width: 300px; max-height: 300px; overflow-y: auto;">
+            <li *ngIf="notifications.length === 0" class="dropdown-item text-center text-muted">No notifications</li>
+            <li *ngFor="let notif of notifications" (click)="markAsRead(notif)" class="dropdown-item" [class.bg-light]="notif.read">
+              <div class="d-flex flex-column">
+                <strong [class.text-muted]="notif.read">{{ notif.title }}</strong>
+                <small class="text-muted">{{ notif.time | date:'short' }}</small>
+                <span>{{ notif.message }}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+      
+        <!-- Profile Icon -->
+        <button class="btn btn-light">
+          <i class="fas fa-user-circle fs-5"></i>
         </button>
       </div>
+      
     </div>
 
 <!-- DASHBOARD VIEW WITH STATUS CARDS -->

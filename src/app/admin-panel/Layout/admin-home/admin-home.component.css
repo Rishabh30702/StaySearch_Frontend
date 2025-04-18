@@ -23,12 +23,49 @@
   text-align: center;
   border-bottom: 1px solid #34495e;
 }
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-icon {
+  position: relative;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #761461;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #ff3b3b;
+  color: white;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.dropdown-menu {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
 .nav-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
+.notification-container {
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
 
 .nav-list li {
   padding: 15px 20px;
