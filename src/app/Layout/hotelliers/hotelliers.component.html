@@ -31,31 +31,59 @@
       </div>
 
       <!-- Dashboard -->
-      <div *ngIf="selectedMenu === 'dashboard'" class="fade-in">
-        <div class="cards">
-          <div class="card" *ngFor="let stat of overviewStats">
+      <div *ngIf="selectedMenu === 'dashboard'" class="dashboard-container fade-in">
+
+        <!-- 📅 Date and Profile Title -->
+        <div class="top-bar">
+          <div class="date">{{ todayDate | date: 'EEE MMM dd y' }}</div>
+          <h2 class="profile-title">Profile</h2>
+        </div>
+      
+        <!-- 📊 Stats Cards -->
+        <div class="stats-section">
+          <div class="stat-card" *ngFor="let stat of overviewStats">
             <h3>{{ stat.label }}</h3>
             <p>{{ stat.value }}</p>
           </div>
-
         </div>
-<h2>Your Hotels</h2>
-<button class="add-room-btn"  (click)="selectedMenu = 'hotels'">
-  <i class="fas fa-plus"></i> Add a new Property
-        </button>
-
-<div class="hotel-cards">
-  <div class="card" *ngFor="let hotel of hotels">
-    <h3>{{ hotel.name }}</h3>
-    <p><strong>Location:</strong> {{ hotel.location }}</p>
-    <p><strong>Rating:</strong> {{ hotel.rating }} ⭐</p>
-    <p><strong>Amenities:</strong> {{ hotel.amenities.join(', ') }}</p>
-    
-    <button class="edit-bt" (click)="editHotel(hotel)">Edit Details</button>
-  </div>
-</div>
-        
+      
+        <!-- 🏨 Hotels Table -->
+        <div class="hotels-table-section">
+          <div class="table-header">
+            <h2><i class="fas fa-hotel"></i> Your Hotels</h2>
+            <button class="add-property-btn" (click)="selectedMenu = 'hotels'">
+              <i class="fas fa-plus-circle"></i> Add New Property
+            </button>
+          </div>
+      
+          <table class="hotels-table">
+            <thead>
+              <tr>
+                <th><i class="fas fa-building"></i> Hotel Name</th>
+                <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                <th><i class="fas fa-star"></i> Rating</th>
+                <th><i class="fas fa-concierge-bell"></i> Amenities</th>
+                <th><i class="fas fa-cogs"></i> Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let hotel of hotels">
+                <td>{{ hotel.name }}</td>
+                <td>{{ hotel.location }}</td>
+                <td>{{ hotel.rating }} ⭐</td>
+                <td>{{ hotel.amenities.join(', ') }}</td>
+                <td>
+                  <button class="edit-btn" (click)="editHotel(hotel)">
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      
       </div>
+      
 
              <!-- ------------ -->
     <!-- Hotel registration -->
