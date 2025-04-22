@@ -188,6 +188,29 @@ hotels = [
     return Array(rating).fill(0);
   }
 
+  //replying to feedback
+  showReplyModal = false;
+  selectedFeedback: any = null;
+  replyText = '';
+  
+  openReplyModal(feedback: any) {
+    this.selectedFeedback = feedback;
+    this.replyText = '';
+    this.showReplyModal = true;
+  }
+  
+  closeReplyModal() {
+    this.showReplyModal = false;
+  }
+  
+  sendReply() {
+    console.log('Replying to:', this.selectedFeedback);
+    console.log('Message:', this.replyText);
+    this.closeReplyModal();
+    // You can call a service here to send the reply to backend
+  }
+
+
   deleteFeedback(id: number) {
     Swal.fire({
       title: 'Are you sure?',
@@ -534,7 +557,7 @@ onFileSelected(event: Event) {
       // Note: For propertyPhotos, you might need to handle file upload separately
     };
     
-    this.imagePreviews =[];
+    this.imagePreviews =[]; //clearing the image preview after submission
     console.log('Property Form Data:', propertyData);
     alert('Form submitted successfully!');
     this.selectedMenu = 'rooms'
@@ -556,7 +579,27 @@ onFileSelected(event: Event) {
     }
   }
 
+// location from
 
+  latitude: number | null = null;
+  longitude: number | null = null;
+  
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.latitude = position.coords.latitude;
+          this.longitude = position.coords.longitude;
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('Unable to fetch location. Please enable location services.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  }
 
 
 

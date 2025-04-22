@@ -18,18 +18,18 @@
         <i class="fas fa-bed"></i>
         <span *ngIf="!isCollapsed">Hotels Management</span>
       </li>
-      <li (click)="switchView('content')">
+      <!-- <li (click)="switchView('content')"> 
         <i class="fas fa-file-alt"></i>
         <span *ngIf="!isCollapsed">Content Management</span>
-      </li>
+      </li> -->
       <li (click)="switchView('platform')">
         <i class="fas fa-eye"></i>
         <span *ngIf="!isCollapsed">Platform Moderation</span>
       </li>
-      <li (click)="switchView('security')">
+      <!-- <li (click)="switchView('security')"> 
         <i class="fas fa-shield-alt"></i>
         <span *ngIf="!isCollapsed">Security and Access Controls</span>
-      </li>
+      </li> -->
       <li (click)="switchView('plaform-content')">
         <i class="fas fa-sync"></i>
         <span *ngIf="!isCollapsed">Platform Content Updates</span>
@@ -146,12 +146,102 @@
 
       <h2 class="dashboard-title">Registered Users</h2>
 
-      <input
-      type="text"
-      placeholder="Search..."
-      [(ngModel)]="searchTerm"
-      class="search-input"
-    />
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Search bar on the left -->
+        <input
+          type="text"
+          placeholder="Search..."
+          [(ngModel)]="searchTerm"
+          class="form-control w-25"
+        />
+      
+        <!-- Add User button on the right -->
+        <button class="btn btn-primary" (click)="addUser=true">
+          <i class="fas fa-user-plus me-2"></i> Add New User
+        </button>
+
+      </div>
+      
+        <div *ngIf="addUser" class="newuser-modal">
+          <div class="newuser-content">
+
+            <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+          
+
+            <form (ngSubmit)="addnewUser()" #addUserForm="ngForm">
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="fullName"
+                    [(ngModel)]="newUser.fullName"
+                    required
+                  />
+                </div>
+      
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    [(ngModel)]="newUser.email"
+                    required
+                  />
+                </div>
+      
+                <div class="mb-3">
+                  <label class="form-label">Phone</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    name="phone"
+                    [(ngModel)]="newUser.phone"
+                    pattern="^[0-9]{10}$"
+                    maxlength="10"
+                    required
+                  />
+                </div>
+      
+                <div class="mb-3">
+                  <label class="form-label">Role</label>
+                  <select
+                    class="form-select"
+                    name="role"
+                    [(ngModel)]="newUser.role"
+                    required
+                  >
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="moderator">Moderator</option>
+                    <option value="user">User</option>
+                  </select>
+                </div>
+              </div>
+      
+              
+                     <button
+                      type="button"
+                      class="btn btn-secondary me-2"
+                      (click)="closeNewUserModal()"
+                      >
+                         Cancel
+                        </button>
+                   <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="addUserForm.invalid"
+                        >
+                         Add User
+                          </button>
+
+            
+            </form>
+        </div>
+       </div>
+    
     
     <div class="scrollable-table">
       <table class="userstb" border="2" cellpadding="8" cellspacing="0">
@@ -167,6 +257,8 @@
               <th>Role</th>
               <th>Edit</th>
               <th>Deletion</th>
+              <th>Change Role</th>
+              
             </tr>
           </thead>
         
@@ -237,19 +329,61 @@
                 <td> <button (click)="deleteUser(row.id)" class="delete-btn">
                   <i class="fas fa-trash"></i> Delete
                 </button></td>
+                <!-- user role change option -->
+                      <td>
+                <select (change)="updateUserRole($event,row.id)">
+                  <option value="" disabled selected>Select Role</option>
+                  <option *ngFor="let row of filteredData()" [value]="row.col7">
+                    {{ row.col7 }}
+                  </option>
+                </select>
+              </td>
               </tr>
             </tbody>
         </table>
-    </div>
+
     </div>
 
-    <!-- OTHER SECTIONS -->
-    <div *ngIf="activeView === 'content'">Content Management</div>
-    
+<!-- Audit Logs -->
+<section class="logs-section">
+  <h3>🧾 Audit Logs</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>User</th>
+        <th>Action</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of auditLogs">
+        <td>{{ log.timestamp }}</td>
+        <td>{{ log.user }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.details }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+
+    </div>
+
 
 <!-- hotel management -->
 <div *ngIf="activeView === 'hotels'">
   <h2>Hotels Management</h2>
+
+  <div class="status-dropdown">
+    <label for="status">Status:</label>
+    <select id="status" [(ngModel)]="status">
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="review">For Review</option>
+    </select>
+  </div>
 
   <div class="scrollable-table">
     <table class="userstb" border="2" cellpadding="8" cellspacing="0">
@@ -264,7 +398,9 @@
           <th>User ID</th>
           <th>Review</th>
           <th>Approval</th>
+         
           <th>Status</th>
+          <th>Reject</th>
          
         </tr>
       </thead>
@@ -279,68 +415,101 @@
           <td>{{ row.id }}</td>
           
             <td><button (click)="showModal = true" class="edit-btn">
-              <i class="fas fa-edit "></i> Review
+              <i class="fas fa-clipboard-check"></i> Review
             </button>
 
-            <div *ngIf="showModal" class="modal">
-              <div class="modal-content">
+            <div *ngIf="showModal" class="modal2">
+              <div class="modal-content2">
                 <span class="close-btn" (click)="closeModal()">&times;</span>
-                <h2>review form</h2>
-                <label>Hotel Name</label>
+                <h2>Hotel Registration Review</h2>
+              
+                <!-- Image Previews -->
+                <div class="image-preview-container d-flex justify-content-between mb-3">
+                  <img [src]="reviewData.photo1" alt="Hotel Photo 1" class="img-thumbnail" width="200" />
+                  <img [src]="reviewData.photo2" alt="Hotel Photo 2" class="img-thumbnail" width="200" />
+                </div>
+              
+                <!-- Uneditable Hotel Details -->
+                <label>Property Name</label>
                 <input
                   type="text"
-                  [(ngModel)]="updateData.fullName"
-                  #name="ngModel"
-                  name="HotelName"
-                  required
-                />
-                <label>Hotel Location</label>
-                <input
-                  type="text"
-                  [(ngModel)]="updateData.fullName"
-                  #name="ngModel"
-                  name="HotelLocation"
-                  required
+                  [value]="reviewData.propertyName"
+                  readonly
+                  class="form-control"
                 />
               
-                <label>Contact us</label>
+                <label>Address</label>
+                <input
+                  type="text"
+                  [value]="reviewData.address"
+                  readonly
+                  class="form-control"
+                />
+              
+                <label>Owner Name</label>
+                <input
+                  type="text"
+                  [value]="reviewData.ownerName"
+                  readonly
+                  class="form-control"
+                />
+              
+                <label>Phone Number</label>
                 <input
                   type="tel"
-                  [(ngModel)]="updateData.phoneNumber"
-                  name="contactus"
-                  pattern="^[0-9]{10}$"
-                  #phoneNumber="ngModel"
-                  maxlength="10"
-                  required
+                  [value]="reviewData.phoneNumber"
+                  readonly
+                  class="form-control"
                 />
-               
               
-                <label>Facilites</label>
+                <label>Email</label>
                 <input
-                  type="text"
-                  [(ngModel)]="updateData.fullName"
-                  #name="ngModel"
-                  name="Facilites"
-                  required
-                /> 
-                <button 
-                type="submit" 
-                (click)="review()" 
-                class="submit-btn">
-                Done
-              </button>
+                  type="email"
+                  [value]="reviewData.email"
+                  readonly
+                  class="form-control"
+                />
               
-                
+                <!-- Action Button -->
+                <button 
+                  type="submit" 
+                  (click)="review()" 
+                  class="btn btn-success mt-3">
+                  Done
+                </button>
               </div>
+              
             </div>
 
           </td>
           <td>
             <button (click)="approveHotel()" class="approve-btn">
-              <i class="fas fa-trash"></i> Approve
+              <i class="fas fa-check-circle"></i> Approve
             </button>
           </td>
           <td>{{ row.status }}</td>
+          <td>
+            <button (click)="rejectModal=true" > 
+              Reject With message
+            </button>
+
+            
+            <div *ngIf="rejectModal" class="modal">
+              <div class="modal-content">
+                <span class="close-btn" (click)="closerejectModal()">&times;</span>
+                <h2>Rejection Page</h2>
+                <label>Message for hotelliare</label>
+                <textarea class="form-control my-3" rows="6" placeholder="Enter your message here..."></textarea>
+
+                <button class="btn btn-outline-danger mt-2 ms-2">
+                  <i class="fas fa-times me-1"></i> Reject
+                </button>
+
+
+              </div>
+            </div>
+
+          </td>
         </tr>
       </tbody>
     </table>
@@ -348,9 +517,132 @@
 
 
     </div>
-    <div *ngIf="activeView === 'platform'">Platform Moderation</div>
-    <div *ngIf="activeView === 'security'">Security and Access Controls</div>
-    <div *ngIf="activeView === 'plaform-content'">Platform Content Updates</div>
+
+
+
+    <div *ngIf="activeView === 'platform'" class="moderation-section">
+      <h2 class="dashboard-title">Comments & Reviews Moderation</h2>
+    
+      <input
+        type="text"
+        placeholder="Search comments..."
+        [(ngModel)]="commentSearchTerm"
+        class="search-input"
+      />
+    
+      <div class="scrollable-table">
+        <table class="userstb" border="2" cellpadding="8" cellspacing="0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>User</th>
+              <th>Comment</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let comment of filteredComments(); let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ comment.username }}</td>
+              <td>
+                <label *ngIf="!editclick">{{ comment.text }}</label>
+                <textarea
+                *ngIf="editclick"
+                [(ngModel)]="comment.text" rows="3" class="form-control" (change)="editclick = false"></textarea>
+              </td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-warning text-dark': comment.status === 'pending',
+                    'bg-success': comment.status === 'approved',
+                    
+                  }"
+                >
+                  {{ comment.status | titlecase }}
+                </span>
+              </td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button class="btn btn-sm btn-success mb-2" (click)="onApprove(comment.id)">Approve</button>
+                  
+                  <button class="btn btn-sm btn-warning mb-2" (click)="onEdit(comment.id)">Edit</button>
+
+                  <button class="btn btn-sm btn-danger mb-2" (click)="onDelete(comment.id)">Delete</button>
+                </div>
+              </td>
+              
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    
+  
+    <div *ngIf="activeView === 'plaform-content'">
+
+
+      <div class="content-management-container">
+
+        <h2>Content Management</h2>
+      
+        <!-- 🔄 Content Updates Section -->
+        <section class="content-update-section">
+          <h3>Update Web Content</h3>
+          <form (ngSubmit)="submitContentUpdate()">
+            <div class="slc">
+              <label for="contentType">Content Type</label>
+              <select class="con" [(ngModel)]="content.type" name="contentType" required>
+                <option value="banner">Homepage Banner</option>
+                <option value="info">Informational Page</option>
+                <option value="promo">Promotional Material</option>
+              </select>
+            </div>
+      
+            <div class="form-group">
+              <label for="contentTitle">Title</label>
+              <input type="text" [(ngModel)]="content.title" name="contentTitle" required />
+            </div>
+      
+            <div class="form-group">
+              <label for="contentBody">Content</label>
+              <textarea [(ngModel)]="content.body" name="contentBody" rows="5" required></textarea>
+            </div>
+      
+            <div class="form-group">
+              <label for="imageUpload">Upload Image (optional)</label>
+              <input type="file" (change)="onImageUpload($event)" />
+            </div>
+      
+            <button type="submit" class="btn btn-primary">Update Content</button>
+          </form>
+        </section>
+      
+        <hr />
+      
+        <!-- 🕒 Content Scheduling Section -->
+        <section class="content-scheduling-section">
+          <h3>Schedule Content Change</h3>
+          <form (ngSubmit)="scheduleContent()">
+            <div class="form-group">
+              <label for="scheduledContent">Content Title</label>
+              <input type="text" [(ngModel)]="scheduledContent.title" name="scheduledContent" required />
+            </div>
+      
+            <div class="form-group">
+              <label for="scheduleDate">Schedule Date & Time</label>
+              <input type="datetime-local" [(ngModel)]="scheduledContent.scheduleTime" name="scheduleDate" required />
+            </div>
+      
+            <button type="submit" class="btn btn-success">Schedule</button>
+          </form>
+        </section>
+      </div>
+
+
+    </div>
     <div *ngIf="activeView === 'configuration'">Configuration Settings</div>
 
   </main>

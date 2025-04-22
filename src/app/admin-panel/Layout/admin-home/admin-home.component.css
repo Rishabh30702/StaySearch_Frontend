@@ -121,6 +121,7 @@
   flex-grow: 1;
   min-height: 100vh;
   box-sizing: border-box;
+  overflow: auto;
 }
 
 .dashboard-title {
@@ -415,3 +416,130 @@ input {
   }
 }
 
+.status-dropdown select {
+  border: 1px solid #007BFF; /* Thin blue border */
+  padding: 6px 12px;
+  margin: 10px 10px;
+  border-radius: 4px;
+  background-color: white;
+  color: #333;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.status-dropdown select:focus {
+  border-color: #0056b3;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+
+/* security and access controls */
+.security-page {
+  padding: 2rem;
+}
+
+.roles-section, .logs-section {
+  margin-bottom: 2rem;
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.security {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.headsec {
+  background-color: #333;
+  color: white;
+}
+
+
+/* Content Management */
+
+.content-management-container {
+  margin: 10px 10px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+}
+
+form {
+  margin-top: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid ; /* blue thin border */
+  border-radius: 4px;
+}
+.slc{
+  padding: 10px;
+    display: flex;
+    justify-content: flex-start; /* aligns all items to the start (left) */
+    gap: 16px; /* change this value as per the spacing you want between items */
+    align-items: center; /* optional: vertical alignment */
+}
+.con{
+  width: 30%;
+  padding: 8px 10px;
+  border: 1px solid ; /* blue thin border */
+  border-radius: 4px;
+}
+
+
+.modal2{
+
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-content2 {
+    background: white;
+    padding: 20px;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+  }
+  
+
+
+
+  .newuser-modal{
+
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+ 
+  .newuser-content {
+    background: white;
+    padding: 20px;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+  }
+  
