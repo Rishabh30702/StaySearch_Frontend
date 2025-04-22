@@ -5,6 +5,8 @@ import { AuthService } from '../../../Core/Services/AuthService/services/auth.se
 import { SpinnerComponent } from "../../../Core/spinner/spinner.component";
 import { AdminService } from './Admin.Service';
 import { FormsModule } from '@angular/forms';
+import { FeedbackService } from '../../../Layout/hotelliers/feedback.service';
+
 
 @Component({
   selector: 'app-admin-home',
@@ -20,6 +22,19 @@ export class AdminHomeComponent implements OnInit {
 
   users: any[] = [];
 
+
+  // security and access controls
+
+
+  auditLogs = [
+    { timestamp: '2025-04-18 10:23', user: 'Alice', action: 'Login', details: 'Successful login' },
+    { timestamp: '2025-04-18 11:05', user: 'Bob', action: 'Changed Role', details: 'Changed role of Alice to Admin' }
+  ];
+  
+
+  status: string = 'pending';
+
+
   hotels = [
     {
       Sno: 1,
@@ -27,8 +42,12 @@ export class AdminHomeComponent implements OnInit {
       col5: 'Data', id: 1 , col8: 'user', col9: 'Data', status: 'pending'
    
     },
-    // Structure of user data table
+    // Structure of hotels data table
   ];
+
+
+  rejectModal: boolean =false;
+
 
 
   showNotificationDropdown = false;
@@ -62,13 +81,16 @@ export class AdminHomeComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private feedbackService: FeedbackService
+   
   ) {
     this.updateUnreadCount();
    }
 
   ngOnInit(): void {
     this.fetchUsers();
+    this.fetchComments();
   }
 
   toggleGroup(group: string): void {
@@ -389,7 +411,62 @@ filteredData() {
     )
   );
 }
-//hotel approval 
+
+
+
+addUser = false;
+
+closeNewUserModal()
+{
+  this.addUser = false;
+  this.newUser.fullName = ""
+  this.newUser.email = ""
+  this.newUser.phone = ""
+  this.newUser.role = ""
+}
+
+newUser = {
+  fullName: '',
+  email: '',
+  phone: '',
+  role: ''
+};
+
+addnewUser() {
+  console.log('User added:', this.newUser);
+  // Optionally reset form and close modal manually if needed
+
+
+  this.addUser = false;
+  this.newUser.fullName = ""
+  this.newUser.email = ""
+  this.newUser.phone = ""
+  this.newUser.role = ""
+}
+
+
+
+
+//hotel approval section
+
+reviewData = {
+  propertyName: 'The Royal Grand Palace',
+  address: '123 Palace Road, Heritage Town, Jaipur, Rajasthan',
+  ownerName: 'Mr. Rajiv Sharma',
+  phoneNumber: '9876543210',
+  email: 'royalgrand@gmail.com',
+  photo1: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/18/07/50/holiday-inn-agra-facade.jpg?w=1200&h=-1&s=1',
+  photo2: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/18/07/50/holiday-inn-agra-facade.jpg?w=1200&h=-1&s=1'
+};
+
+
+
+closerejectModal()
+{
+  this.rejectModal = false;
+}
+
+
 approveHotel(){
   console.log("hotel aaproved");
 
@@ -400,5 +477,124 @@ review(){
   console.log("review success");
 
 }
+
+//security and access controls
+updateUserRole(event: Event,currentUserid: number) {
+  const selectedValue = (event.target as HTMLSelectElement).value;
+  console.log(currentUserid);
+ alert( selectedValue);
+  // Call API here to persist the change
+  // this.adminService.updateRole(user.id, user.role).subscribe(...)
+}
+
+
+
+// Platform Moderatiion section
+
+editclick = false;
+
+commentSearchTerm = '';
+
+comments = [
+  { id: 1, username: 'user1', text: 'Nice hotel!', status: 'pending' },
+  
+  // Add more dummy comments as needed
+];
+
+
+fetchComments(): void {
+  this.feedbackService.getAllFeedbacks().subscribe({
+    next: (data) => {
+      this.comments = data.map((item: any) => ({
+        id: item.id,
+        username: item.user.fullname || item.user.username,
+        text: item.description || 'No comments provided.',
+        status: "pending"
+      }));
+    },
+    error: (err) => {
+      console.error('Error fetching comments:', err);
+    }
+  });
+}
+
+// Filter comments based on search term
+filteredComments() {
+  return this.comments.filter(c =>
+    c.text.toLowerCase().includes(this.commentSearchTerm.toLowerCase())
+  );
+}
+
+// Approve comment
+onApprove(id: number) {
+  const comment = this.comments.find(c => c.id === id);
+  if (comment) {
+    comment.status = 'approved';
+    console.log(`Approved comment ID: ${id}`);
+    alert(`Approved comment from ${comment.username}`);
+  }
+}
+
+// Delete comment
+onDelete(id: number) {
+
+  Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will not be able to recover this feedback!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.feedbackService.deleteFeedback(id, { responseType: 'text' as 'json' }).subscribe({
+            next: () => {
+              this.comments = this.comments.filter(f => f.id !== id);
+              Swal.fire('Deleted!', 'Feedback has been deleted.', 'success');
+            },
+            error: () => {
+              Swal.fire('Error!', 'Could not delete feedback.', 'error');
+            }
+          });
+        }
+      });
+  
+}
+
+// edit comment
+onEdit(id: number) {
+ this.editclick = true;
+}
+
+
+
+// content updates
+
+content = {
+  type: '',
+  title: '',
+  body: '',
+  image: null
+};
+
+scheduledContent = {
+  title: '',
+  scheduleTime: ''
+};
+
+onImageUpload(event: any) {
+  this.content.image = event.target.files[0];
+}
+
+submitContentUpdate() {
+  // send `this.content` to backend
+  console.log('Submitting content update:', this.content);
+}
+
+scheduleContent() {
+  // send `this.scheduledContent` to backend
+  console.log('Scheduling content:', this.scheduledContent);
+}
+
 
 }

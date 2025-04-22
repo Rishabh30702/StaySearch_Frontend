@@ -86,7 +86,7 @@
       
 
              <!-- ------------ -->
-    <!-- Hotel registration -->
+     <!-- Hotel registration -->
      <!-- ------------ -->
      <div *ngIf="selectedMenu === 'hotels'" class="fade-in">
       <div class="form-container">
@@ -150,6 +150,18 @@
                 <option value="village_d">Agra (Western)</option>
                 
               </select>
+
+              <button class="loc-btn" type="button" (click)="getLocation()"> My Hotel Location <i class="fas fa-location-arrow"></i></button>
+
+          <div class="form-group">
+          <label>Latitude:</label>
+          <input type="text" [value]="latitude" readonly />
+           </div>
+
+          <div class="form-group">
+           <label>Longitude:</label>
+          <input type="text" [value]="longitude" readonly />
+              </div>
             </div>
           </fieldset>
     
@@ -291,7 +303,7 @@
     
         </form>
       </div>
-    </div>
+     </div>
 
       <!-- Rooms -->
       <div *ngIf="selectedMenu === 'rooms'" class="fade-in">
@@ -385,19 +397,19 @@
           <button (click)="createDeal()">Add Deal</button>
         </div>
 
-<!-- Deal Cards -->
-<div class="rooms">
-  <div class="room" *ngFor="let room of filteredDeals; let i = index">
-    <span class="badge">DEAL</span>
-    <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
+      <!-- Deal Cards -->
+      <div class="rooms">
+     <div class="room" *ngFor="let room of filteredDeals; let i = index">
+     <span class="badge">DEAL</span>
+     <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
 
-    <h4>{{ room.name }}</h4>
-    <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
-    <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
+     <h4>{{ room.name }}</h4>
+     <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
+     <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
 
-    <!-- Description with toggle -->
-    <div class="description-container" *ngIf="room.description">
-      <p class="description-text" [ngClass]="{ 'clamped': !room.showFullDesc }">
+     <!-- Description with toggle -->
+      <div class="description-container" *ngIf="room.description">
+       <p class="description-text" [ngClass]="{ 'clamped': !room.showFullDesc }">
         <strong>Description:</strong> {{ room.description }}
       </p>
 
@@ -405,15 +417,15 @@
         class="toggle-btn">
         {{ room.showFullDesc ? 'Show Less ▲' : 'Show More ▼' }}
       </button>
-    </div>
+     </div>
 
-    <!-- Buttons -->
-    <div class="room-actions">
+      <!-- Buttons -->
+      <div class="room-actions">
       <button (click)="editRoomById(room.id!)" class="edit-btn">✏️ Edit</button>
       <button (click)="deleteRoom(room.id!)" class="delete-btn">🗑️ Delete</button>
-    </div>
-  </div>
-</div>
+      </div>
+     </div>
+     </div>
 
       </div>
 
@@ -439,9 +451,9 @@
       </div>
 
 
-    <!-- Feedbacks and reviews -->
-    <div *ngIf="selectedMenu === 'feedbacks'" class="fade-in feedback-wrapper">
-      <h2 class="section-title">🌟 Feedback & Reviews</h2>
+      <!-- Feedbacks and reviews -->
+      <div *ngIf="selectedMenu === 'feedbacks'" class="fade-in feedback-wrapper">
+       <h2 class="section-title">🌟 Feedback & Reviews</h2>
     
       <div class="feedbacks">
         <div class="feedback-card animate-card" *ngFor="let feedback of feedbacks">
@@ -482,22 +494,43 @@
           <button (click)="deleteFeedback(feedback.id)" class="btn btn-danger mt-2">
             <i class="fas fa-trash"></i> Delete
           </button>
+
+          <button  class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)">
+            <i class="fas fa-reply"></i> Reply
+          </button>
+
+
+
+          
         </div>
       </div>
-    </div>
+      </div>
     
+     <div class="modal" *ngIf="showReplyModal">
+      <div class="modal-content">
+        <span class="close-btn" (click)="closeReplyModal()">&times;</span>
+        <h3>Reply to Feedback</h3>
     
+        <p><strong>User:</strong> {{ selectedFeedback.user.fullname || selectedFeedback.user.username }}</p>
+        <p><strong>Comment:</strong> {{ selectedFeedback?.description }}</p>
+    
+        <textarea [(ngModel)]="replyText" rows="4" class="form-control mb-3" placeholder="Write your reply..."></textarea>
+    
+        <button class="btn btn-secondary mb-2" (click)="closeReplyModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="sendReply()">Send Reply</button>
+      </div>
+     </div>
     
     
     
 
-    </div>
+     </div>
 
 
-    <!-- =============================================== -->
-    <!-- Edit Room Popup Form -->
-    <!-- =============================================== -->
-    <div *ngIf="editIndex !== null" class="edit-room-popup">
+      <!-- =============================================== -->
+      <!-- Edit Room Popup Form -->
+      <!-- =============================================== -->
+      <div *ngIf="editIndex !== null" class="edit-room-popup">
       <div class="edit-room-modal">
         <h3>Edit Room Details</h3>
 
@@ -525,7 +558,7 @@
           <button (click)="cancelEditRoomPopup()">❌ Cancel</button>
         </div>
       </div>
-    </div>
+      </div>
 
 
   </div>
