@@ -51,7 +51,7 @@
         <div class="hotels-table-section">
           <div class="table-header">
             <h2><i class="fas fa-hotel"></i> Your Hotels</h2>
-            <button class="add-property-btn" (click)="selectedMenu = 'hotels'">
+            <button class="add-property-btn" (click)="addNewProperty()">
               <i class="fas fa-plus-circle"></i> Add New Property
             </button>
           </div>
@@ -151,20 +151,43 @@
                 
               </select>
 
-              <button class="loc-btn" type="button" (click)="getLocation()"> My Hotel Location <i class="fas fa-location-arrow"></i></button>
 
-          <div class="form-group">
-          <label>Latitude:</label>
-          <input type="text" [value]="latitude" readonly />
-           </div>
-
-          <div class="form-group">
-           <label>Longitude:</label>
-          <input type="text" [value]="longitude" readonly />
-              </div>
+           
+          <div class="search-container">
+            <input
+              type="text"
+              placeholder="Search location"
+              [(ngModel)]="searchQuery"
+              name="searchQuery"
+              (input)="onSearchChange()"
+              class="search-input"
+            />
+            <ul *ngIf="suggestions.length" class="suggestions">
+              <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+                {{ suggestion.display_name }}
+              </li>
+            </ul>
+          </div>
+              
             </div>
           </fieldset>
     
+
+
+
+          <div class="map-container" #mapContainer id="map" style="height: 400px;"></div>
+
+          <div class="form-group">
+            <label>Latitude:</label>
+            <input type="text" [value]="latitude" readonly />
+          </div>
+          
+          <div class="form-group">
+            <label>Longitude:</label>
+            <input type="text" [value]="longitude" readonly />
+          </div>
+
+
           <!-- Property Photos -->
           <fieldset>
             <legend>Property Photos</legend>
