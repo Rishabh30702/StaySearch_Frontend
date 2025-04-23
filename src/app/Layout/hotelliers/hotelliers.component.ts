@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, ViewChild,  } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RoomService } from './room.service';
@@ -8,6 +8,9 @@ import Swal from 'sweetalert2';
 import { Feedback } from './feedback.modal';
 import { FeedbackService } from './feedback.service';
 import { SpinnerComponent } from '../../Core/spinner/spinner.component';
+import * as L from 'leaflet';
+import 'leaflet-control-geocoder';
+import { LeafletMapService } from './services/leaflet-map.service';
 
 @Component({
   selector: 'app-hotelliers',
@@ -23,6 +26,11 @@ export class HotelliersComponent implements OnInit,OnDestroy {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
   }
+
+  latitude: number = 0;
+  longitude: number = 0;
+  mapInitialized = false;
+
   
 isLoading: boolean = false;
 
@@ -110,15 +118,18 @@ hotels = [
   selectedFile!: File;
 
   constructor(private roomService: RoomService, private http: HttpClient,
-    private feedbackService: FeedbackService) {}
+    private feedbackService: FeedbackService,
+    private mapService: LeafletMapService
+  ) {}
 
 
   ngOnDestroy(): void {
+    this.mapService.destroyMap();
     this.destroy();
   }
 
   ngOnInit(): void {
-    
+ 
     this.loadRooms();
     this.fetchFeedbacks();
 
@@ -150,6 +161,8 @@ hotels = [
   }
 
   }
+  
+
 
   destroy(){
     Swal.fire({
@@ -242,10 +255,35 @@ hotels = [
   }
 
   selectMenu(menu: string) {
-    this.selectedMenu = menu;
-    if (menu === 'rooms') {
-      this.loadRooms(); // Load fresh data from DB when "rooms" is selected
-    }
+    
+      if (this.selectedMenu === 'hotels' && menu !== 'hotels') {
+        this.mapService.destroyMap();
+      }
+    
+      this.selectedMenu = menu;
+    
+      if (menu === 'rooms') {
+        this.loadRooms();
+      }
+    
+      if (menu === 'hotels') {
+        setTimeout(() => {
+          const container = document.getElementById('map');
+          if (container) {
+            this.mapService.initializeMap('map', [28.6139, 77.2090]);
+            this.mapService.onMarkerDrag((latlng) => {
+              this.latitude = latlng.lat;
+              this.longitude = latlng.lng;
+            });
+    
+            setTimeout(() => this.mapService.invalidateSize(), 300);
+          }
+        }, 200);
+      }
+    
+    
+
+
   }
 
   toggleProfileDropdown() {
@@ -356,6 +394,7 @@ onFileSelected(event: Event) {
         next: (addedRoom: Room) => {
           this.rooms.push(addedRoom);
           if(this.newRoom.deal){
+            
             this.selectedMenu = 'deal';
            }
           this.newRoom = { name: '', available: 0, total: 0, price: 0, deal: false, imageUrl: '' };
@@ -578,29 +617,48 @@ onFileSelected(event: Event) {
       });
     }
   }
+ 
 
-// location from
-
-  latitude: number | null = null;
-  longitude: number | null = null;
-  
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          alert('Unable to fetch location. Please enable location services.');
-        }
-      );
-    } else {
-      alert('Geolocation is not supported by this browser.');
-    }
+  // add proprty button on dashboard
+  addNewProperty(){
+    this.selectMenu('hotels');
+    this.selectedMenu = 'hotels'
   }
 
+
+  searchQuery = '';
+  suggestions: any[] = [];
+  
+  onSearchChange() {
+    if (this.searchQuery.length < 3) {
+      this.suggestions = [];
+      return;
+    }
+  
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.searchQuery)}`)
+      .then(res => res.json())
+      .then(data => {
+        this.suggestions = data;
+      });
+  }
+  
+  selectSuggestion(suggestion: any) {
+    this.searchQuery = suggestion.display_name;
+    this.suggestions = [];
+  
+    const lat = parseFloat(suggestion.lat);
+    const lon = parseFloat(suggestion.lon);
+  
+    this.mapService.setMarker([lat, lon]);
+    const map = this.mapService.getMap();
+    if (map) {
+      map.setView([lat, lon], 15);
+    }
+  
+    this.latitude = lat;
+    this.longitude = lon;
+  }
+  
 
 
 

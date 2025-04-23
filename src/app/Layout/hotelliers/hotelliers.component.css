@@ -1070,16 +1070,47 @@ button[type="submit"]:active {
 }
 
 
-.loc-btn{
-  margin: 10px 10px;
-  background-color: #5a104c;
-  color: #fff;
-  padding: 0.7rem 1.2rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+#map {
+  height: 400px;
+  width: 100% ;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+}
+
+
+.search-container {
+  position: relative;
+  width: 300px;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  margin-top:20px;
+}
+
+.suggestions {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  list-style: none;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.suggestions li {
+  padding: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+}
+
+.suggestions li:hover {
+  background-color: #eee;
 }
 
 

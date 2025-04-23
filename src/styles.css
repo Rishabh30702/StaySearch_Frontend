@@ -1,3 +1,8 @@
+#map {
+    height: 400px;
+    width: 100%;
+  }
+
 /* Hide the scrollbar completely */
 ::-webkit-scrollbar {
     display: none;
