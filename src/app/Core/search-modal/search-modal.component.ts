@@ -117,23 +117,35 @@ export class SearchModalComponent implements OnInit {
     );
   }
 
-  login() {
+  login(): void {
     this.isLoading = true;
-   
-    this.authService.login({ username: this.user.username, password: this.user.password }).subscribe(
-      (response: any) => {
-        localStorage.setItem('token', response.token);
-        Swal.fire({title:'Success.',text:'Welcome to StaySearch. Login success.', icon:'success'})
-        this.router.navigate(['/listings']);
-        this.isLoading = false;
-      },
-      error => {
-        this.message = 'Invalid credentials';
-        Swal.fire({title:'Failed.',text:'Login failed.', icon:'error'})
-        this.isLoading = false;
-      }
-    );
-  }
-  
 
+    this.authService
+      .login({ username: this.user.username, password: this.user.password })
+      .subscribe(
+        (resp: any) => {
+          localStorage.setItem('token', resp.token);
+          Swal.fire({ title: 'Success', text: 'Welcome to StaySearch.', icon: 'success' });
+
+          /* ---------- decide where to land ---------- */
+          const cameFromOverview = this.router.url.startsWith('/listings/overview');
+
+          if (cameFromOverview) {
+            // just close the search modal; stay on Overview
+            this.close.emit();             // whatever method hides the modal
+            // You may emit an event here so OverviewComponent knows login succeeded
+          } else {
+            // user opened the modal from Home / elsewhere → go to Listings
+            this.router.navigate(['/listings']);
+          }
+          /* ----------------------------------------- */
+
+          this.isLoading = false;
+        },
+        _err => {
+          Swal.fire({ title: 'Failed', text: 'Invalid credentials.', icon: 'error' });
+          this.isLoading = false;
+        }
+      );
+  }
 }
