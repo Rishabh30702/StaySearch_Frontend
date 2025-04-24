@@ -14,7 +14,7 @@
         </div>
       </div>
 
-
+      <app-search-modal *ngIf="showModal" [showModal]="showModal" (close)="closeModal()"></app-search-modal>
 
 
       <!-- Tabs Section (Overview, Amenities, Rooms, Location) -->

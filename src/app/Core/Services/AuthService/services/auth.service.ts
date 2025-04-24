@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,24 @@ export class AuthService {
   private testUrl = 'http://localhost:8080'; // Localhost URL for testing
 
   constructor(private http: HttpClient) { }
+
+  private readonly _loggedIn$ = new BehaviorSubject<boolean>(this.isLoggedIn());
+
+  loggedIn$ = this._loggedIn$.asObservable();
+
+  login1(userData: { username: string; password: string }) {
+    return this.http.post(`${this.baseUrl}/auth/login`, userData).pipe(
+      tap((resp: any) => {
+        localStorage.setItem('token', resp.token);
+        this._loggedIn$.next(true);            // 🔔 emit logged‑in
+      })
+    );
+  }
+
+  logout2(): void {
+    localStorage.removeItem('token');
+    this._loggedIn$.next(false);               // 🔔 emit logged‑out
+  }
 
   private getAuthHeaders() {
     const token = this.getToken();

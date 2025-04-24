@@ -7,10 +7,12 @@ import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { FeedbackServiceService } from '../../Core/Services/feedback-service.service';
+import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
+import { SearchModalComponent } from "../../Core/search-modal/search-modal.component";
 
 @Component({
   selector: 'app-overview',
-  imports: [CommonModule, SpinnerComponent,FormsModule],
+  imports: [CommonModule, SpinnerComponent, FormsModule, SearchModalComponent],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
 })
@@ -24,6 +26,8 @@ export class OverviewComponent implements OnInit {
   activeTab: string = 'overview';
   expandedRooms: { [key: string]: boolean } = {};
   isLoading: boolean = true;
+  isLoggedIn = false;
+  showModal: boolean = false;
   @ViewChildren('desc') descriptions!: QueryList<ElementRef>;
 
   isFeedbackPopupVisible: boolean = false;
@@ -40,7 +44,7 @@ amenities = [
 stars = Array(5).fill(0);
   
   constructor(private route: ActivatedRoute, private http: HttpClient,
-    private feedbackService:FeedbackServiceService
+    private feedbackService:FeedbackServiceService, private authService:AuthService
   ) {}
 
   ngOnInit(): void {
@@ -180,23 +184,50 @@ rateHotel(rating: number) {
 }
 
 // Function to submit feedback
-submitFeedback() {
+submitFeedback(): void {
+  /* ---------- 1. Guard: must be logged in ---------- */
+  if (!this.authService.isLoggedIn()) {
+    Swal.fire({
+      title: 'Please log in',
+      text: 'You need to sign in to submit feedback.',
+      icon: 'warning',
+      confirmButtonText: 'OK',
+      cancelButtonAriaLabel: 'Cancel',
+      showCancelButton: true,
+      showCloseButton: true,
+      allowOutsideClick: false
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.toggleModal();   // open your login modal
+      }
+    });
+    return;                   // ⛔ stop here until they really log in
+  }
+
+  /* ---------- 2. Already logged in ---------- */
+  this._submit();
+}
+
+/* ---------- core submission logic ---------- */
+private _submit(): void {
   this.isLoading = true;
 
+  // Check if user has provided a rating
   if (!this.hotelRating) {
     Swal.fire({ title: 'Warning', text: 'Please give a rating before submitting!', icon: 'warning' });
     this.isLoading = false;
     return;
   }
 
-  if (!this.hotel || !this.hotel.name) {
+  // Check if hotel data is available
+  if (!this.hotel?.name) {
     Swal.fire({ title: 'Error', text: 'Hotel data is missing. Please try again!', icon: 'error' });
     this.isLoading = false;
     return;
   }
 
+  // Prepare the feedback data
   const selectedAmenities = this.amenities.filter(a => a.selected).map(a => a.name);
-
   const feedbackData = {
     hotelName: this.hotel.name,
     likedAmenities: selectedAmenities,
@@ -204,30 +235,40 @@ submitFeedback() {
     description: this.feedbackText
   };
 
-  console.log("Submitting feedback:", feedbackData);
-
+  // Submit the feedback
   this.feedbackService.submitFeedback(feedbackData).subscribe({
-    next: (response) => {
-      console.log("Feedback submitted successfully!", response);
+    next: () => {
       Swal.fire({ title: 'Success', text: 'Thank you for your feedback!', icon: 'success' });
 
-      this.isFeedbackPopupVisible = false;
-      document.documentElement.style.overflow = "";
+      // Reset the feedback form after success
+      this._resetForm();
 
-      // Reset form
-      this.hotelRating = 0;
-      this.amenities.forEach(a => a.selected = false);
-      this.feedbackText = "";
-      this.isLoading = false;
     },
-    error: (error) => {
-      console.error("Error submitting feedback", error);
+    error: () => {
       Swal.fire({ title: 'Error', text: 'Failed to submit feedback. Please try again!', icon: 'error' });
       this.isLoading = false;
     }
   });
 }
 
+/* ---------- Reset the form after successful submission ---------- */
+private _resetForm(): void {
+  this.hotelRating = 0;
+  this.amenities.forEach(a => a.selected = false);
+  this.feedbackText = '';
+  this.isLoading = false;
+}
+
+
+toggleModal(): void {
+  if (!this.authService.isLoggedIn()) {
+    this.showModal = !this.showModal;
+  }
+}
+
+closeModal(): void {
+  this.showModal = false;
+}
 
 
 }
