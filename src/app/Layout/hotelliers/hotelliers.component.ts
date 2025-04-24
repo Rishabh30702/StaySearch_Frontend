@@ -60,6 +60,16 @@ isLoading: boolean = false;
   amenitiesTouched: boolean = false; 
   imagePreviews: string[] = [];
   
+  roomImagePreview: string | null = null;
+  poolImagePreview: string | null = null;
+  lobbyImagePreview: string | null = null;
+
+  subImages: string[] = [];
+
+  selectedProperty: string = ''; 
+  atLeastOnePropertyType: boolean = false; 
+  propertyTypeTouched: boolean = false;
+  
   // Example array of hotels
 hotels = [
   {
@@ -568,9 +578,22 @@ onFileSelected(event: Event) {
     this.atLeastOneAmenitySelected = this.selectedAmenities.length > 0;
   }
 
+  onPropertyChange(event: any) {
+    this.propertyTypeTouched = true;
+    this.selectedProperty = event.target.value;
+    
+    // If a value is selected, set `atLeastOnePropertyType` to true.
+    this.atLeastOnePropertyType = !!this.selectedProperty;
+  }
+
   log() {
     if (!this.atLeastOneAmenitySelected) {
       alert('Please select at least one amenity.');
+      return;
+    }
+
+    if (!this.atLeastOnePropertyType) {
+      alert('Please select the type of Property.');
       return;
     }
   
@@ -582,17 +605,20 @@ onFileSelected(event: Event) {
     }
   
     const propertyData = {
-      propertyName: form.value.propertyName,
-      propertyAddress: form.value.propertyAddress,
-      district: form.value.district,
-      village: form.value.village,
-      shortDescription: form.value.shortDescription,
-      longDescription: form.value.longDescription,
-      amenities: this.selectedAmenities,
-      contact: {
-        phone: form.value.phone,
-        email: form.value.email
-      }
+      name:            form.value.propertyName,           // renamed
+  address:         form.value.propertyAddress,        // or concatenate with district/village
+  destination:     form.value.district,               // or whichever field holds the city
+  description:     form.value.longDescription,        // choose long or short
+  amenities:       this.selectedAmenities,            // string[]
+  lat:             this.latitude,                     // correct key
+  lng:             this.longitude,                    // correct key
+  imageUrl:        this.imagePreviews[0] ?? '',       // hero / cover image
+  accommodationType: this.selectedProperty,           // "Hotel", "Private", ...
+  subImages:       this.subImages.filter(Boolean),    // remove null/undefined
+  contact: {
+    phone:         form.value.phone,
+    email:         form.value.email
+  }
       // Note: For propertyPhotos, you might need to handle file upload separately
     };
     
@@ -618,6 +644,51 @@ onFileSelected(event: Event) {
     }
   }
  
+
+  previewRoomImage(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.roomImagePreview = e.target.result;
+        if (this.roomImagePreview) {
+          this.subImages[0] = this.roomImagePreview; // Store the image in subImages array
+        }
+      };
+      reader.readAsDataURL(file); // Convert file to base64 string for preview
+    }
+  }
+
+  // Handle Pool Image preview and save URL
+  previewPoolImage(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.poolImagePreview = e.target.result;
+        if (this.poolImagePreview) {
+          this.subImages[1] = this.poolImagePreview; // Store the image in subImages array
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  // Handle Lobby Image preview and save URL
+  previewLobbyImage(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.lobbyImagePreview = e.target.result;
+        if (this.lobbyImagePreview) {
+          this.subImages[2] = this.lobbyImagePreview; // Store the image in subImages array
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
 
   // add proprty button on dashboard
   addNewProperty(){

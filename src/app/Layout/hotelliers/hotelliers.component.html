@@ -209,6 +209,56 @@
               
             </div>
           </fieldset>
+
+            <!-- Type of property -->
+            <fieldset>
+              <legend>Property Sub-Images</legend>
+              
+              <div class="form-group">
+                <label for="roomImage">Upload Room Image:</label>
+                <input
+                  type="file"
+                  id="roomImage"
+                  name="roomImage"
+                  (change)="previewRoomImage($event)"
+                  accept=".jpg, .jpeg, .png"
+                  required
+                />
+                <div id="image-preview" *ngIf="roomImagePreview" class="image-preview-container">
+                  <img [src]="roomImagePreview" class="preview-image" alt="Room Image Preview" />
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label for="poolImage">Upload Pool Image:</label>
+                <input
+                  type="file"
+                  id="poolImage"
+                  name="poolImage"
+                  (change)="previewPoolImage($event)"
+                  accept=".jpg, .jpeg, .png"
+                  required
+                />
+                <div  id="image-preview" *ngIf="poolImagePreview" class="image-preview-container">
+                  <img [src]="poolImagePreview" class="preview-image" alt="Pool Image Preview" />
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label for="lobbyImage">Upload Lobby Image:</label>
+                <input
+                  type="file"
+                  id="lobbyImage"
+                  name="lobbyImage"
+                  (change)="previewLobbyImage($event)"
+                  accept=".jpg, .jpeg, .png"
+                  required
+                />
+                <div id="image-preview" *ngIf="lobbyImagePreview" class="image-preview-container">
+                  <img [src]="lobbyImagePreview" class="preview-image" alt="Lobby Image Preview" />
+                </div>
+              </div>
+            </fieldset>
     
           <!-- Descriptions -->
           <fieldset>
@@ -262,6 +312,27 @@
               Please select at least one amenity.
             </div>
           </fieldset>
+<!-- Accomodation type -->
+          <fieldset>
+            <legend>Type of Property</legend>
+            <div class="form-group property-group">
+              <label>Check the type of Property:</label><br />
+              <label>
+                <input type="radio" name="propertyType" (change)="onPropertyChange($event)" value="Government" />
+                Government
+              </label>
+              <label>
+                <input type="radio" name="propertyType" (change)="onPropertyChange($event)" value="Private" />
+                Private
+              </label>
+            </div>
+            <div class="field-description">Select the type of Property.</div>
+            <div *ngIf="!atLeastOnePropertyType && propertyTypeTouched" class="error-message text-danger">
+              Please select the type of Property.
+            </div>
+          </fieldset>
+          
+          
     
           <!-- Contact Info -->
           <fieldset>
