@@ -37,10 +37,14 @@ amenities = [
   { name: "WiFi", selected: false },
   { name: "Room Service", selected: false },
   { name: "Food Quality", selected: false },
+  { name: "Staff Behavior", selected: false },
+  { name: "Facilites", selected: false },
   { name: "Cleanliness", selected: false },
-  { name: "Staff Behavior", selected: false }
+  { name: "Location", selected: false },
+  { name: "Service", selected: false },
+  { name: "Comfort", selected: false },
+  { name: "Value of money", selected: false },
 ];
-
 stars = Array(5).fill(0);
   
   constructor(private route: ActivatedRoute, private http: HttpClient,

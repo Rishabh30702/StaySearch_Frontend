@@ -11,6 +11,8 @@ import { SpinnerComponent } from '../../Core/spinner/spinner.component';
 import * as L from 'leaflet';
 import 'leaflet-control-geocoder';
 import { LeafletMapService } from './services/leaflet-map.service';
+import { AuthPortalService } from '../admin-access/AuthPortal.service';
+import { HotelsService } from './services/hotels.service';
 
 @Component({
   selector: 'app-hotelliers',
@@ -30,9 +32,12 @@ export class HotelliersComponent implements OnInit,OnDestroy {
   latitude: number = 0;
   longitude: number = 0;
   mapInitialized = false;
-
+  showmenu: boolean = true;
   
 isLoading: boolean = false;
+updateHotel = { name: '', address: '', amenities: '' };
+
+isEditModalOpen =false;
 
   isSidebarCollapsed = false;
   selectedMenu: string = 'dashboard';
@@ -129,8 +134,12 @@ hotels = [
 
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService,
-    private mapService: LeafletMapService
-  ) {}
+    private mapService: LeafletMapService,
+    private hotelierService: AuthPortalService,
+    private hotelsService: HotelsService,
+  ) {
+
+  }
 
 
   ngOnDestroy(): void {
@@ -138,8 +147,9 @@ hotels = [
     this.destroy();
   }
 
-  ngOnInit(): void {
- 
+   ngOnInit(): void {
+
+    this.checkHotelsData();
     this.loadRooms();
     this.fetchFeedbacks();
 
@@ -558,6 +568,7 @@ onFileSelected(event: Event) {
 
 
   editHotel(hotel: any): void {
+    this.isEditModalOpen = true;
     // Example: Navigate or open modal with hotel data
     console.log('Editing:', hotel);
     // You can integrate this with a modal, a form section, or routing logic.
@@ -621,6 +632,24 @@ onFileSelected(event: Event) {
   }
       // Note: For propertyPhotos, you might need to handle file upload separately
     };
+
+
+    const payload ={
+      name: propertyData.name,
+      address: propertyData.address,
+      accommodationType: propertyData.accommodationType
+    }
+
+    this.hotelierService.registerHotel(payload).subscribe({
+      next: (res:any) => {
+        alert("hotel registration success. Awaiting admin approval.");
+        
+      },
+      error: (err:any) => {
+        alert("Registration failed. Try again later.");
+        console.error(err);
+      }
+    });
     
     this.imagePreviews =[]; //clearing the image preview after submission
     console.log('Property Form Data:', propertyData);
@@ -628,6 +657,9 @@ onFileSelected(event: Event) {
     this.selectedMenu = 'rooms'
   }
   
+
+
+
   previewImages(event: Event): void {
     const input = event.target as HTMLInputElement;
   
@@ -730,7 +762,44 @@ onFileSelected(event: Event) {
     this.longitude = lon;
   }
   
+// for updatedit 
+closeEditModal() {
+  this.isEditModalOpen = false;
+}
 
+saveHotel() {
+  // TODO: Send `editHotel` data to backend or update in list
+  console.log('Saved hotel:', this.editHotel);
+  this.closeEditModal();
+}
+
+ checkHotelsData(){
+  this.hotelsService.getHotels().subscribe({
+    next: (data) => {
+      if (!data || data.length === 0) {
+        this.showmenu = false;
+        console.log('No hotels found');
+        this.selectedMenu = 'hotels';
+        
+        // Optional: handle empty state in UI
+      } else {
+        console.log('Hotels:', data);
+        // Do something with the data
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching hotels:', err.message);
+      // Optional: show error to user
+    }
+  });
+}
+
+getFilteredMenuItems() {
+  if (!this.showmenu) {
+    return this.menuItems.filter(item => item.key === 'hotels');
+  }
+  return this.menuItems;
+}
 
 
 }

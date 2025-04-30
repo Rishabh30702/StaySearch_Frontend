@@ -29,24 +29,35 @@
     </div>
 
     <!-- Signup Form -->
-    <div *ngIf="showSignup" class="signup">
-      <div class="title">
-        <span>Sign Up</span>
-        <p>Create a new account. </p>
-      </div>
+    
+<div *ngIf="showSignup" class="signup">
+  <div class="title">
+    <span>Sign Up</span>
+    <p>Create a new account.</p>
+  </div>
 
-      <form>
-        <input type="text" [(ngModel)]="signupUsername" name="signupUsername" placeholder="Email Address">
-        <input type="email" [(ngModel)]="signupEmail" name="signupEmail" placeholder="Username">
-        <input type="password" [(ngModel)]="signupPassword" name="signupPassword" placeholder="Password">
-        <input type="password" [(ngModel)]="signupRepeatPassword" name="signupRepeatPassword" placeholder="Repeat Password">
-        <input type="tel" [(ngModel)]="signupContact" name="signupContact" placeholder="Contact number" pattern="[0-9]{10}" maxlength="10" required>
-        <input type="text" [(ngModel)]="signupGstin" name="signupGstin" maxlength="15" placeholder="Provide Your GSTIN">
+  <form #signupForm="ngForm">
+    <input type="text" [(ngModel)]="signupUsername" name="signupUsername" required placeholder="Email Address">
+    <input type="email" [(ngModel)]="signupEmail" name="signupEmail" required placeholder="Username">
+    <input type="password" [(ngModel)]="signupPassword" name="signupPassword" required placeholder="Password">
+    <input type="password" [(ngModel)]="signupRepeatPassword" name="signupRepeatPassword" required placeholder="Repeat Password">
+    <input type="tel" [(ngModel)]="signupContact" name="signupContact" required pattern="[0-9]{10}" maxlength="10" placeholder="Contact number">
+    <input type="text" [(ngModel)]="signupGstin" name="signupGstin" maxlength="15" placeholder="Provide Your GSTIN">
+  
+        <a 
+           class="btn-signin" 
+          [class.disabled]="!isFormValid()" 
+           [attr.disabled]="!isFormValid() ? true : null"
+           (click)="isFormValid() && registerHotelier()">
+          Sign Up
+          </a>
 
-        <a (click)="registerHotelier()" class="btn-signin">Sign Up</a>
-        <a (click)="toggleForm('login')" class="btn-login btn-fade">Already have an account? Sign In <i class="fa fa-long-arrow-right"></i></a>
-      </form>
-    </div>
+    <a (click)="toggleForm('login')" class="btn-login btn-fade">
+      Already have an account? Sign In 
+      <i class="fa fa-long-arrow-right"></i>
+    </a>
+  </form>
+</div>
 
     <!-- Recover Password Form -->
     <div *ngIf="showRecoverPassword" class="recover-password">

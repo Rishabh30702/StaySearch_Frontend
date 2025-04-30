@@ -6,12 +6,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs';
 import { TopStripComponent } from "./Layout/top-strip/top-strip.component";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, CommonModule, TopStripComponent],
+  imports: [RouterOutlet, NavbarComponent,FontAwesomeModule, FooterComponent, CommonModule, TopStripComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

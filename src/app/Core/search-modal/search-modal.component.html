@@ -21,10 +21,24 @@
             <small *ngIf="loginemail.touched && loginemail.errors?.['required']" style="color: red;">
               Email is required!
           </small>
-            <label>
-                <span>Password</span>
-                <input type="password" [(ngModel)]="user.password" #loginpassword="ngModel" name="password" required />
-            </label>
+          <label class="password-label">
+            <span>Password</span>
+            <div class="input-wrapper">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="user.password"
+                #loginpassword="ngModel"
+                name="password"
+                required
+              />
+              <fa-icon
+                [icon]="showPassword ? faEyeSlash : faEye"
+                class="toggle-password"
+                (click)="togglePasswordVisibility()"
+              ></fa-icon>
+            </div>
+          </label>
+          
 
             <small *ngIf="loginpassword.touched && loginpassword.errors?.['required']" style="color: red;">
               password is required!
@@ -73,16 +87,40 @@
                 
               
               
-                <label>
+                <label class="password-label">
                   <span>Password</span>
-                  <input type="password" #password name="password" required />
-              </label>
-
-                <label>
-                    <span>Retype-Password</span>
-                    <input type="password" [(ngModel)]="user.password" name="password" required />
+                  <div class="input-wrapper">
+                    <input
+                      [type]="showPassword ? 'text' : 'password'"
+                     #password
+                      name="password"
+                      required
+                    />
+                    <fa-icon
+                      [icon]="showPassword ? faEyeSlash : faEye"
+                      class="toggle-password"
+                      (click)="togglePasswordVisibility()"
+                    ></fa-icon>
+                  </div>
                 </label>
-
+                
+                <label class="password-label">
+                  <span>Retype-Password</span>
+                  <div class="input-wrapper">
+                    <input
+                      [type]="showRetype ? 'text' : 'password'"
+                      [(ngModel)]="user.password"
+                      name="retypePassword"
+                      required
+                    />
+                    <fa-icon
+                      [icon]="showRetype ? faEyeSlash : faEye"
+                      class="toggle-password"
+                      (click)="toggleRetypeVisibility()"
+                    ></fa-icon>
+                  </div>
+                </label>
+                
 
 
                 <!-- Password Mismatch Error -->
