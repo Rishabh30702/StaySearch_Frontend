@@ -20,6 +20,7 @@ export class AdminAccessComponent {
 
   isLoading: boolean = false;
 
+
   // Form visibility
   showLogin: boolean = true;
   showSignup: boolean = false;
@@ -46,6 +47,14 @@ export class AdminAccessComponent {
     this.showLogin = form === 'login';
     this.showSignup = form === 'signup';
     this.showRecoverPassword = form === 'recover';
+
+    // clearing register form
+    this.signupUsername ='';
+    this.signupEmail='';
+    this.signupPassword='';
+    this.signupRepeatPassword='';
+    this.signupContact='';
+   
   }
   login() {
       // Clear old token before any new login
@@ -102,12 +111,29 @@ export class AdminAccessComponent {
   }
   
 
+
+  isFormValid(): boolean {
+    return (
+      !!this.signupUsername?.trim() &&
+      !!this.signupEmail?.trim() &&
+      !!this.signupPassword?.trim() &&
+      !!this.signupRepeatPassword?.trim() &&
+      !!this.signupContact?.trim() 
+    );
+  }
+
+
+  
+
   registerHotelier() {
+ 
     if (this.signupPassword !== this.signupRepeatPassword) {
       alert("Passwords do not match.");
       return;
     }
-
+    
+    
+    
     const data = {
       fullname: this.signupEmail,
       username: this.signupUsername,
@@ -119,14 +145,21 @@ export class AdminAccessComponent {
     this.hotelierService.registerHotelier(data).subscribe({
       next: (res:any) => {
         alert("Registration successful. Awaiting admin approval.");
-        this.toggleForm('login');
+        this.toggleForm('login'); 
+       
+
       },
       error: (err:any) => {
         alert("Registration failed. Try again later.");
         console.error(err);
       }
     });
+  
+
   }
+
+ 
+
 
   resetPassword() {
     if (!this.resetEmail) {

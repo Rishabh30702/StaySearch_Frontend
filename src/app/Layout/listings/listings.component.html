@@ -9,7 +9,7 @@
 
     <!-- Listings Section (Middle) -->
     <div class="col-md-5 listings-container">
-      <h2>Listings</h2>
+      <h2 class="fixed-header">Listings</h2>
       <div class="row">
         <div class="col-md-12" *ngFor="let hotel of filteredHotels; let i = index">
           <div class="hotel-card" style="cursor: pointer;" (click)="onHotelClick(hotel)" (mouseenter)="highlightHotelOnMap(hotel)">

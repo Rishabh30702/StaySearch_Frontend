@@ -1,21 +1,39 @@
 .container-fluid {
   padding: 20px;
+  height: 100vh;
 }
 
 .row {
   display: flex;
+  height: auto;
 }
 
 .filter-container {
-  background: #f8f9fa;
+  
   padding: 10px;
-  height: 100vh;
+  height: 95vh;
   width: auto;
   overflow-y: auto;
 }
 
+.fixed-header {
+
+  position: sticky; /* Use sticky positioning */
+
+  top: 0; /* Stick to the top of the container */
+
+  background: #fff; /* Background color to cover content below */
+
+  padding: 10px; 
+
+  z-index: 10; /* Ensure it stays above other content */
+
+}
+
 .listings-container {
   padding-left: 2px;
+  height: 90vh;
+  overflow-y: auto;
 }
 
 .hotel-card {
@@ -83,7 +101,7 @@
 }
 
 #main-map {
-  height: 100vh;
+  height: 95vh;
   width: 115%;
   position: sticky;
   top: 0;
@@ -120,3 +138,7 @@
   height: 1rem;
   margin-left: 6px;
 }
+
+
+
+

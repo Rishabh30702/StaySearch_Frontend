@@ -6,11 +6,14 @@ import { NgIf } from '@angular/common';
 import { AuthService } from '../Services/AuthService/services/auth.service';
 import { SpinnerComponent } from "../spinner/spinner.component";
 import Swal from 'sweetalert2';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 @Component({
   selector: 'app-search-modal',
   standalone: true,
-  imports: [FormsModule, NgIf, SpinnerComponent],
+  imports: [FormsModule, NgIf, SpinnerComponent,FontAwesomeModule],
   templateUrl: './search-modal.component.html',
   styleUrls: ['./search-modal.component.css'],
   animations: [
@@ -80,7 +83,12 @@ export class SearchModalComponent implements OnInit {
 
   
   isSignup: boolean = false;
- 
+  showPassword = false;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+  showRetype = false;
+
+
 
   toggleSignup(form:any, form2: any, password: any) {
     form.resetForm(); 
@@ -148,4 +156,13 @@ export class SearchModalComponent implements OnInit {
         }
       );
   }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+  toggleRetypeVisibility() {
+    this.showRetype = !this.showRetype;
+  }
+
 }
+

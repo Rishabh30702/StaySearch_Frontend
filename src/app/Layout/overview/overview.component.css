@@ -173,18 +173,20 @@
 /* Feedback Popup */
 .feedback-popup {
   position: fixed;
-  top: 70%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-
-  width: 350px;
+  transform: translate(-50%, -50%); /* truly centers it */
+  width: 400px;
+  max-height: 85vh;
+  overflow-y: auto;
   background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   opacity: 0;
   visibility: hidden;
   transition: 0.3s ease-in-out;
+  z-index: 1050;
 }
 
 .feedback-popup.show {
@@ -192,6 +194,11 @@
   visibility: visible;
 }
 
+  
+.map-with-feedback {
+  width: 65%; /* shrink the map */
+  transition: width 0.3s ease;
+}
 /* Close Button */
 .close-btn {
   position: absolute;

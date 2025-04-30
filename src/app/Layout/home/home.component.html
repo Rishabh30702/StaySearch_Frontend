@@ -29,7 +29,19 @@
             <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACTUS' | translate }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUTUS' | translate }}</a>
+            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUTUS' | translate }}
+
+              <i class="fas fa-caret-down  ms-1"></i>
+            </a>
+            
+            <ul class="submenu">
+                <li><a >State Tourism Department</a></li>
+                <li><a >History of the State</a></li>
+                <li><a >Cities and Districts</a></li>
+                <li><a >Chairman's Message</a></li>
+                <li><a >MD's Message</a></li>
+                <li><a >Administration Structure</a></li>
+              </ul>
           </li>
          
           <!-- Search Modal Component -->
@@ -287,48 +299,29 @@
 
 
 <!--Offers Section-->
-<div class="offers-container">
-        
-    <!-- Offer 1 -->
-    <div class="offer-card purple">
-        <span class="badge">APP EXCLUSIVE</span>
+<div class="offers-section">
+  <!-- Centered Heading -->
+  <h2 class="offers-heading">Offers</h2>
+
+  <!-- Scrollable Offers Area -->
+  <div class="offers-container">
+    <button class="scroll-btn left" (click)="scrollLeft()">&#8249;</button>
+
+    <div class="offers-grid" #offersContainer>
+      <div *ngFor="let offer of offers" class="offer-card">
+        <span *ngIf="offer.badge" class="badge">{{ offer.badge }}</span>
         <div class="offer-content">
-            <h3 class="offer-title">Hotel JP Palace</h3>
-            <p class="offer-description">Flat 15% off</p>
-            <p class="validity">Valid till: 31st Mar, 2025</p>
-            <a href="#" class="book-now">Book Now</a>
+          <h3 class="offer-title">{{ offer.title }}</h3>
+          <p class="offer-description">{{ offer.description }}</p>
+          <p *ngIf="offer.validity" class="validity">{{ offer.validity }}</p>
+          <a href="#" class="book-now">BOOK NOW</a>
+          
         </div>
+      </div>
     </div>
 
-    <!-- Offer 2 -->
-    <div class="offer-card orange">
-        <div class="offer-content">
-            <h3 class="offer-title">Best Price Guarantee</h3>
-            <p class="offer-description">Find better hotel prices anywhere else & get a double refund on the price difference.</p>
-            <a href="#" class="book-now">Book Now</a>
-        </div>
-    </div>
-
-    <!-- Offer 3 -->
-    <div class="offer-card blue">
-        <div class="offer-content">
-            <h3 class="offer-title">Get up to 25% OFF*</h3>
-            <p class="offer-description">Enjoy memorable experiences with up to 25% OFF* on Cygnett Hotels & Resorts.</p>
-            <p class="validity">Valid till: 31st Mar, 2025</p>
-            <a href="#" class="book-now">Book Now</a>
-        </div>
-    </div>
-
-    <!-- Offer 4 -->
-    <div class="offer-card green">
-        <div class="offer-content">
-            <h3 class="offer-title">Get up to 45% OFF*</h3>
-            <p class="offer-description">Make your stay affordable with 45% OFF* on The Hosteller Hotels.</p>
-            <p class="validity">Valid till: 31st Mar, 2025</p>
-            <a href="#" class="book-now">Book Now</a>
-        </div>
-    </div>
-
+    <button class="scroll-btn right" (click)="scrollRight()">&#8250;</button>
+  </div>
 </div>
 
 

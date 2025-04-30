@@ -451,5 +451,31 @@ form button.submit {
   }
   
 
-
+  .password-label {
+    display: block;
+    font-size: 16px;
+  }
+  
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .input-wrapper input {
+    width: 100%;
+    padding-right: 40px; /* Leave space for the icon */
+    padding: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+  }
+  
   

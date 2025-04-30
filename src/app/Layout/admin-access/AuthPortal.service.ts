@@ -15,7 +15,16 @@ export class AuthPortalService {
   registerHotelier(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}register/hotelier`, data);
   }
+  registerHotel(data: any): Observable<any> {
 
+    const token = localStorage.getItem('token');
+    console.log(token);
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+  
+    return this.http.post("https://staysearchbackend.onrender.com/v1/mine/hotels", data, { headers });
+  }
   loginHotelier(credentials: any): Observable<any> {
     return this.http.post(`${this.baseUrl}login/hotelier`, credentials); // assuming login is same for all roles
   }

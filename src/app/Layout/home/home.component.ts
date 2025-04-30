@@ -18,11 +18,121 @@ import Swal from 'sweetalert2';
 })
 export class HomeComponent {
   @ViewChild('feedbackContainer', { static: false }) feedbackContainer!: ElementRef;
+  @ViewChild('offersContainer', { static: false }) offersContainer!: ElementRef;
   currentLanguage = 'en';
   langText = 'English';
   feedbackList: any[] = [];
   isLoggedIn = false;
   showModal: boolean = false;
+
+
+
+  // ✅ NEW: Offers Data
+  offers = [
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Best Price Guarantee",
+      description: "Find better hotel prices anywhere else & get a double refund on the price difference.",
+      validity: "Valid till: 31st Mar, 2025",
+      
+    },
+    {
+      title: "Get up to 25% OFF*",
+      description: "Enjoy memorable experiences with up to 25% OFF* on Cygnett Hotels & Resorts.",
+      validity: "Valid till: 31st Mar, 2025",
+      
+    },
+    {
+      title: "Get up to 45% OFF*",
+      description: "Make your stay affordable with 45% OFF* on The Hosteller Hotels.",
+      validity: "Valid till: 31st Mar, 2025",
+      
+    },
+    {
+      title: "Summer Sale",
+      description: "Special summer discounts up to 30% off on all hotels.",
+      validity: "Valid till: 15th June, 2025",
+      
+    },
+    {
+      title: "Early Bird Offers",
+      description: "Book early & save up to 20% on your next trip!",
+      validity: "Valid till: 30th Sep, 2025",
+      
+    },
+    {
+      title: "Winter Festive Sale",
+      description: "Up to 40% off during the winter holiday season!",
+      validity: "Valid till: 5th Jan, 2026",
+      
+    },
+    {
+      title: "Weekend Getaways",
+      description: "Flat 20% off for weekend bookings at selected hotels!",
+      validity: "Valid till: 30th Dec, 2025",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+    {
+      title: "Hotel JP Palace",
+      description: "Flat 15% off",
+      validity: "Valid till: 31st Mar, 2025",
+      badge: "APP EXCLUSIVE",
+      
+    },
+  ];
+  
+  //... your existing code continues (constructor, methods etc.)
+
+
+
 
   searchData: SearchData = {
     destination: '',
@@ -125,13 +235,21 @@ export class HomeComponent {
     if (this.feedbackContainer) {
       this.feedbackContainer.nativeElement.scrollBy({ left: -300, behavior: 'smooth' });
     }
+    if (this.offersContainer) {
+      this.offersContainer.nativeElement.scrollBy({ left: -300, behavior: 'smooth' });
+    }
   }
 
   scrollRight() {
     if (this.feedbackContainer) {
       this.feedbackContainer.nativeElement.scrollBy({ left: 300, behavior: 'smooth' });
     }
+    if (this.offersContainer) {
+      this.offersContainer.nativeElement.scrollBy({ left: 300, behavior: 'smooth' });
+    }
   }
  
+
+
 }
 

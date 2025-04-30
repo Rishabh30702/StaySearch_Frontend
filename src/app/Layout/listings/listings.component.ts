@@ -54,7 +54,7 @@ export class ListingsComponent implements AfterViewInit, OnInit {
         console.error("❌ Error fetching hotels:", error);
         this.isLoading = false;
       }
-    );
+    ); 
   }
 
   applyFilters(params: any): void {
