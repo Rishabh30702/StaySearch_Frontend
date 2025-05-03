@@ -13,6 +13,7 @@ import 'leaflet-control-geocoder';
 import { LeafletMapService } from './services/leaflet-map.service';
 import { AuthPortalService } from '../admin-access/AuthPortal.service';
 import { HotelsService } from './services/hotels.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hotelliers',
@@ -23,11 +24,11 @@ import { HotelsService } from './services/hotels.service';
 })
 export class HotelliersComponent implements OnInit,OnDestroy {
   @ViewChild('propertyNgForm') propertyNgForm!: NgForm;
-  @HostListener('window:unload', ['$event'])
+  /* @HostListener('window:unload', ['$event'])
   unloadHandler(event: any) {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
-  }
+  }*/
 
   latitude: number = 0;
   longitude: number = 0;
@@ -81,15 +82,10 @@ hotels = [
     name: 'The Oberoi Amarvilas',
     location: 'Agra, Uttar Pradesh',
     rating: 4.8,
-    amenities: ['Wi-Fi', 'Pool', 'AC']
+    amenities: ['Wi-Fi', 'Pool', 'AC'],
+    id:0
   },
-  {
-    name: 'Taj Lake Palace',
-    location: 'Udaipur, Rajasthan',
-    rating: 4.9,
-    amenities: ['Wi-Fi', 'Spa', 'Gym']
-  }
-  
+ 
 ];
 
   menuItems = [
@@ -98,7 +94,8 @@ hotels = [
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
     { key: 'deal', label: 'Deal', icon: 'fas fa-tags' },
     { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
-    { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' }
+    { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' },
+    { key: 'profile', label: 'My profile', icon: 'fas fa-user' }
   ];
 
   overviewStats = [
@@ -110,7 +107,8 @@ hotels = [
   showDealForm = false;
   showAddRoomForm = false;
 
-  hotelId: number = 1; // Static hotel ID for now
+  // hotelId: number = 1; // Static hotel ID for now
+  currentHotelId: number = 0;
 
   newDeal: Room = {
     name: '',
@@ -127,16 +125,29 @@ hotels = [
     total: 0,
     price: 0,
     deal: false,
-    imageUrl: ''
+    imageUrl: '',
   };
   
   selectedFile!: File;
+
+
+
+  userprofile = {
+    fullName: '',
+    email: '',
+    contact: '',
+    password: '',
+    newPassword: '',
+    
+  };
+
 
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService,
     private mapService: LeafletMapService,
     private hotelierService: AuthPortalService,
     private hotelsService: HotelsService,
+    private router: Router
   ) {
 
   }
@@ -311,18 +322,22 @@ hotels = [
   }
 
   logout() {
+    console.log('Logout called');
     Swal.fire({
       title: 'You are about to sign out!',
       text: 'Do you want to clear your session?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, I know',
-      cancelButtonText: 'Stay'
+      cancelButtonText: 'Stay',
     }).then(result => {
       if (result.isConfirmed) {
         localStorage.removeItem('token');
+        // this.router.navigate(['/adminAccess']);
       }
     });
+
+   
   }
 
   toggleDealForm() {
@@ -337,7 +352,7 @@ hotels = [
       formData.append('room', roomBlob);
       formData.append('image', this.selectedFile);
   
-      this.http.post<Room>(`http://localhost:8080/api/hotels/${this.hotelId}/rooms`, formData)
+      this.http.post<Room>(`http://localhost:8080/api/hotels/${this.currentHotelId}/rooms`, formData)
         .subscribe({
           next: (addedRoom: Room) => {
             this.rooms.push(addedRoom);
@@ -404,13 +419,34 @@ onFileSelected(event: Event) {
 
 
   addRoom() {
+    
+  
     if (this.newRoom.name && this.newRoom.available >= 0 && this.newRoom.total > 0 && this.newRoom.price > 0 && this.selectedFile) {
          this.isLoading = true;
-      const formData = new FormData();
-      formData.append('room', new Blob([JSON.stringify(this.newRoom)], { type: 'application/json' }));
-      formData.append('imageUrl', this.selectedFile);
+      // const formData = new FormData();
+      // formData.append('room', new Blob([JSON.stringify(this.newRoom)], { type: 'application/json' }));
+      //  formData.append('imageUrl', this.selectedFile);
+      // formData.append('hotelId', this.currentHotelId.toString());
+      // formData.append('name', this.newRoom.name);
+      // formData.append('total', this.newRoom.total.toString());
+      // formData.append('available', this.newRoom.available.toString());
+      // formData.append('price', this.newRoom.price.toString());
+      //  formData.append('description', this.newRoom.description ?? '');
+  
+       const payload = {
+        hotelId: this.currentHotelId,
+        name: this.newRoom.name,
+        total: this.newRoom.total,
+        available: this.newRoom.available,
+        price: this.newRoom.price,
+        description: this.newRoom.description,
+        imageUrl: "fnirnngierng",
+        deal:this.newRoom.deal,
+        type: "Suite"
+       }
+    
 
-      this.roomService.addRoom(this.hotelId, formData).subscribe({
+      this.roomService.addRoom(payload).subscribe({
         next: (addedRoom: Room) => {
           this.rooms.push(addedRoom);
           if(this.newRoom.deal){
@@ -548,11 +584,13 @@ onFileSelected(event: Event) {
 
 
   loadRooms() {
-    this.roomService.getRooms(this.hotelId).subscribe((data: Room[]) => {
+    
+    this.roomService.getRooms().subscribe((data: Room[]) => {
       this.rooms = data.map(room => ({
         ...room,
         showFullDesc: false // 👈 Add this UI field
       }));
+     
       this.updateStats();
     });
   }
@@ -633,17 +671,27 @@ onFileSelected(event: Event) {
       // Note: For propertyPhotos, you might need to handle file upload separately
     };
 
-
-    const payload ={
+    const payload = {
       name: propertyData.name,
       address: propertyData.address,
-      accommodationType: propertyData.accommodationType
-    }
-
+      destination: propertyData.destination,
+      description: propertyData.description,
+      amenities: propertyData.amenities,
+      lat: propertyData.lat,
+      lng: propertyData.lng,
+      // imageUrl: propertyData.imageUrl,
+      accommodationType: propertyData.accommodationType,
+      // subImages: propertyData.subImages,
+      contact: {
+        phone: propertyData.contact.phone,
+        email: propertyData.contact.email
+      }
+    };
     this.hotelierService.registerHotel(payload).subscribe({
       next: (res:any) => {
         alert("hotel registration success. Awaiting admin approval.");
-        
+         this.selectedMenu = 'rooms'
+         alert('Form submitted successfully!');
       },
       error: (err:any) => {
         alert("Registration failed. Try again later.");
@@ -653,8 +701,8 @@ onFileSelected(event: Event) {
     
     this.imagePreviews =[]; //clearing the image preview after submission
     console.log('Property Form Data:', propertyData);
-    alert('Form submitted successfully!');
-    this.selectedMenu = 'rooms'
+    
+   
   }
   
 
@@ -779,12 +827,22 @@ saveHotel() {
       if (!data || data.length === 0) {
         this.showmenu = false;
         console.log('No hotels found');
-        this.selectedMenu = 'hotels';
+        this.addNewProperty();
         
         // Optional: handle empty state in UI
       } else {
-        console.log('Hotels:', data);
-        // Do something with the data
+        
+        this.hotels = data.map((hotel: any) => ({
+          name: hotel.name || 'Unnamed Hotel',
+          location: hotel.address || 'Unknown Location',
+          rating: hotel.rating || 0,
+          amenities: hotel.amenities || [],
+           id:hotel.hotelId || 0
+        }));
+        this.currentHotelId = this.hotels[0].id;
+       
+
+        // console.log('Mapped Hotels:', this.hotels);
       }
     },
     error: (err) => {
@@ -794,6 +852,18 @@ saveHotel() {
   });
 }
 
+
+onHotelSelect(event: Event, hotelId: number) {
+  const checked = (event.target as HTMLInputElement).checked;
+  if (checked) {
+    this.currentHotelId = hotelId;
+   
+  } else {
+    this.currentHotelId = 0;  // Unselect if unchecked
+   
+  }
+}
+
 getFilteredMenuItems() {
   if (!this.showmenu) {
     return this.menuItems.filter(item => item.key === 'hotels');
@@ -801,5 +871,28 @@ getFilteredMenuItems() {
   return this.menuItems;
 }
 
+
+updatePassword() {
+    console.log('Updating password with:', {
+      email: this.userprofile.email,
+      oldPassword: this.userprofile.password,
+      newPassword: this.userprofile.newPassword
+    });
+    alert('Password updated successfully!');
+  }
+  
+  updateProfile() {
+    console.log('Updating profile with:', {
+      fullName: this.userprofile.fullName,
+      email: this.userprofile.email,
+      contact: this.userprofile.contact
+    });
+    alert('Profile updated successfully!');
+  }
+
+  onSubmit() {
+    console.log('Updating password with:', this.userprofile);
+    alert('Password updated successfully!');
+  }
 
 }

@@ -74,6 +74,7 @@ export class AdminAccessComponent {
     this.hotelierService.loginHotelier(payload).subscribe({
       
       next: (res: any) => {
+       
         if (res.token) {
          
           // Approved hotelier, store token and route
@@ -107,6 +108,7 @@ export class AdminAccessComponent {
         });
         console.error('Login error:', err);
       }
+        
     });
   }
   

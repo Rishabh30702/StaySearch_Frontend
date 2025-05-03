@@ -27,6 +27,7 @@ export class HotelsService {
     return this.http.get<any[]>(this.baseUrl, { headers }).pipe(
       map(data => {
         return data;
+        
       }),
       catchError(err => {
         console.error('Error fetching hotels:', err.message);
