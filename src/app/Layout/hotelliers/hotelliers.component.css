@@ -1204,6 +1204,93 @@ color: #761461;
 }
 
 
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
 
+.profile-container {
+  max-width: 700px;
+  width: 90%;
+  padding: 2rem;
+  background-color: #ffffff;
+  box-shadow: none;
+  border-radius: 0;
+  background-color: transparent;
+}
+.profile-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.form-group2 {
+  margin-bottom: 1rem;
+}
+
+.form-group2 label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.form-group2 input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem; /* Small gap between buttons */
+  margin-top: 1.5rem;
+}
+
+.primary-btn,
+.secondary-btn {
+  width: 200px; /* Fixed width for equal sizing */
+  height: 45px;  /* Fixed height */
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primary-btn {
+  background-color: #6a0dad; /* Purple theme */
+  color: #fff;
+}
+
+.secondary-btn {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+
+
+.form-group2 input {
+  width: 50%; /* Changed from 100% to 50% */
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
 
 

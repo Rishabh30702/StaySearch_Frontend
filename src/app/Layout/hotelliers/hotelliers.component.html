@@ -59,6 +59,7 @@
           <table class="hotels-table">
             <thead>
               <tr>
+                <th><i class="fas fa-check-circle"></i> Select</th>
                 <th><i class="fas fa-building"></i> Hotel Name</th>
                 <th><i class="fas fa-map-marker-alt"></i> Location</th>
                 <th><i class="fas fa-star"></i> Rating</th>
@@ -68,6 +69,13 @@
             </thead>
             <tbody>
               <tr *ngFor="let hotel of hotels">
+                <td>
+                  <input
+                    type="checkbox"
+                    [checked]="currentHotelId === hotel.id"
+                    (change)="onHotelSelect($event, hotel.id)"
+                  />
+                </td>
                 <td>{{ hotel.name }}</td>
                 <td>{{ hotel.location }}</td>
                 <td>{{ hotel.rating }} ⭐</td>
@@ -582,7 +590,7 @@
       <div *ngIf="selectedMenu === 'feedbacks'" class="fade-in feedback-wrapper">
        <h2 class="section-title">🌟 Feedback & Reviews</h2>
     
-      <div class="feedbacks">
+        <div class="feedbacks">
         <div class="feedback-card animate-card" *ngFor="let feedback of feedbacks">
           <div class="header">
             <h3>{{ feedback.hotelName }}</h3>
@@ -630,8 +638,76 @@
 
           
         </div>
+        </div>
       </div>
-      </div>
+
+      <div *ngIf="selectedMenu === 'profile'" class="fade-in">
+        <div class="profile-container">
+         <h2 class="profile-title">Profile Settings</h2>
+         <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+           
+           <div class="form-group2">
+             <label for="fullName">Full Name</label>
+             <input
+               type="text"
+               id="fullName"
+               name="fullName"
+               [(ngModel)]="userprofile.fullName"
+               required
+             />
+           </div>
+       
+           <div class="form-group2">
+             <label for="email">Email</label>
+             <input
+               type="email"
+               id="email"
+               name="email"
+               [(ngModel)]="userprofile.email"
+               required
+             />
+           </div>
+       
+           <div class="form-group2">
+             <label for="contact">Contact</label>
+             <input
+               type="tel"
+               id="contact"
+               name="contact"
+               [(ngModel)]="userprofile.contact"
+               required
+             />
+           </div>
+       
+           <div class="form-group2">
+             <label for="password">Password</label>
+             <input
+               type="password"
+               id="password"
+               name="password"
+               [(ngModel)]="userprofile.password"
+               required
+             />
+           </div>
+       
+           <div class="form-group2">
+             <label for="newPassword">New Password</label>
+             <input
+               type="password"
+               id="newPassword"
+               name="newPassword"
+               [(ngModel)]="userprofile.newPassword"
+             />
+           </div>
+       
+           <div class="button-group">
+            <button class="primary-btn" (click)="updatePassword()">Update Password</button>
+            <button class="secondary-btn" (click)="updateProfile()">Update Profile</button>
+           </div>
+         </form>
+       </div>
+       
+       </div>
     
      <div class="modal" *ngIf="showReplyModal">
       <div class="modal-content">
