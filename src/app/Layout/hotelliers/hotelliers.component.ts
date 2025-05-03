@@ -433,20 +433,34 @@ onFileSelected(event: Event) {
       // formData.append('price', this.newRoom.price.toString());
       //  formData.append('description', this.newRoom.description ?? '');
   
-       const payload = {
+      //  const payload = {
+      //   hotelId: this.currentHotelId,
+      //   name: this.newRoom.name,
+      //   total: this.newRoom.total,
+      //   available: this.newRoom.available,
+      //   price: this.newRoom.price,
+      //   description: this.newRoom.description,
+      //   imageUrl: "fnirnngierng",
+      //   deal:this.newRoom.deal,
+      //   type: "Suite"
+      //  }
+
+      const formData = new FormData();
+      formData.append("file", this.selectedFile);
+    
+      formData.append("room", JSON.stringify({
         hotelId: this.currentHotelId,
         name: this.newRoom.name,
         total: this.newRoom.total,
         available: this.newRoom.available,
         price: this.newRoom.price,
         description: this.newRoom.description,
-        imageUrl: "fnirnngierng",
-        deal:this.newRoom.deal,
+        imageUrl: "placeholder",
+        deal: this.newRoom.deal,
         type: "Suite"
-       }
-    
+      }));
 
-      this.roomService.addRoom(payload).subscribe({
+      this.roomService.addRoom(formData).subscribe({
         next: (addedRoom: Room) => {
           this.rooms.push(addedRoom);
           if(this.newRoom.deal){
