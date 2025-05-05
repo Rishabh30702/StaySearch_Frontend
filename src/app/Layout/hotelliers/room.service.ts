@@ -9,6 +9,7 @@ import { Room } from './room.modal';
 export class RoomService {
   private testURL = 'http://localhost:8080/api/hotelier';
   private baseURL = 'https://staysearchbackend.onrender.com/v1/mine/rooms';
+  private base2 =  "https://staysearchbackend.onrender.com"
 
   constructor(private http: HttpClient) {}
 
@@ -48,6 +49,10 @@ export class RoomService {
 
   updateRoom(roomId: number, roomData: FormData): Observable<Room> {
     return this.http.put<Room>(`https://staysearchbackend.onrender.com/api/hotelier/rooms/${roomId}`, roomData);
+  }
+
+  getRoomsByHotelId(hotelId: number): Observable<Room[]> {
+    return this.http.get<Room[]>(`${this.base2}/api/hotelier/hotel/${hotelId}`);
   }
 
 }
