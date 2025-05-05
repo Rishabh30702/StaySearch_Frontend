@@ -11,7 +11,8 @@
       </div>
 
       <ul class="menu">
-        <li *ngFor="let item of getFilteredMenuItems()" [class.active]="selectedMenu === item.key" (click)="selectMenu(item.key)">
+        <li *ngFor="let item of getFilteredMenuItems()" [class.active]="selectedMenu === item.key"
+          (click)="selectMenu(item.key)">
           <i class="{{ item.icon }}"></i>
           <span *ngIf="!isSidebarCollapsed">{{ item.label }}</span>
         </li>
@@ -38,7 +39,7 @@
           <div class="date">{{ todayDate | date: 'EEE MMM dd y' }}</div>
           <h2 class="profile-title">Profile</h2>
         </div>
-      
+
         <!-- 📊 Stats Cards -->
         <div class="stats-section">
           <div class="stat-card" *ngFor="let stat of overviewStats">
@@ -46,7 +47,7 @@
             <p>{{ stat.value }}</p>
           </div>
         </div>
-      
+
         <!-- 🏨 Hotels Table -->
         <div class="hotels-table-section">
           <div class="table-header">
@@ -55,7 +56,7 @@
               <i class="fas fa-plus-circle"></i> Add New Property
             </button>
           </div>
-      
+
           <table class="hotels-table">
             <thead>
               <tr>
@@ -70,11 +71,8 @@
             <tbody>
               <tr *ngFor="let hotel of hotels">
                 <td>
-                  <input
-                    type="checkbox"
-                    [checked]="currentHotelId === hotel.id"
-                    (change)="onHotelSelect($event, hotel.id)"
-                  />
+                  <input type="checkbox" [checked]="currentHotelId === hotel.id"
+                    (change)="onHotelSelect($event, hotel.id)" />
                 </td>
                 <td>{{ hotel.name }}</td>
                 <td>{{ hotel.location }}</td>
@@ -85,360 +83,281 @@
                     <i class="fas fa-edit"></i> Edit
                   </button>
                 </td>
-                <div  *ngIf="isEditModalOpen" class="modal-backdrop"> 
+                <div *ngIf="isEditModalOpen" class="modal-backdrop">
 
 
 
                   <div class="update-modal">
                     <div style="text-align: center;">
-                    <h5 class="edit-heading">Edit Hotel</h5> 
-                </div>
+                      <h5 class="edit-heading">Edit Hotel</h5>
+                    </div>
                     <div class="form-group">
                       <label for="hotelName">Hotel Name</label>
                       <input id="hotelName" [(ngModel)]="updateHotel.name" type="text" class="form-control" />
                     </div>
-                
+
                     <div class="form-group">
                       <label for="hotelAddress">Hotel Address</label>
                       <input id="hotelAddress" [(ngModel)]="updateHotel.address" type="text" class="form-control" />
                     </div>
-                
+
                     <div class="form-group">
                       <label for="hotelAmenities">Hotel Amenities</label>
                       <textarea id="hotelAmenities" [(ngModel)]="updateHotel.amenities" class="form-control"></textarea>
                     </div>
-                
+
                     <div class="modal-actions mt-3">
                       <button class="btn btn-success" (click)="saveHotel()">Save</button>
                       <button class="btn btn-secondary ms-2" (click)="closeEditModal()">Cancel</button>
-                      
+
                     </div>
                   </div>
                 </div>
 
-                
+
               </tr>
             </tbody>
           </table>
         </div>
-        
-      
+
+
       </div>
-      
-
-             <!-- ------------ -->
-     <!-- Hotel registration -->
-     <!-- ------------ -->
-     <div *ngIf="selectedMenu === 'hotels'" class="fade-in">
-      <div class="form-container">
-        <h1>List a New Property</h1>
-    
-        <form #propertyNgForm="ngForm" (ngSubmit)="log()" novalidate>
-    
-          <!-- Property Identification -->
-          <fieldset>
-            <legend>Property Identification</legend>
-            <div class="form-group">
-              <label for="propertyName">Property Name:</label>
-              <input
-                type="text"
-                id="propertyName"
-                name="propertyName"
-                ngModel
-                required
-                maxlength="100"
-                placeholder="e.g., The Oberoi Amar Villas" 
-                required
-              />
-              <div class="validation-note">Maximum 100 characters.</div>
-            </div>
-          </fieldset>
-    
-          <!-- Property Address & Location -->
-          <fieldset>
-            <legend>Property Address & Location</legend>
-    
-            <div class="form-group">
-              <label for="propertyAddress">Full Street Address:</label>
-              <input
-                type="text"
-                id="propertyAddress"
-                name="propertyAddress"
-                ngModel
-                required
-                placeholder="e.g., Taj East Gate Rd,Paktola,Agra"
-              />
-            </div>
-    
-            <div class="form-group">
-              <label for="district">District:</label>
-              <select id="district" name="district" ngModel required>
-                <option value="" disabled selected>-- Select District --</option>
-                <option value="district_1">Central District</option>
-                <option value="district_2">Northern Heights</option>
-                <option value="district_3">Riverside</option>
-                <option value="district_4">West End</option>
-              </select>
-            </div>
-    
-            <div class="form-group">
-              <label for="village">Village / Area:</label>
-              <select id="village" name="village" ngModel required>
-                <option value="" disabled selected>-- Select Village/Area --</option>
-                <option value="village_a">Lucknow (Central)</option>
-                <option value="village_b">Ayodhya (Northern)</option>
-                <option value="village_c">Varanasi (Riverside)</option>
-                <option value="village_d">Agra (Western)</option>
-                
-              </select>
 
 
-           
-          <div class="search-container">
-            <input
-              type="text"
-              placeholder="Search location"
-              [(ngModel)]="searchQuery"
-              name="searchQuery"
-              (input)="onSearchChange()"
-              class="search-input"
-            />
-            <ul *ngIf="suggestions.length" class="suggestions">
-              <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
-                {{ suggestion.display_name }}
-              </li>
-            </ul>
-          </div>
-              
-            </div>
-          </fieldset>
-    
+      <!-- ------------ -->
+      <!-- Hotel registration -->
+      <!-- ------------ -->
+      <div *ngIf="selectedMenu === 'hotels'" class="fade-in">
+        <div class="form-container">
+          <h1>List a New Property</h1>
 
+          <form #propertyNgForm="ngForm" (ngSubmit)="log()" novalidate>
 
-
-          <div class="map-container" #mapContainer id="map" style="height: 400px;"></div>
-
-          <div class="form-group">
-            <label>Latitude:</label>
-            <input type="text" [value]="latitude" readonly />
-          </div>
-          
-          <div class="form-group">
-            <label>Longitude:</label>
-            <input type="text" [value]="longitude" readonly />
-          </div>
-
-
-          <!-- Property Photos -->
-          <fieldset>
-            <legend>Property Photos</legend>
-            <div class="form-group">
-              <label for="propertyPhotos">Upload Photos:</label>
-              <input
-                type="file"
-                id="propertyPhotos"
-                name="propertyPhotos[]"
-                #fileInput
-                (change)="previewImages($event)"
-                multiple
-                accept=".jpg, .jpeg, .png"
-                required/>
-              <div class="validation-note">Allowed formats: JPG or PNG</div>
-              <div id="image-preview" class="image-preview-container">
-                <img *ngFor="let img of imagePreviews" [src]="img" class="preview-image" />
+            <!-- Property Identification -->
+            <fieldset>
+              <legend>Property Identification</legend>
+              <div class="form-group">
+                <label for="propertyName">Property Name:</label>
+                <input type="text" id="propertyName" name="propertyName" ngModel required maxlength="100"
+                  placeholder="e.g., The Oberoi Amar Villas" required />
+                <div class="validation-note">Maximum 100 characters.</div>
               </div>
-              
+            </fieldset>
+
+            <!-- Property Address & Location -->
+            <fieldset>
+              <legend>Property Address & Location</legend>
+
+              <div class="form-group">
+                <label for="propertyAddress">Full Street Address:</label>
+                <input type="text" id="propertyAddress" name="propertyAddress" ngModel required
+                  placeholder="e.g., Taj East Gate Rd,Paktola,Agra" />
+              </div>
+
+              <div class="form-group">
+                <label for="district">District:</label>
+                <select id="district" name="district" ngModel required>
+                  <option value="" disabled selected>-- Select District --</option>
+                  <option value="district_1">Central District</option>
+                  <option value="district_2">Northern Heights</option>
+                  <option value="district_3">Riverside</option>
+                  <option value="district_4">West End</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="village">Village / Area:</label>
+                <select id="village" name="village" ngModel required>
+                  <option value="" disabled selected>-- Select Village/Area --</option>
+                  <option value="village_a">Lucknow (Central)</option>
+                  <option value="village_b">Ayodhya (Northern)</option>
+                  <option value="village_c">Varanasi (Riverside)</option>
+                  <option value="village_d">Agra (Western)</option>
+
+                </select>
+
+
+
+                <div class="search-container">
+                  <input type="text" placeholder="Search location" [(ngModel)]="searchQuery" name="searchQuery"
+                    (input)="onSearchChange()" class="search-input" />
+                  <ul *ngIf="suggestions.length" class="suggestions">
+                    <li *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+                      {{ suggestion.display_name }}
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </fieldset>
+
+
+
+
+            <div class="map-container" #mapContainer id="map" style="height: 400px;"></div>
+
+            <div class="form-group">
+              <label>Latitude:</label>
+              <input type="text" [value]="latitude" readonly />
             </div>
-          </fieldset>
+
+            <div class="form-group">
+              <label>Longitude:</label>
+              <input type="text" [value]="longitude" readonly />
+            </div>
+
+
+            <!-- Property Photos -->
+            <fieldset>
+              <legend>Property Photos</legend>
+              <div class="form-group">
+                <label for="propertyPhotos">Upload Photos:</label>
+                <input type="file" id="propertyPhotos" name="subImages" #fileInput (change)="previewImages($event)"
+                  multiple accept=".jpg, .jpeg, .png" required />
+
+
+              </div>
+            </fieldset>
 
             <!-- Type of property -->
             <fieldset>
               <legend>Property Sub-Images</legend>
-              
+
               <div class="form-group">
                 <label for="roomImage">Upload Room Image:</label>
-                <input
-                  type="file"
-                  id="roomImage"
-                  name="roomImage"
-                  (change)="previewRoomImage($event)"
-                  accept=".jpg, .jpeg, .png"
-                  required
-                />
+                <input type="file" id="roomImage" name="roomImage" (change)="previewRoomImage($event)"
+                  accept=".jpg, .jpeg, .png" required />
                 <div id="image-preview" *ngIf="roomImagePreview" class="image-preview-container">
                   <img [src]="roomImagePreview" class="preview-image" alt="Room Image Preview" />
                 </div>
               </div>
-            
+
               <div class="form-group">
                 <label for="poolImage">Upload Pool Image:</label>
-                <input
-                  type="file"
-                  id="poolImage"
-                  name="poolImage"
-                  (change)="previewPoolImage($event)"
-                  accept=".jpg, .jpeg, .png"
-                  required
-                />
-                <div  id="image-preview" *ngIf="poolImagePreview" class="image-preview-container">
+                <input type="file" id="poolImage" name="poolImage" (change)="previewPoolImage($event)"
+                  accept=".jpg, .jpeg, .png" required />
+                <div id="image-preview" *ngIf="poolImagePreview" class="image-preview-container">
                   <img [src]="poolImagePreview" class="preview-image" alt="Pool Image Preview" />
                 </div>
               </div>
-            
+
               <div class="form-group">
                 <label for="lobbyImage">Upload Lobby Image:</label>
-                <input
-                  type="file"
-                  id="lobbyImage"
-                  name="lobbyImage"
-                  (change)="previewLobbyImage($event)"
-                  accept=".jpg, .jpeg, .png"
-                  required
-                />
+                <input type="file" id="lobbyImage" name="lobbyImage" (change)="previewLobbyImage($event)"
+                  accept=".jpg, .jpeg, .png" required />
                 <div id="image-preview" *ngIf="lobbyImagePreview" class="image-preview-container">
                   <img [src]="lobbyImagePreview" class="preview-image" alt="Lobby Image Preview" />
                 </div>
               </div>
             </fieldset>
-    
-          <!-- Descriptions -->
-          <fieldset>
-            <legend>Descriptions</legend>
-            <div class="form-group">
-              <label for="shortDescription">Short Description:</label>
-              <textarea
-                id="shortDescription"
-                name="shortDescription"
-                ngModel
-                required
-                maxlength="250"
-                rows="3"
-                placeholder="Summarize the property briefly..." 
 
-              ></textarea>
-              <div class="validation-note">Max 250 characters.</div>
+            <!-- Descriptions -->
+            <fieldset>
+              <legend>Descriptions</legend>
+              <div class="form-group">
+                <label for="shortDescription">Short Description:</label>
+                <textarea id="shortDescription" name="shortDescription" ngModel required maxlength="250" rows="3"
+                  placeholder="Summarize the property briefly..."></textarea>
+                <div class="validation-note">Max 250 characters.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="longDescription">Long Description:</label>
+                <textarea id="longDescription" name="longDescription" ngModel rows="6"
+                  placeholder="Detailed description of the property..."></textarea>
+
+                <div class="field-description">Provide full details.</div>
+              </div>
+            </fieldset>
+
+            <!-- Amenities -->
+            <fieldset>
+              <legend>Amenities</legend>
+              <div class="form-group amenities-group">
+                <label>Check all available amenities:</label><br />
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="wifi" /> Wi-Fi</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="pool" /> Pool</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="gym" /> Gym</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="parking" /> Parking</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="ac" /> Air Conditioning</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="heating" /> Heating</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="laundry" /> Laundry
+                  (In-Unit)</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="balcony" />
+                  Balcony/Patio</label>
+                <label><input type="checkbox" (change)="onAmenityChange($event)" value="furnished" /> Furnished</label>
+              </div>
+              <div class="field-description">Select at least one amenity.</div>
+              <div *ngIf="!atLeastOneAmenitySelected && amenitiesTouched" class="error-message text-danger">
+                Please select at least one amenity.
+              </div>
+            </fieldset>
+            <!-- Accomodation type -->
+            <fieldset>
+              <legend>Type of Property</legend>
+              <div class="form-group property-group">
+                <label>Check the type of Property:</label><br />
+                <label>
+                  <input type="radio" name="propertyType" (change)="onPropertyChange($event)" value="Government" />
+                  Government
+                </label>
+                <label>
+                  <input type="radio" name="propertyType" (change)="onPropertyChange($event)" value="Private" />
+                  Private
+                </label>
+              </div>
+              <div class="field-description">Select the type of Property.</div>
+              <div *ngIf="!atLeastOnePropertyType && propertyTypeTouched" class="error-message text-danger">
+                Please select the type of Property.
+              </div>
+            </fieldset>
+
+
+
+            <!-- Contact Info -->
+            <fieldset>
+              <legend>Contact Information</legend>
+
+              <!-- Phone Number -->
+              <div class="form-group">
+                <label for="phoneInput">Phone Number</label>
+                <input type="tel" id="phoneInput" name="phone" ngModel #phoneInput="ngModel" required maxlength="10"
+                  pattern="^\d{10}$" placeholder="Enter 10-digit phone number" />
+                <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)"
+                  class="alert alert-danger error-message">
+                  <small *ngIf="phoneInput.errors?.['required']">Phone number is required!</small>
+                  <small *ngIf="phoneInput.errors?.['pattern']">Enter a valid 10-digit phone number.</small>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group">
+                <label for="emailInput">Email</label>
+                <input type="email" id="emailInput" name="email" ngModel #emailInput="ngModel" required email
+                  placeholder="Enter your email" />
+                <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
+                  class="alert alert-danger error-message">
+                  <small *ngIf="emailInput.errors?.['required']">Email is required!</small>
+                  <small *ngIf="emailInput.errors?.['email']">Please enter a valid email address.</small>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Submit -->
+            <button type="submit" class="submit" id="submitButton">
+              Submit and Proceed
+            </button>
+            <div *ngIf="!propertyNgForm.valid" class="text-red-500 text-sm mt-2">
+              Please fill out all required fields.
             </div>
-    
-            <div class="form-group">
-              <label for="longDescription">Long Description:</label>
-              <textarea
-                id="longDescription"
-                name="longDescription"
-                ngModel
-                rows="6"
-                placeholder="Detailed description of the property..."
-              ></textarea>
-             
-              <div class="field-description">Provide full details.</div>
-            </div>
-          </fieldset>
-    
-          <!-- Amenities -->
-          <fieldset>
-            <legend>Amenities</legend>
-            <div class="form-group amenities-group">
-              <label>Check all available amenities:</label><br />
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="wifi" /> Wi-Fi</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="pool" /> Pool</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="gym" /> Gym</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="parking" /> Parking</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="ac" /> Air Conditioning</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="heating" /> Heating</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="laundry" /> Laundry (In-Unit)</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="balcony" /> Balcony/Patio</label>
-              <label><input type="checkbox" (change)="onAmenityChange($event)" value="furnished" /> Furnished</label>
-            </div>
-            <div class="field-description">Select at least one amenity.</div>
-            <div *ngIf="!atLeastOneAmenitySelected && amenitiesTouched" class="error-message text-danger">
+
+            <div *ngIf="propertyNgForm.valid && !atLeastOneAmenitySelected" class="text-red-500 text-sm mt-2">
               Please select at least one amenity.
             </div>
-          </fieldset>
-<!-- Accomodation type -->
-          <fieldset>
-            <legend>Type of Property</legend>
-            <div class="form-group property-group">
-              <label>Check the type of Property:</label><br />
-              <label>
-                <input type="radio" name="propertyType" (change)="onPropertyChange($event)" value="Government" />
-                Government
-              </label>
-              <label>
-                <input type="radio" name="propertyType" (change)="onPropertyChange($event)" value="Private" />
-                Private
-              </label>
-            </div>
-            <div class="field-description">Select the type of Property.</div>
-            <div *ngIf="!atLeastOnePropertyType && propertyTypeTouched" class="error-message text-danger">
-              Please select the type of Property.
-            </div>
-          </fieldset>
-          
-          
-    
-          <!-- Contact Info -->
-          <fieldset>
-            <legend>Contact Information</legend>
-    
-            <!-- Phone Number -->
-            <div class="form-group">
-              <label for="phoneInput">Phone Number</label>
-              <input
-                type="tel"
-                id="phoneInput"
-                name="phone"
-                ngModel
-                #phoneInput="ngModel"
-                required
-                maxlength="10"
-                pattern="^\d{10}$"
-                placeholder="Enter 10-digit phone number"
-              />
-              <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)" class="alert alert-danger error-message">
-                <small *ngIf="phoneInput.errors?.['required']">Phone number is required!</small>
-                <small *ngIf="phoneInput.errors?.['pattern']">Enter a valid 10-digit phone number.</small>
-              </div>
-            </div>
-    
-            <!-- Email -->
-            <div class="form-group">
-              <label for="emailInput">Email</label>
-              <input
-                type="email"
-                id="emailInput"
-                name="email"
-                ngModel
-                #emailInput="ngModel"
-                required
-                email
-                placeholder="Enter your email"
-              />
-              <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="alert alert-danger error-message">
-                <small *ngIf="emailInput.errors?.['required']">Email is required!</small>
-                <small *ngIf="emailInput.errors?.['email']">Please enter a valid email address.</small>
-              </div>
-            </div>
-          </fieldset>
-    
-          <!-- Submit -->
-          <button
-            type="submit"
-            class="submit"
-            id="submitButton"
-          
-          >
-            Submit and Proceed
-          </button>
-          <div *ngIf="!propertyNgForm.valid" class="text-red-500 text-sm mt-2">
-            Please fill out all required fields.
-          </div>
-        
-          <div *ngIf="propertyNgForm.valid && !atLeastOneAmenitySelected" class="text-red-500 text-sm mt-2">
-            Please select at least one amenity.
-          </div>
-    
-        </form>
+
+          </form>
+        </div>
       </div>
-     </div>
 
       <!-- Rooms -->
       <div *ngIf="selectedMenu === 'rooms'" class="fade-in">
@@ -467,7 +386,7 @@
             <input type="checkbox" [(ngModel)]="newRoom.deal" />
             Deal Available
           </label>
-   
+
           <!-- Image Upload -->
           <input type="file" (change)="onFileSelected($event)" accept="image/*" />
 
@@ -500,7 +419,7 @@
             <div class="room-actions">
               <button (click)="editRoom(i)" class="edit-btn"><i class="fas fa-edit"></i> Edit</button>
               <button *ngIf="room.id !== undefined" (click)="deleteRoom(room.id!)" class="delete-btn">
-                <i class="fas fa-trash-alt"></i>   Delete</button>
+                <i class="fas fa-trash-alt"></i> Delete</button>
             </div>
           </div>
         </div>
@@ -532,35 +451,34 @@
           <button (click)="createDeal()">Add Deal</button>
         </div>
 
-      <!-- Deal Cards -->
-      <div class="rooms">
-     <div class="room" *ngFor="let room of filteredDeals; let i = index">
-     <span class="badge">DEAL</span>
-     <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
+        <!-- Deal Cards -->
+        <div class="rooms">
+          <div class="room" *ngFor="let room of filteredDeals; let i = index">
+            <span class="badge">DEAL</span>
+            <img *ngIf="room.imageUrl" [src]="room.imageUrl" alt="Room Image" class="room-image" />
 
-     <h4>{{ room.name }}</h4>
-     <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
-     <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
+            <h4>{{ room.name }}</h4>
+            <p><strong>Availability:</strong> {{ room.available }} / {{ room.total }}</p>
+            <p class="price"><strong>₹{{ room.price }}</strong> /day</p>
 
-     <!-- Description with toggle -->
-      <div class="description-container" *ngIf="room.description">
-       <p class="description-text" [ngClass]="{ 'clamped': !room.showFullDesc }">
-        <strong>Description:</strong> {{ room.description }}
-      </p>
+            <!-- Description with toggle -->
+            <div class="description-container" *ngIf="room.description">
+              <p class="description-text" [ngClass]="{ 'clamped': !room.showFullDesc }">
+                <strong>Description:</strong> {{ room.description }}
+              </p>
 
-      <button *ngIf="room.description.length > 150" (click)="toggleDescription(i)"
-        class="toggle-btn">
-        {{ room.showFullDesc ? 'Show Less ▲' : 'Show More ▼' }}
-      </button>
-     </div>
+              <button *ngIf="room.description.length > 150" (click)="toggleDescription(i)" class="toggle-btn">
+                {{ room.showFullDesc ? 'Show Less ▲' : 'Show More ▼' }}
+              </button>
+            </div>
 
-      <!-- Buttons -->
-      <div class="room-actions">
-      <button (click)="editRoomById(room.id!)" class="edit-btn">✏️ Edit</button>
-      <button (click)="deleteRoom(room.id!)" class="delete-btn">🗑️ Delete</button>
-      </div>
-     </div>
-     </div>
+            <!-- Buttons -->
+            <div class="room-actions">
+              <button (click)="editRoomById(room.id!)" class="edit-btn">✏️ Edit</button>
+              <button (click)="deleteRoom(room.id!)" class="delete-btn">🗑️ Delete</button>
+            </div>
+          </div>
+        </div>
 
       </div>
 
@@ -588,152 +506,124 @@
 
       <!-- Feedbacks and reviews -->
       <div *ngIf="selectedMenu === 'feedbacks'" class="fade-in feedback-wrapper">
-       <h2 class="section-title">🌟 Feedback & Reviews</h2>
-    
+        <h2 class="section-title">🌟 Feedback & Reviews</h2>
+
         <div class="feedbacks">
-        <div class="feedback-card animate-card" *ngFor="let feedback of feedbacks">
-          <div class="header">
-            <h3>{{ feedback.hotelName }}</h3>
-    
-            
-    
-            <!-- ⭐ Star Rating -->
-            <div class="rating">
-              <ng-container *ngFor="let star of createStarArray(feedback.rating)">
-                <i class="fas fa-star star-icon"></i>
-              </ng-container>
+          <div class="feedback-card animate-card" *ngFor="let feedback of feedbacks">
+            <div class="header">
+              <h3>{{ feedback.hotelName }}</h3>
+
+
+
+              <!-- ⭐ Star Rating -->
+              <div class="rating">
+                <ng-container *ngFor="let star of createStarArray(feedback.rating)">
+                  <i class="fas fa-star star-icon"></i>
+                </ng-container>
+              </div>
             </div>
-          </div>
-    
-          <!-- 📝 Feedback Description -->
-           <!-- 👤 User Info -->
-           <div *ngIf="feedback.user">
-            <i class="fa fa-user"></i> user: {{ feedback.user.fullname || feedback.user.username }}
-          </div>
-          <p class="description">"{{ feedback.description || 'No description provided.' }}"</p>
-    
-          <!-- ❤️ Liked Amenities -->
-          <div *ngIf="feedback.likedAmenities?.length">
-            <p class="amenities-label">❤️ Liked Amenities:</p>
-            <div class="amenities">
-              <span class="amenity-tag" *ngFor="let amenity of feedback.likedAmenities">
-                {{ amenity }}
-              </span>
+
+            <!-- 📝 Feedback Description -->
+            <!-- 👤 User Info -->
+            <div *ngIf="feedback.user">
+              <i class="fa fa-user"></i> user: {{ feedback.user.fullname || feedback.user.username }}
             </div>
+            <p class="description">"{{ feedback.description || 'No description provided.' }}"</p>
+
+            <!-- ❤️ Liked Amenities -->
+            <div *ngIf="feedback.likedAmenities?.length">
+              <p class="amenities-label">❤️ Liked Amenities:</p>
+              <div class="amenities">
+                <span class="amenity-tag" *ngFor="let amenity of feedback.likedAmenities">
+                  {{ amenity }}
+                </span>
+              </div>
+            </div>
+
+            <!-- 🕒 Timestamp -->
+            <p class="timestamp">🕒 {{ feedback.createdAt | date: 'medium' }}</p>
+
+            <!-- 🗑️ Delete Button -->
+            <button (click)="deleteFeedback(feedback.id)" class="btn btn-danger mt-2">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+
+            <button class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)">
+              <i class="fas fa-reply"></i> Reply
+            </button>
+
+
+
+
           </div>
-    
-          <!-- 🕒 Timestamp -->
-          <p class="timestamp">🕒 {{ feedback.createdAt | date: 'medium' }}</p>
-    
-          <!-- 🗑️ Delete Button -->
-          <button (click)="deleteFeedback(feedback.id)" class="btn btn-danger mt-2">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-
-          <button  class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)">
-            <i class="fas fa-reply"></i> Reply
-          </button>
-
-
-
-          
-        </div>
         </div>
       </div>
 
       <div *ngIf="selectedMenu === 'profile'" class="fade-in">
         <div class="profile-container">
-         <h2 class="profile-title">Profile Settings</h2>
-         <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
-           
-           <div class="form-group2">
-             <label for="fullName">Full Name</label>
-             <input
-               type="text"
-               id="fullName"
-               name="fullName"
-               [(ngModel)]="userprofile.fullName"
-               required
-             />
-           </div>
-       
-           <div class="form-group2">
-             <label for="email">Email</label>
-             <input
-               type="email"
-               id="email"
-               name="email"
-               [(ngModel)]="userprofile.email"
-               required
-             />
-           </div>
-       
-           <div class="form-group2">
-             <label for="contact">Contact</label>
-             <input
-               type="tel"
-               id="contact"
-               name="contact"
-               [(ngModel)]="userprofile.contact"
-               required
-             />
-           </div>
-       
-           <div class="form-group2">
-             <label for="password">Password</label>
-             <input
-               type="password"
-               id="password"
-               name="password"
-               [(ngModel)]="userprofile.password"
-               required
-             />
-           </div>
-       
-           <div class="form-group2">
-             <label for="newPassword">New Password</label>
-             <input
-               type="password"
-               id="newPassword"
-               name="newPassword"
-               [(ngModel)]="userprofile.newPassword"
-             />
-           </div>
-       
-           <div class="button-group">
-            <button class="primary-btn" (click)="updatePassword()">Update Password</button>
-            <button class="secondary-btn" (click)="updateProfile()">Update Profile</button>
-           </div>
-         </form>
-       </div>
-       
-       </div>
-    
-     <div class="modal" *ngIf="showReplyModal">
-      <div class="modal-content">
-        <span class="close-btn" (click)="closeReplyModal()">&times;</span>
-        <h3>Reply to Feedback</h3>
-    
-        <p><strong>User:</strong> {{ selectedFeedback.user.fullname || selectedFeedback.user.username }}</p>
-        <p><strong>Comment:</strong> {{ selectedFeedback?.description }}</p>
-    
-        <textarea [(ngModel)]="replyText" rows="4" class="form-control mb-3" placeholder="Write your reply..."></textarea>
-    
-        <button class="btn btn-secondary mb-2" (click)="closeReplyModal()">Cancel</button>
-        <button class="btn btn-primary" (click)="sendReply()">Send Reply</button>
+          <h2 class="profile-title">Profile Settings</h2>
+          <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+
+            <div class="form-group2">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" name="fullName" [(ngModel)]="userprofile.fullName" required />
+            </div>
+
+            <div class="form-group2">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" [(ngModel)]="userprofile.email" required />
+            </div>
+
+            <div class="form-group2">
+              <label for="contact">Contact</label>
+              <input type="tel" id="contact" name="contact" [(ngModel)]="userprofile.contact" required />
+            </div>
+
+            <div class="form-group2">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" [(ngModel)]="userprofile.password" required />
+            </div>
+
+            <div class="form-group2">
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" name="newPassword" [(ngModel)]="userprofile.newPassword" />
+            </div>
+
+            <div class="button-group">
+              <button class="primary-btn" (click)="updatePassword()">Update Password</button>
+              <button class="secondary-btn" (click)="updateProfile()">Update Profile</button>
+            </div>
+          </form>
+        </div>
+
       </div>
-     </div>
-    
-    
-    
 
-     </div>
+      <div class="modal" *ngIf="showReplyModal">
+        <div class="modal-content">
+          <span class="close-btn" (click)="closeReplyModal()">&times;</span>
+          <h3>Reply to Feedback</h3>
+
+          <p><strong>User:</strong> {{ selectedFeedback.user.fullname || selectedFeedback.user.username }}</p>
+          <p><strong>Comment:</strong> {{ selectedFeedback?.description }}</p>
+
+          <textarea [(ngModel)]="replyText" rows="4" class="form-control mb-3"
+            placeholder="Write your reply..."></textarea>
+
+          <button class="btn btn-secondary mb-2" (click)="closeReplyModal()">Cancel</button>
+          <button class="btn btn-primary" (click)="sendReply()">Send Reply</button>
+        </div>
+      </div>
 
 
-      <!-- =============================================== -->
-      <!-- Edit Room Popup Form -->
-      <!-- =============================================== -->
-      <div *ngIf="editIndex !== null" class="edit-room-popup">
+
+
+    </div>
+
+
+    <!-- =============================================== -->
+    <!-- Edit Room Popup Form -->
+    <!-- =============================================== -->
+    <div *ngIf="editIndex !== null" class="edit-room-popup">
       <div class="edit-room-modal">
         <h3>Edit Room Details</h3>
 
@@ -761,7 +651,7 @@
           <button (click)="cancelEditRoomPopup()"><i class="fas fa-arrow-left"></i> Cancel</button>
         </div>
       </div>
-      </div>
+    </div>
 
 
   </div>

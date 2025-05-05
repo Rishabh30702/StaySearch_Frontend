@@ -34,7 +34,8 @@ export class HotelliersComponent implements OnInit,OnDestroy {
   longitude: number = 0;
   mapInitialized = false;
   showmenu: boolean = true;
-  
+
+
 isLoading: boolean = false;
 updateHotel = { name: '', address: '', amenities: '' };
 
@@ -64,6 +65,8 @@ isEditModalOpen =false;
   selectedAmenities: string[] = [];
   atLeastOneAmenitySelected: boolean = false;
   amenitiesTouched: boolean = false; 
+
+  imageFiles: File[] = [];
   imagePreviews: string[] = [];
   
   roomImagePreview: string | null = null;
@@ -141,6 +144,7 @@ hotels = [
     
   };
 
+  selectedHotel: any;
 
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService,
@@ -294,7 +298,7 @@ hotels = [
       this.selectedMenu = menu;
     
       if (menu === 'rooms') {
-        this.loadRooms();
+        this.loadRoomsByHotel(this.currentHotelId);
       }
     
       if (menu === 'hotels') {
@@ -473,6 +477,7 @@ onFileSelected(event: Event) {
           console.log(this.newRoom.deal);
           this.isLoading = false;
           alert('Room added successfully!');
+          this.loadRooms();
           
           this.updateStats();
         },
@@ -654,9 +659,9 @@ onFileSelected(event: Event) {
       alert('Please select at least one amenity.');
       return;
     }
-
+  
     if (!this.atLeastOnePropertyType) {
-      alert('Please select the type of Property.');
+      alert('Please select the type of property.');
       return;
     }
   
@@ -667,74 +672,85 @@ onFileSelected(event: Event) {
       return;
     }
   
+    if (this.imageFiles.length === 0) {
+      alert('Please upload at least one image.');
+      return;
+    }
+  
+    // Build property/hotel data
     const propertyData = {
-      name:            form.value.propertyName,           // renamed
-  address:         form.value.propertyAddress,        // or concatenate with district/village
-  destination:     form.value.district,               // or whichever field holds the city
-  description:     form.value.longDescription,        // choose long or short
-  amenities:       this.selectedAmenities,            // string[]
-  lat:             this.latitude,                     // correct key
-  lng:             this.longitude,                    // correct key
-  imageUrl:        this.imagePreviews[0] ?? '',       // hero / cover image
-  accommodationType: this.selectedProperty,           // "Hotel", "Private", ...
-  subImages:       this.subImages.filter(Boolean),    // remove null/undefined
-  contact: {
-    phone:         form.value.phone,
-    email:         form.value.email
-  }
-      // Note: For propertyPhotos, you might need to handle file upload separately
+      name: form.value.propertyName,
+      address: form.value.propertyAddress,
+      destination: form.value.district,
+      description: form.value.longDescription,
+      amenities: this.selectedAmenities,
+      lat: this.latitude,
+      lng: this.longitude,
+      accommodationType: this.selectedProperty,
+      rating: 4.8,
+      price: form.value.price,
+      reviews: "Amazing stay!",
+      liked: true,
+      checkIn: form.value.checkIn,
+      checkOut: form.value.checkOut,
+      guests: form.value.guests,
+      rooms: form.value.rooms
     };
+  
+    // Create FormData for file and data upload
+    const formData = new FormData();
+    formData.append(
+      "hotel",
+      new Blob([JSON.stringify(propertyData)], {
+        type: "application/json",
+      })
+    );
+  
+    // First image = cover
+    formData.append("imageUrl", this.imageFiles[0]);
+  
+    // Remaining images = subImages
+    for (let i = 1; i < this.imageFiles.length; i++) {
+      formData.append("subImages", this.imageFiles[i]);
+    }
 
-    const payload = {
-      name: propertyData.name,
-      address: propertyData.address,
-      destination: propertyData.destination,
-      description: propertyData.description,
-      amenities: propertyData.amenities,
-      lat: propertyData.lat,
-      lng: propertyData.lng,
-      // imageUrl: propertyData.imageUrl,
-      accommodationType: propertyData.accommodationType,
-      // subImages: propertyData.subImages,
-      contact: {
-        phone: propertyData.contact.phone,
-        email: propertyData.contact.email
-      }
-    };
-    this.hotelierService.registerHotel(payload).subscribe({
-      next: (res:any) => {
-        alert("hotel registration success. Awaiting admin approval.");
-         this.selectedMenu = 'rooms'
-         alert('Form submitted successfully!');
+    console.log('Appending subImages:');
+this.imageFiles.slice(1).forEach((file, index) => {
+  console.log(`subImage[${index}] = ${file.name}`);
+  formData.append("subImages", file);
+});
+
+    for (let [key, value] of formData.entries()) {
+      console.log('FormData Entry:', key, value);
+    }
+  
+    // Submit via service
+    this.hotelierService.registerHotel(formData).subscribe({
+      next: (res: any) => {
+        alert('Hotel registration success. Awaiting admin approval.');
+        this.selectedMenu = 'rooms';
+        this.imagePreviews = [];
+        this.imageFiles = [];
       },
-      error: (err:any) => {
-        alert("Registration failed. Try again later.");
+      error: (err: any) => {
+        alert('Registration failed. Try again later.');
         console.error(err);
       }
     });
-    
-    this.imagePreviews =[]; //clearing the image preview after submission
-    console.log('Property Form Data:', propertyData);
-    
-   
   }
   
-
-
-
-  previewImages(event: Event): void {
-    const input = event.target as HTMLInputElement;
   
-    if (input.files && input.files.length > 0) {
+
+
+
+  previewImages(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      this.imageFiles = Array.from(target.files);
+      this.imagePreviews = this.imageFiles.map(file => URL.createObjectURL(file));
+    } else {
+      this.imageFiles = [];
       this.imagePreviews = [];
-  
-      Array.from(input.files).forEach((file: File) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.imagePreviews.push(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      });
     }
   }
  
@@ -869,13 +885,50 @@ saveHotel() {
 
 onHotelSelect(event: Event, hotelId: number) {
   const checked = (event.target as HTMLInputElement).checked;
+  
   if (checked) {
     this.currentHotelId = hotelId;
-   
+    this.fetchHotelById(hotelId);  // 👈 Load specific hotel rooms
   } else {
-    this.currentHotelId = 0;  // Unselect if unchecked
-   
+    this.currentHotelId = 0;
+    this.rooms = []; // 👈 Clear rooms when deselected
   }
+}
+
+loadRoomsByHotel(hotelId: number) {
+  this.roomService.getRoomsByHotelId(hotelId).subscribe({
+    next: (rooms: Room[] | null) => {
+      if (!rooms || rooms.length === 0) {
+        this.rooms = []; // ✅ Clear rooms on empty response
+        this.roomStatus = { available: 0, occupied: 0 }; // Optional stat reset
+        return;
+      }
+
+      this.rooms = rooms.map(room => ({
+        ...room,
+        showFullDesc: false
+      }));
+      this.updateStats();
+    },
+    error: (err) => {
+      console.error('Failed to fetch rooms:', err);
+    }
+  });
+}
+
+
+
+fetchHotelById(hotelId: number) {
+  this.hotelierService.getHotelById(hotelId).subscribe(
+    (response: any) => {
+      // Store the fetched hotel data
+      this.selectedHotel = response;
+      console.log(this.selectedHotel);
+    },
+    (error) => {
+      console.error('Error fetching hotel:', error);
+    }
+  );
 }
 
 getFilteredMenuItems() {
