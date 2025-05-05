@@ -6,11 +6,12 @@ import Swal from 'sweetalert2'; // Import SweetAlert2 here
 import { ContactServiceService } from '../Core/Services/ContactService/contact-service.service';
 import { Observable } from 'rxjs';
 import { SpinnerComponent } from "../Core/spinner/spinner.component";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-contact-us',
-  imports: [CommonModule, ReactiveFormsModule, SpinnerComponent],
+  imports: [CommonModule, ReactiveFormsModule, SpinnerComponent,TranslateModule],
   templateUrl: './contact-us.component.html',
   styleUrl: './contact-us.component.css'
 })
