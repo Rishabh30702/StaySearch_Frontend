@@ -81,14 +81,13 @@ isEditModalOpen =false;
   
   // Example array of hotels
 hotels = [
-  {
+ {
     name: 'The Oberoi Amarvilas',
     location: 'Agra, Uttar Pradesh',
     rating: 4.8,
     amenities: ['Wi-Fi', 'Pool', 'AC'],
     id:0
   },
- 
 ];
 
   menuItems = [
@@ -194,6 +193,7 @@ hotels = [
       });
     }
   }
+  
 
   }
   
@@ -409,6 +409,7 @@ hotels = [
 
 onFileSelected(event: Event) {
   const input = event.target as HTMLInputElement;
+  this.newRoom.imageUrl = "";
 
   if (input.files && input.files.length > 0) {
     this.selectedFile = input.files[0];
@@ -416,9 +417,14 @@ onFileSelected(event: Event) {
     const reader = new FileReader();
     reader.onload = () => {
       this.newRoom.imageUrl = reader.result as string; // Data URL
+      //  console.log("img url ", this.newRoom.imageUrl);
     };
     reader.readAsDataURL(this.selectedFile);
+    
+ 
   }
+  
+
 }
 
 
@@ -450,7 +456,7 @@ onFileSelected(event: Event) {
       //  }
 
       const formData = new FormData();
-      formData.append("file", this.selectedFile);
+       formData.append("file", this.selectedFile);
     
       formData.append("room", JSON.stringify({
         hotelId: this.currentHotelId,
@@ -459,7 +465,7 @@ onFileSelected(event: Event) {
         available: this.newRoom.available,
         price: this.newRoom.price,
         description: this.newRoom.description,
-        imageUrl: "placeholder",
+        imageUrl: this.newRoom.imageUrl,
         deal: this.newRoom.deal,
         type: "Suite"
       }));
@@ -549,8 +555,8 @@ onFileSelected(event: Event) {
       this.newRoom.price > 0
     ) {
       // Create a shallow copy excluding the preview image URL
-      const roomDataToSend = { ...this.newRoom, imageUrl: null }; // remove base64
-  
+      const roomDataToSend = { ...this.newRoom, imageUrl: "jig", hotelId:this.currentHotelId }; // remove base64
+        //  this.newRoom.imageUrl
       const formData = new FormData();
       formData.append(
         'room',
@@ -559,9 +565,9 @@ onFileSelected(event: Event) {
         })
       );
   
-      if (this.selectedFile) {
+     /* if (this.selectedFile) {
         formData.append('imageUrl', this.selectedFile);
-      }
+      } */
   
       this.roomService.updateRoom(this.newRoom.id, formData).subscribe({
         next: (updatedRoom: Room) => {
@@ -715,10 +721,7 @@ onFileSelected(event: Event) {
     }
 
     console.log('Appending subImages:');
-this.imageFiles.slice(1).forEach((file, index) => {
-  console.log(`subImage[${index}] = ${file.name}`);
-  formData.append("subImages", file);
-});
+
 
     for (let [key, value] of formData.entries()) {
       console.log('FormData Entry:', key, value);
@@ -731,6 +734,13 @@ this.imageFiles.slice(1).forEach((file, index) => {
         this.selectedMenu = 'rooms';
         this.imagePreviews = [];
         this.imageFiles = [];
+        this.subImages = [];
+
+        // Clear Individual Previews (if used)
+          this.roomImagePreview = '';
+           this.poolImagePreview = '';
+            this.lobbyImagePreview = '';
+
       },
       error: (err: any) => {
         alert('Registration failed. Try again later.');
@@ -739,60 +749,71 @@ this.imageFiles.slice(1).forEach((file, index) => {
     });
   }
   
+
+
   
-
-
-
-  previewImages(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (target.files && target.files.length > 0) {
-      this.imageFiles = Array.from(target.files);
-      this.imagePreviews = this.imageFiles.map(file => URL.createObjectURL(file));
-    } else {
-      this.imageFiles = [];
-      this.imagePreviews = [];
-    }
+previewImages(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    const files = Array.from(target.files);
+    files.forEach((file, i) => {
+      this.imageFiles.push(file); // Add all files
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.subImages.push(e.target.result); // Push preview
+      };
+      reader.readAsDataURL(file);
+    });
   }
- 
+}
 
-  previewRoomImage(event: any) {
+
+
+
+
+   previewRoomImage(event: any) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.roomImagePreview = e.target.result;
         if (this.roomImagePreview) {
-          this.subImages[0] = this.roomImagePreview; // Store the image in subImages array
+          this.subImages[1] = this.roomImagePreview;
+          this.imageFiles[1] = file;
+          // Store the image in subImages array
         }
       };
       reader.readAsDataURL(file); // Convert file to base64 string for preview
     }
-  }
-
-  // Handle Pool Image preview and save URL
-  previewPoolImage(event: any) {
+   }
+ 
+   // Handle Pool Image preview and save URL
+   previewPoolImage(event: any) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.poolImagePreview = e.target.result;
         if (this.poolImagePreview) {
-          this.subImages[1] = this.poolImagePreview; // Store the image in subImages array
+          this.subImages[2] = this.poolImagePreview; // Store the image in subImages array
+          this.imageFiles[2] = file;
         }
       };
       reader.readAsDataURL(file);
     }
-  }
+   }
 
-  // Handle Lobby Image preview and save URL
-  previewLobbyImage(event: any) {
+   // Handle Lobby Image preview and save URL
+   previewLobbyImage(event: any) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.lobbyImagePreview = e.target.result;
         if (this.lobbyImagePreview) {
-          this.subImages[2] = this.lobbyImagePreview; // Store the image in subImages array
+          this.subImages[3] = this.lobbyImagePreview; // Store the image in subImages array
+          this.imageFiles[3] = file;
+          // console.log(this.subImages);
         }
       };
       reader.readAsDataURL(file);
@@ -894,6 +915,7 @@ onHotelSelect(event: Event, hotelId: number) {
     this.rooms = []; // 👈 Clear rooms when deselected
   }
 }
+
 
 loadRoomsByHotel(hotelId: number) {
   this.roomService.getRoomsByHotelId(hotelId).subscribe({

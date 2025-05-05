@@ -1,43 +1,51 @@
 <app-spinner [isLoading]="isLoading"></app-spinner>
 <div class="contactUs-container">
-    <h2>Contact Us</h2>
+    <h2>{{ 'Contact Us' | translate }}</h2>
     
 
     <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="contact-form">
       <div class="form-container">
-        <textarea formControlName="description" placeholder="Description" class="form-control shadow-none"></textarea>
+        <textarea formControlName="description" [placeholder]=" 'Description' |translate" class="form-control shadow-none"></textarea>
     
         <div class="right-form">
-          <input type="text" formControlName="subject" placeholder="Subject" class="form-control shadow-none">
+          <input type="text" formControlName="subject"  [placeholder]="'Subject' | translate" class="form-control shadow-none">
           <small *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="error">
-            <span style="color:red">Subject is required.</span>
+            <span style="color:red">Subject is required.
+              {{ 'Subject is required.' | translate }}
+            </span>
           </small>
     
-          <input type="text" formControlName="name" placeholder="Name / Surname" class="form-control shadow-none">
+          <input type="text" formControlName="name"  [placeholder]="'Name / Surname' | translate"class="form-control shadow-none">
           <small *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="error">
-            <span style="color:red">Enter full name (at least two words).</span>
+            <span style="color:red">Enter full name (at least two words).
+              {{ 'Enter full name (at least two words).' | translate }}
+            </span>
           </small>
     
-          <input type="email" formControlName="email" placeholder="Email" class="form-control shadow-none">
+          <input type="email" formControlName="email"  [placeholder]="'Email' | translate"class="form-control shadow-none">
           <small *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="error">
-            <span style="color:red"> Enter a valid email.</span>
+            <span style="color:red"> Enter a valid email.
+              {{ 'Enter a valid email.' | translate }}
+            </span>
           </small>
     
           <button type="submit" class="send-btn">
-            Send <span>✈️</span>
+            {{'Send'|translate}} <span>✈️</span>
           </button>
         </div>
       </div>
     </form>
     <small *ngIf="contactForm.get('description')?.invalid && contactForm.get('description')?.touched" class="error">
-      <span style="color:red; margin-left: 4vw;" class="d-flex align-items-center">Description must be at least 10 characters.</span>
+      <span style="color:red; margin-left: 4vw;" class="d-flex align-items-center">Description must be at least 10 characters.
+        {{ 'Description must be at least 10 characters.' | translate }}
+      </span>
     </small>
     
     
       <div class="contact-info">
         <div class="info-item">
           <div class="icon">📧</div>
-          <h3>Email</h3>
+          <h3>{{ 'Email' | translate }}</h3>
           <p>
             dg-upt&#64;up.gov.in
            </p>
@@ -45,25 +53,25 @@
         </div>
         <div class="info-item">
           <div class="icon">📞</div>
-          <h3>Phone</h3>
+          <h3>{{ 'Phone' | translate }}</h3>
           <p>6389300497, </p>
           <p>1800-11-1363</p>
          
         </div>
         <div class="info-item">
           <div class="icon">📍</div>
-          <h3>Location</h3>
+          <h3>{{ 'Location' | translate }}</h3>
           <p>
             Directorate of Tourism, Uttar Pradesh Rajarshi Purushottam Das Tandon Paryatan Bhavan C-13, Vipin Khand, Gomti Nagar,  Lucknow, Uttar Pradesh
             </p>
-          
+                                   
         </div>
       </div>
 
       <div class="gallery-container">
         <div class="gallery-header">
          
-          <h2>See our latest photos <br> from restaurant and hotel</h2>
+          <h2>{{ 'See our latest photos  from restaurant and hotel' | translate }}</h2>
         </div>
         
         <div class="image-gallery">
@@ -73,7 +81,7 @@
                 <img src="oberoi.jpg" alt="Mountains">
                 <img src="rich.jpg" alt="Stairs">
                 <img src="raddisson.jpg" alt="Green Garden">
-                <img src="jp palace.jpg" alt="Resort">
+                
                 
            
           </div>

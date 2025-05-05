@@ -1,142 +1,149 @@
 h2 {
-    font-size: calc(1.325rem + .9vw);
-    color: #570E49;
-    margin-bottom: 10vh;
-    margin-top: 5vh;
-    margin-left: 5vw;
-    font-weight: bold;
-    letter-spacing: 0.2vw;
+  font-size: calc(1.325rem + .9vw);
+  color: #570E49;
+  margin-bottom: 10vh;
+  margin-top: 5vh;
+  margin-left: 5vw;
+  font-weight: bold;
+  letter-spacing: 0.2vw;
 }
 
 .about-container {
-  
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 40px;
-    padding: 50px;
-  }
-  
-  .about-text {
-    max-width: 500px;
-  }
-  
 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 50px;
+}
+
+.about-text {
+  max-width: 500px;
+}
+
+
+
+.about-text h2 {
+  font-size: 2.5rem;
+  margin: 10px 0;
+}
+
+.about-text p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.read-more {
+  background: #5a54e7;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 5px;
+}
+
+.read-more span {
+  font-size: 20px;
+}
+
+.about-images {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;  /* Make it take equal space as text */
+max-width: 600px;
+}
+
+.top-row {
+  display: flex;
+  gap: 10px;
+}
+
+.top-row img,
+.wide-img {
+  width: 100%;
+  height: 220px;
   
-  .about-text h2 {
-    font-size: 2.5rem;
-    margin: 10px 0;
-  }
-  
-  .about-text p {
-    color: #666;
-    line-height: 1.6;
-  }
-  
-  .read-more {
-    background: #5a54e7;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: 5px;
-  }
-  
-  .read-more span {
-    font-size: 20px;
-  }
-  
-  .about-images {
-    display: flex;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .about-container {
     flex-direction: column;
-    gap: 10px;
-    flex: 1;  /* Make it take equal space as text */
-  max-width: 600px;
+    padding: 20px;
+    text-align: center;
   }
-  
+
+  .about-text {
+    max-width: 100%;
+  }
+
+  .about-text h2 {
+    font-size: 2rem;
+  }
+
+  .about-images {
+    max-width: 100%;
+    width: 100%;
+  }
+
   .top-row {
-    display: flex;
-    gap: 10px;
+    flex-direction: column;
   }
-  
+
   .top-row img,
   .wide-img {
-    width: 100%;
-    height: 220px;
-    
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-    .about-container {
-      flex-direction: column;
-      text-align: center;
-    }
-  
-    .about-images {
-      width: 100%;
-    }
-  
-    .top-row {
-      flex-direction: column;
-    }
-
-
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    
-   
+    height: 180px;
   }
 
- /* 2nd sec about*/
+  .read-more {
+    justify-content: center;
+    margin-top: 15px;
+  }
+}
 
- .card-container {
-  margin: 0 auto;  
-  
-  /* Centers horizontally */
+
+/* 2nd sec about*/
+
+.card-container {
+margin: 0 auto;  
+
+/* Centers horizontally */
 }
 
 
 .card-container {
-  
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  bottom: 20px;;
-  max-width: 95%;
-  padding: 20px;
-  
-  height: auto;  /* ✅ Ensure it takes up space */
-  position: relative;
-  border-radius: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 20px;
+bottom: 20px;;
+max-width: 95%;
+padding: 20px;
+
+height: auto;  /* ✅ Ensure it takes up space */
+position: relative;
+border-radius: 20px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
 .background-image {
-  border-radius: 20px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Makes the image cover the entire div */
-  opacity: 0.5; /* Adjust opacity to make content readable */
-  z-index: -1; /* Sends the image to the background */
+border-radius: 20px;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+object-fit: cover; /* Makes the image cover the entire div */
+opacity: 0.5; /* Adjust opacity to make content readable */
+z-index: -1; /* Sends the image to the background */
 }
 
 
@@ -144,68 +151,85 @@ h2 {
 
 
 .card {
-  opacity: 0.85;
-  background: #570E49;
-  padding: 20px;
-  width: 180px;       
-  min-width: 250px;    
-  max-height: 270px;    
-  text-align: center;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-wrap: break-word; /* Ensures text wraps instead of stretching */
+opacity: 0.85;
+background: #570E49;
+padding: 20px;
+width: 180px;       
+min-width: 250px;    
+max-height: 270px;    
+text-align: center;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+overflow-wrap: break-word; /* Ensures text wraps instead of stretching */
 }
 
 
 .card h3 {
-  margin: 10px 0;
-  color: white;
-  font-size: large;
+margin: 10px 0;
+color: white;
+font-size: large;
 }
 
 .card p {
-  color: white;
-  font-size: small;
+color: white;
+font-size: small;
 }
 
 
 
 .table-container {
-  text-align: center;
-  margin: 20px auto;
-  padding-bottom: 50px;
+text-align: center;
+margin: 20px auto;
+padding-bottom: 50px;
 }
 
 .table-title {
-  font-size: 24px;
-  
-  margin-bottom: 10px;
+font-size: 24px;
+
+margin-bottom: 10px;
 }
 
 .hotel-table {
-  margin: 0 auto;
-  border-collapse: collapse;
-  width: 90%; /* Adjust to fit your layout */
+margin: 0 auto;
+border-collapse: collapse;
+width: 90%; /* Adjust to fit your layout */
 }
 
 .hotel-table th, 
 .hotel-table td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
+border: 1px solid #ccc;
+padding: 10px;
+text-align: left;
 }
 
 .hotel-table th {
-  background-color: #f2f2f2;
+background-color: #f2f2f2;
 }
 
 .hotel-table tr:hover {
-  background-color: #f5f5f5;
+background-color: #f5f5f5;
 }
 
 .table
 {
-  text-align: center;
-  margin: 20px auto;
-  padding-bottom: 50px;
+text-align: center;
+margin: 20px auto;
+padding-bottom: 50px;
+}
+@media (max-width: 768px) {
+  .table-container{
+     margin-left: 5px;
+     margin-right: 5px;
+  }
+.hotel-table {
+  width: 80%;
+  font-size: 11px; /* Make text smaller */
+}
+
+.hotel-table th, 
+.hotel-table td {
+  padding: 4px; /* Reduce padding */
+  font-size: 11px; /* Smaller text inside cells */
+  
+}
 }
