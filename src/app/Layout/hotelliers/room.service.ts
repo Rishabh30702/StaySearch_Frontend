@@ -48,8 +48,18 @@ export class RoomService {
   }
 
   updateRoom(roomId: number, roomData: FormData): Observable<Room> {
-    return this.http.put<Room>(`https://staysearchbackend.onrender.com/api/hotelier/rooms/${roomId}`, roomData);
+    return this.http.put<Room>(this.base2+"/api/hotelier/rooms/"+roomId, roomData);
   }
+
+  updateRoomImage(roomId: number, imageFormData: FormData): Observable<string> {
+    return this.http.put<string>(
+      this.base2 + "/api/hotelier/rooms/image/" + roomId,
+      imageFormData,
+      { responseType: 'text' as 'json' }
+    );
+  }
+  
+  
 
   getRoomsByHotelId(hotelId: number): Observable<Room[]> {
     return this.http.get<Room[]>(`${this.base2}/api/hotelier/hotel/${hotelId}`);
