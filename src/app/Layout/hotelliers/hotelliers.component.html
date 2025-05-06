@@ -635,16 +635,23 @@
         <label>Description</label>
         <textarea [(ngModel)]="newRoom.description" placeholder="Description"></textarea>
 
+
+        
+
         <label>Update Image</label>
         <input type="file" (change)="onFileSelected($event)" accept="image/*" />
 
         <img *ngIf="newRoom.imageUrl" [src]="newRoom.imageUrl" alt="Room Image" class="room-image-preview" />
 
 
-        <label>
-          <input type="checkbox" [(ngModel)]="newRoom.deal" />
+        <div class="deal-label">
+          
           <span style="color: black;">Deal Available</span>
-        </label>
+          <input type="checkbox" [(ngModel)]="newRoom.deal" />
+        </div>
+
+
+        
 
         <div class="modal-buttons">
           <button (click)="updateRoom()"><i class="fas fa-sync-alt"></i> Update</button>

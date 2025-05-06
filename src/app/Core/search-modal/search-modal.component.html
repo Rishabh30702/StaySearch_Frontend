@@ -32,6 +32,7 @@
                 required
               />
               <fa-icon
+              *ngIf="user.password"
                 [icon]="showPassword ? faEyeSlash : faEye"
                 class="toggle-password"
                 (click)="togglePasswordVisibility()"

@@ -11,7 +11,30 @@
 
       <form>
         <input type="text" [(ngModel)]="loginUsername" name="loginUsername" placeholder="Username">
-        <input type="password" [(ngModel)]="loginPassword" name="loginPassword" placeholder="Password">
+        <div style="position: relative;
+        display: flex;
+        align-items: center;">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            [(ngModel)]="loginPassword" 
+            name="loginPassword" 
+            placeholder="Password"
+
+          >
+        
+          <fa-icon
+          *ngIf="loginPassword"
+            [icon]="showPassword ? faEyeSlash : faEye"
+            (click)="togglePasswordVisibility()"
+            style="position: absolute;
+            top: 14px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;"
+            
+          ></fa-icon>
+        </div>
         
         <!-- <input type="checkbox" id="remember">
         <label for="remember">Keep me signed in</label> -->

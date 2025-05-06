@@ -525,12 +525,15 @@ onFileSelected(event: Event) {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
+        this.isLoading = true;
         this.roomService.deleteRoom(roomId).subscribe({
           next: () => {
             this.rooms = this.rooms.filter(r => r.id !== roomId);
+            this.isLoading = false;
             Swal.fire('Deleted!', 'The room has been deleted.', 'success');
           },
           error: (err) => {
+            this.isLoading = false;
             console.error(err);
             Swal.fire('Error', 'Failed to delete room.', 'error');
           }
@@ -569,6 +572,7 @@ onFileSelected(event: Event) {
       this.newRoom.total > 0 &&
       this.newRoom.price > 0
     ) {
+      this.isLoading = true;
       // Create a FormData object
       const formData = new FormData();
   
@@ -583,14 +587,11 @@ onFileSelected(event: Event) {
       formData.append('description', this.newRoom.description || '');
       formData.append('showFullDesc', this.newRoom.showFullDesc ? 'true' : 'false');
   
-      // If there's an image, append it to FormData
-      if (this.selectedFile) {
-        formData.append('image', this.selectedFile, this.selectedFile.name);
-      }
   
       // Send FormData as multipart/form-data
       this.roomService.updateRoom(this.newRoom.id, formData).subscribe({
         next: (updatedRoom: Room) => {
+          
           if (this.editIndex !== null) {
             this.rooms[this.editIndex] = updatedRoom;
           }
@@ -606,12 +607,14 @@ onFileSelected(event: Event) {
                 this.updateStats();
                 this.resetRoomForm();
                 this.loadRoomsByHotel(this.currentHotelId);
+                this.isLoading = false;
               },
               error: (err) => {
                 console.error('Image update failed:', err);
                 Swal.fire('Warning', 'Room updated, but image update failed.', 'warning');
                 this.updateStats();
                 this.resetRoomForm();
+                this.isLoading = false;
               }
             });
           } else {
@@ -619,11 +622,13 @@ onFileSelected(event: Event) {
             this.updateStats();
             this.resetRoomForm();
             this.loadRoomsByHotel(this.currentHotelId);
+            this.isLoading = false;
           }
         },
         error: (err: any) => {
           console.error(err);
           Swal.fire('Error', 'Failed to update room.', 'error');
+          this.isLoading = false;
         },
       });
     } else {
@@ -715,7 +720,7 @@ onFileSelected(event: Event) {
       alert('Please upload at least one image.');
       return;
     }
-  
+    this.isLoading = true;
     // Build property/hotel data
     const propertyData = {
       name: form.value.propertyName,
@@ -773,9 +778,11 @@ onFileSelected(event: Event) {
           this.roomImagePreview = '';
            this.poolImagePreview = '';
             this.lobbyImagePreview = '';
+            this.isLoading = false;
 
       },
       error: (err: any) => {
+        this.isLoading = false;
         alert('Registration failed. Try again later.');
         console.error(err);
       }
@@ -906,12 +913,14 @@ saveHotel() {
 }
 
  checkHotelsData(){
+  this.isLoading= true;
   this.hotelsService.getHotels().subscribe({
     next: (data) => {
       if (!data || data.length === 0) {
         this.showmenu = false;
         console.log('No hotels found');
         this.addNewProperty();
+        this.isLoading = false;
         
         // Optional: handle empty state in UI
       } else {
@@ -924,12 +933,13 @@ saveHotel() {
            id:hotel.hotelId || 0
         }));
         this.currentHotelId = this.hotels[0].id;
-       
+        this.isLoading = false;
 
         // console.log('Mapped Hotels:', this.hotels);
       }
     },
     error: (err) => {
+      this.isLoading = false;
       console.error('Error fetching hotels:', err.message);
       // Optional: show error to user
     }
@@ -1015,6 +1025,19 @@ updatePassword() {
   onSubmit() {
     console.log('Updating password with:', this.userprofile);
     alert('Password updated successfully!');
+  }
+
+
+
+  onDiscountInput(event: any): void {
+    const input = event.target;
+    let value = parseInt(input.value, 10);
+  
+    if (value > 100) {
+      input.value = '100';
+    } else if (value < 1 && input.value !== '') {
+      input.value = '1';
+    }
   }
 
 }

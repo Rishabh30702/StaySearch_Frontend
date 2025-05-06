@@ -5,11 +5,13 @@ import { Router } from '@angular/router';
 import { AuthPortalService } from "./AuthPortal.service";
 import Swal from "sweetalert2";
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-admin-access',
   standalone: true,
-  imports: [CommonModule, FormsModule,SpinnerComponent],
+  imports: [CommonModule, FormsModule,SpinnerComponent,FontAwesomeModule],
   templateUrl: './admin-access.component.html',
   styleUrl: './admin-access.component.css'
 })
@@ -140,8 +142,8 @@ export class AdminAccessComponent {
       fullname: this.signupEmail,
       username: this.signupUsername,
       password: this.signupPassword,
-      phoneNumber: this.signupContact,
-      gstin: this.signupGstin
+      phonenumber: this.signupContact,
+      // gstin: this.signupGstin
     };
 
     this.hotelierService.registerHotelier(data).subscribe({
@@ -171,4 +173,16 @@ export class AdminAccessComponent {
       this.showRecoverPassword = false;
     }
   }
+
+
+
+ 
+  showPassword: boolean = false;
+   faEye = faEye;
+    faEyeSlash = faEyeSlash;
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
 }
