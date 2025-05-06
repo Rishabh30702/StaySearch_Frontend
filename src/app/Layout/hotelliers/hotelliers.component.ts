@@ -129,6 +129,21 @@ hotels = [
     deal: false,
     imageUrl: '',
   };
+
+  resetRoomForm() {
+    this.newRoom = {
+      name: '',
+      price: 0,
+      total: 0,
+      available: 0,
+      deal: false,
+      description: '',
+      imageUrl: '',
+    };
+    this.selectedFile = null!;
+    this.editIndex = null;
+  }
+  
   
   selectedFile!: File;
 
@@ -554,39 +569,57 @@ onFileSelected(event: Event) {
       this.newRoom.total > 0 &&
       this.newRoom.price > 0
     ) {
-      // Create a shallow copy excluding the preview image URL
-      const roomDataToSend = { ...this.newRoom, imageUrl: "jig", hotelId:this.currentHotelId }; // remove base64
-        //  this.newRoom.imageUrl
+      // Create a FormData object
       const formData = new FormData();
-      formData.append(
-        'room',
-        new Blob([JSON.stringify(roomDataToSend)], {
-          type: 'application/json',
-        })
-      );
   
-     /* if (this.selectedFile) {
-        formData.append('imageUrl', this.selectedFile);
-      } */
+      // Append room data to FormData
+      formData.append('hotelId', this.currentHotelId.toString());
+      formData.append('id', this.newRoom.id?.toString() || '');
+      formData.append('name', this.newRoom.name);
+      formData.append('available', this.newRoom.available.toString());
+      formData.append('total', this.newRoom.total.toString());
+      formData.append('price', this.newRoom.price.toString());
+      formData.append('deal', this.newRoom.deal ? 'true' : 'false');
+      formData.append('description', this.newRoom.description || '');
+      formData.append('showFullDesc', this.newRoom.showFullDesc ? 'true' : 'false');
   
+      // If there's an image, append it to FormData
+      if (this.selectedFile) {
+        formData.append('image', this.selectedFile, this.selectedFile.name);
+      }
+  
+      // Send FormData as multipart/form-data
       this.roomService.updateRoom(this.newRoom.id, formData).subscribe({
         next: (updatedRoom: Room) => {
           if (this.editIndex !== null) {
             this.rooms[this.editIndex] = updatedRoom;
           }
-          this.editIndex = null;
-          this.newRoom = {
-            name: '',
-            price: 0,
-            total: 0,
-            available: 0,
-            deal: false,
-            description: '',
-            imageUrl: '',
-          };
-          this.selectedFile = null!;
-          Swal.fire('Success', 'Room updated successfully!', 'success');
-          this.updateStats();
+  
+          // Now update the image separately if needed
+          if (this.selectedFile) {
+            const imageData = new FormData();
+            imageData.append('imageUrl', this.selectedFile, this.selectedFile.name);
+  
+            this.roomService.updateRoomImage(this.newRoom.id!, imageData).subscribe({
+              next: () => {
+                Swal.fire('Success', 'Room and image updated successfully!', 'success');
+                this.updateStats();
+                this.resetRoomForm();
+                this.loadRoomsByHotel(this.currentHotelId);
+              },
+              error: (err) => {
+                console.error('Image update failed:', err);
+                Swal.fire('Warning', 'Room updated, but image update failed.', 'warning');
+                this.updateStats();
+                this.resetRoomForm();
+              }
+            });
+          } else {
+            Swal.fire('Success', 'Room updated successfully!', 'success');
+            this.updateStats();
+            this.resetRoomForm();
+            this.loadRoomsByHotel(this.currentHotelId);
+          }
         },
         error: (err: any) => {
           console.error(err);
@@ -598,6 +631,8 @@ onFileSelected(event: Event) {
     }
   }
   
+  
+  
   //deals crd
   editRoomById(roomId: number) {
     const index = this.rooms.findIndex(r => r.id === roomId);
@@ -606,8 +641,6 @@ onFileSelected(event: Event) {
     }
   }
   
-
-
   loadRooms() {
     
     this.roomService.getRooms().subscribe((data: Room[]) => {
