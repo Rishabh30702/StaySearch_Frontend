@@ -37,7 +37,7 @@ export class ListingsComponent implements AfterViewInit, OnInit {
     this.hotelListingService.getHotels().subscribe(
       (data: any) => {
         if (!Array.isArray(data)) {
-          console.error("❌ API response is not an array:", data);
+          console.error("API response is not an array:", data);
           return;
         }
         this.hotels = data;

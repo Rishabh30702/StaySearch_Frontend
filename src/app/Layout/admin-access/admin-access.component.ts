@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, NgModule } from "@angular/core";
+import { Component, NgModule, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Router } from '@angular/router';
 import { AuthPortalService } from "./AuthPortal.service";
@@ -15,8 +15,16 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   templateUrl: './admin-access.component.html',
   styleUrl: './admin-access.component.css'
 })
-export class AdminAccessComponent {
+export class AdminAccessComponent implements OnInit {
   constructor(private router: Router, private hotelierService: AuthPortalService) {}
+  ngOnInit(): void {
+    
+    history.pushState(null, '', location.href);
+    window.onpopstate = () => {
+      history.pushState(null, '', location.href);
+    };
+
+  }
 
   selectedRole: string = 'owner';
 
@@ -129,38 +137,63 @@ export class AdminAccessComponent {
 
   
 
-  registerHotelier() {
+  // registerHotelier() {
  
-    if (this.signupPassword !== this.signupRepeatPassword) {
-      alert("Passwords do not match.");
-      return;
-    }
+  //   if (this.signupPassword !== this.signupRepeatPassword) {
+  //     alert("Passwords do not match.");
+  //     return;
+  //   }
     
     
     
-    const data = {
-      fullname: this.signupEmail,
-      username: this.signupUsername,
-      password: this.signupPassword,
-      phonenumber: this.signupContact,
-      // gstin: this.signupGstin
-    };
+  //   const data = {
+  //     fullname: this.signupEmail,
+  //     username: this.signupUsername,
+  //     password: this.signupPassword,
+  //     phonenumber: this.signupContact,
+  //     // gstin: this.signupGstin
+  //   };
 
-    this.hotelierService.registerHotelier(data).subscribe({
-      next: (res:any) => {
-        alert("Registration successful. Awaiting admin approval.");
-        this.toggleForm('login'); 
+  //   this.hotelierService.registerHotelier(data).subscribe({
+  //     next: (res:any) => {
+  //       alert("Registration successful. Awaiting admin approval.");
+  //       this.toggleForm('login'); 
        
 
-      },
-      error: (err:any) => {
-        alert("Registration failed. Try again later.");
-        console.error(err);
-      }
-    });
+  //     },
+  //     error: (err:any) => {
+  //       alert("Registration failed. Try again later.");
+  //       console.error(err);
+  //     }
+  //   });
   
 
-  }
+  // }
+
+  registerHotelier() {
+    if (this.signupPassword !== this.signupRepeatPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+    
+    const data = {
+        fullname: this.signupEmail,
+        username: this.signupUsername,
+        password: this.signupPassword,
+        phonenumber: this.signupContact,
+        // gstin: this.signupGstin
+    };
+
+   
+            this.router.navigate(['hotellier'], {
+                queryParams: {
+                  fullname: this.signupEmail,
+                  username: this.signupUsername,
+                  password: this.signupPassword,
+                  phonenumber: this.signupContact,
+                }
+            });
+}
 
  
 

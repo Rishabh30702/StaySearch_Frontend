@@ -13,7 +13,8 @@ import 'leaflet-control-geocoder';
 import { LeafletMapService } from './services/leaflet-map.service';
 import { AuthPortalService } from '../admin-access/AuthPortal.service';
 import { HotelsService } from './services/hotels.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 
 @Component({
   selector: 'app-hotelliers',
@@ -160,13 +161,34 @@ hotels = [
 
   selectedHotel: any;
 
+
+  username: string = '';
+  UserFullname: string  = '';
+  password: string ='';  
+  phonenumber: number | null = null;
+
+
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService,
     private mapService: LeafletMapService,
     private hotelierService: AuthPortalService,
     private hotelsService: HotelsService,
-    private router: Router
+    private router: Router,
+    private Aroute: ActivatedRoute,
+    private authService:AuthService
   ) {
+
+    this.Aroute.queryParams.subscribe(params => {
+      this.username = params['username'];
+      this.UserFullname = params['fullname'];
+      this.password = params['password'];
+      this.phonenumber = params['phonenumber'];
+
+      console.log('Username:', this.username);
+      console.log('Full name:', this.UserFullname);
+      console.log('Password:', this.password);
+      console.log('Phone:', this.phonenumber);
+  });
 
   }
 
@@ -309,11 +331,15 @@ hotels = [
       if (this.selectedMenu === 'hotels' && menu !== 'hotels') {
         this.mapService.destroyMap();
       }
-    
+
       this.selectedMenu = menu;
     
       if (menu === 'rooms') {
         this.loadRoomsByHotel(this.currentHotelId);
+      }
+
+      if (menu === 'dashboard') {
+        this.checkHotelsData();
       }
     
       if (menu === 'hotels') {
@@ -352,7 +378,7 @@ hotels = [
     }).then(result => {
       if (result.isConfirmed) {
         localStorage.removeItem('token');
-        // this.router.navigate(['/adminAccess']);
+        this.router.navigate(['/adminAccess']);
       }
     });
 
@@ -698,6 +724,99 @@ onFileSelected(event: Event) {
     this.atLeastOnePropertyType = !!this.selectedProperty;
   }
 
+  // log() {
+  //   if (!this.atLeastOneAmenitySelected) {
+  //     alert('Please select at least one amenity.');
+  //     return;
+  //   }
+  
+  //   if (!this.atLeastOnePropertyType) {
+  //     alert('Please select the type of property.');
+  //     return;
+  //   }
+  
+  //   const form = this.propertyNgForm;
+  
+  //   if (!form.valid) {
+  //     alert('Please fill all required fields correctly.');
+  //     return;
+  //   }
+  
+  //   if (this.imageFiles.length === 0) {
+  //     alert('Please upload at least one image.');
+  //     return;
+  //   }
+  //   this.isLoading = true;
+  //   // Build property/hotel data
+  //   const propertyData = {
+  //     name: form.value.propertyName,
+  //     address: form.value.propertyAddress,
+  //     destination: form.value.district,
+  //     description: form.value.longDescription,
+  //     amenities: this.selectedAmenities,
+  //     lat: this.latitude,
+  //     lng: this.longitude,
+  //     accommodationType: this.selectedProperty,
+  //     rating: 4.8,
+  //     price: form.value.price,
+  //     reviews: "Amazing stay!",
+  //     liked: true,
+  //     checkIn: form.value.checkIn,
+  //     checkOut: form.value.checkOut,
+  //     guests: form.value.guests,
+  //     rooms: form.value.rooms
+  //   };
+  
+  //   // Create FormData for file and data upload
+  //   const formData = new FormData();
+  //   formData.append(
+  //     "hotel",
+  //     new Blob([JSON.stringify(propertyData)], {
+  //       type: "application/json",
+  //     })
+  //   );
+  
+  //   // First image = cover
+  //   formData.append("imageUrl", this.imageFiles[0]);
+  
+  //   // Remaining images = subImages
+  //   for (let i = 1; i < this.imageFiles.length; i++) {
+  //     formData.append("subImages", this.imageFiles[i]);
+  //   }
+
+  //   console.log('Appending subImages:');
+
+
+  //   for (let [key, value] of formData.entries()) {
+  //     console.log('FormData Entry:', key, value);
+  //   }
+  
+  //   // Submit via service
+  //   this.hotelierService.registerHotel(formData).subscribe({
+  //     next: (res: any) => {
+  //       // alert('Hotel registration success. Awaiting admin approval.');
+  //       this.selectedMenu = 'rooms';
+  //       this.imagePreviews = [];
+  //       this.imageFiles = [];
+  //       this.subImages = [];
+
+      
+  //       // Clear Individual Previews (if used)
+  //         this.roomImagePreview = '';
+  //          this.poolImagePreview = '';
+  //           this.lobbyImagePreview = '';
+  //           this.isLoading = false;
+
+  //     },
+  //     error: (err: any) => {
+  //       this.isLoading = false;
+  //       alert('Registration failed. Try again later.');
+  //       console.error(err);
+  //     }
+  //   });
+  // }
+
+
   log() {
     if (!this.atLeastOneAmenitySelected) {
       alert('Please select at least one amenity.');
@@ -720,8 +839,7 @@ onFileSelected(event: Event) {
       alert('Please upload at least one image.');
       return;
     }
-    this.isLoading = true;
-    // Build property/hotel data
+  
     const propertyData = {
       name: form.value.propertyName,
       address: form.value.propertyAddress,
@@ -733,7 +851,7 @@ onFileSelected(event: Event) {
       accommodationType: this.selectedProperty,
       rating: 4.8,
       price: form.value.price,
-      reviews: "Amazing stay!",
+      reviews: "",
       liked: true,
       checkIn: form.value.checkIn,
       checkOut: form.value.checkOut,
@@ -741,49 +859,111 @@ onFileSelected(event: Event) {
       rooms: form.value.rooms
     };
   
-    // Create FormData for file and data upload
     const formData = new FormData();
-    formData.append(
-      "hotel",
-      new Blob([JSON.stringify(propertyData)], {
-        type: "application/json",
-      })
-    );
-  
-    // First image = cover
+    formData.append("hotel", new Blob([JSON.stringify(propertyData)], { type: "application/json" }));
     formData.append("imageUrl", this.imageFiles[0]);
-  
-    // Remaining images = subImages
     for (let i = 1; i < this.imageFiles.length; i++) {
       formData.append("subImages", this.imageFiles[i]);
     }
-
-    console.log('Appending subImages:');
-
-
-    for (let [key, value] of formData.entries()) {
-      console.log('FormData Entry:', key, value);
-    }
   
-    // Submit via service
+    const token = localStorage.getItem('token');
+  
+    if (token) {
+      // ✅ User already logged in → directly register hotel
+      this.registerHotelafterLogin(formData);
+    } else {
+      // 🔐 No token → register user → login → then register hotel
+      this.isLoading = true;
+  
+      const userData = {
+        fullname: this.UserFullname,
+        username: this.username,
+        password: this.password,
+        phonenumber: this.phonenumber
+      };
+  
+      this.hotelierService.registerHotelier(userData).subscribe({
+        next: () => {
+          const loginPayload = {
+            username: this.username,
+            password: this.password
+          };
+  
+          this.authService.login(loginPayload).subscribe({
+            next: (res: any) => {
+              if (res.token) {
+                localStorage.setItem('token', res.token);
+                this.registerHotel(formData);
+              } else {
+                this.isLoading = false;
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Login Failed',
+                  text: 'Login failed. Please try again.'
+                });
+              }
+            },
+            error: (err: any) => {
+              this.isLoading = false;
+              Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: err?.error?.message || 'Invalid credentials.'
+              });
+              console.error('Login error:', err);
+            }
+          });
+        },
+        error: (err: any) => {
+          this.isLoading = false;
+          alert('User registration failed.');
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  registerHotel(formData: FormData) {
+    this.isLoading = true;
     this.hotelierService.registerHotel(formData).subscribe({
-      next: (res: any) => {
-        alert('Hotel registration success. Awaiting admin approval.');
+      next: () => {
+        alert("Registration successful. Awaiting for admin approval");
         this.selectedMenu = 'rooms';
         this.imagePreviews = [];
         this.imageFiles = [];
         this.subImages = [];
-
-        // Clear Individual Previews (if used)
-          this.roomImagePreview = '';
-           this.poolImagePreview = '';
-            this.lobbyImagePreview = '';
-            this.isLoading = false;
-
+        localStorage.removeItem("token");
+        this.router.navigate(['adminAccess']);
+        this.roomImagePreview = '';
+        this.poolImagePreview = '';
+        this.lobbyImagePreview = '';
+        this.isLoading = false;
       },
       error: (err: any) => {
         this.isLoading = false;
-        alert('Registration failed. Try again later.');
+        alert('Hotel registration failed.');
+        console.error(err);
+      }
+    });
+  }
+
+  registerHotelafterLogin(formData: FormData) {
+    this.isLoading = true;
+    this.hotelierService.registerHotel(formData).subscribe({
+      next: () => {
+        alert("Registration successful.");
+        this.selectedMenu = 'rooms';
+        this.imagePreviews = [];
+        this.imageFiles = [];
+        this.subImages = [];
+        this.roomImagePreview = '';
+        this.poolImagePreview = '';
+        this.lobbyImagePreview = '';
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        alert('Hotel registration failed.');
         console.error(err);
       }
     });
@@ -912,46 +1092,93 @@ saveHotel() {
   this.closeEditModal();
 }
 
- checkHotelsData(){
-  this.isLoading= true;
+//  checkHotelsData(){
+//   this.isLoading= true;
+//   this.hotelsService.getHotels().subscribe({
+//     next: (data) => {
+//       if (!data || data.length === 0) {
+//         this.showmenu = false;
+//         console.log('No hotels found');
+//         this.addNewProperty();
+//         this.isLoading = false;
+        
+//         // Optional: handle empty state in UI
+//       } else {
+        
+//         this.hotels = data.map((hotel: any) => ({
+//           name: hotel.name || 'Unnamed Hotel',
+//           location: hotel.address || 'Unknown Location',
+//           rating: hotel.rating || 0,
+//           amenities: hotel.amenities || [],
+//            id:hotel.hotelId || 0
+//         }));
+//         this.currentHotelId = this.hotels[0].id;
+//         this.isLoading = false;
+
+//         // console.log('Mapped Hotels:', this.hotels);
+//       }
+//     },
+//     error: (err) => {
+//       this.isLoading = false;
+//       console.error('Error fetching hotels:', err.message);
+//       // Optional: show error to user
+//     }
+//   });
+// }
+
+checkHotelsData() {
+  this.isLoading = true;
+
+  // Check if token exists in localStorage
+  const token = localStorage.getItem('token'); // or sessionStorage, depending on where you store it
+
+  if (!token) {
+    // If no token found, hide all sections except the hotel section
+    this.showmenu = false; // Hide other sections
+    this.isLoading = false;
+    this.addNewProperty();
+    console.log('No token found, showing hotel section only.');
+
+    // You can also display a message or redirect the user if needed
+    return; // Do not proceed with fetching hotels
+  }
+
+  // If token is found, show the full menu
+  this.showmenu = true;
+
+  // Now call the service to fetch hotels
   this.hotelsService.getHotels().subscribe({
     next: (data) => {
       if (!data || data.length === 0) {
-        this.showmenu = false;
         console.log('No hotels found');
-        this.addNewProperty();
+        this.addNewProperty(); // Call your method to add a new property if needed
         this.isLoading = false;
-        
-        // Optional: handle empty state in UI
       } else {
-        
         this.hotels = data.map((hotel: any) => ({
           name: hotel.name || 'Unnamed Hotel',
           location: hotel.address || 'Unknown Location',
           rating: hotel.rating || 0,
           amenities: hotel.amenities || [],
-           id:hotel.hotelId || 0
+          id: hotel.hotelId || 0
         }));
         this.currentHotelId = this.hotels[0].id;
         this.isLoading = false;
-
-        // console.log('Mapped Hotels:', this.hotels);
       }
     },
     error: (err) => {
       this.isLoading = false;
       console.error('Error fetching hotels:', err.message);
-      // Optional: show error to user
     }
   });
 }
+
 
 
 onHotelSelect(event: Event, hotelId: number) {
   const checked = (event.target as HTMLInputElement).checked;
   
   if (checked) {
-    this.currentHotelId = hotelId;
+    this.currentHotelId = hotelId; 
     this.fetchHotelById(hotelId);  // 👈 Load specific hotel rooms
   } else {
     this.currentHotelId = 0;
@@ -961,22 +1188,26 @@ onHotelSelect(event: Event, hotelId: number) {
 
 
 loadRoomsByHotel(hotelId: number) {
+  this.isLoading = true; // Show loading spinner or indicator
   this.roomService.getRoomsByHotelId(hotelId).subscribe({
     next: (rooms: Room[] | null) => {
       if (!rooms || rooms.length === 0) {
         this.rooms = []; // ✅ Clear rooms on empty response
         this.roomStatus = { available: 0, occupied: 0 }; // Optional stat reset
+        this.isLoading = false;
         return;
       }
-
+      this.isLoading = false; // Hide loading spinner or indicator
       this.rooms = rooms.map(room => ({
         ...room,
         showFullDesc: false
       }));
       this.updateStats();
+      this.isLoading = false; // Hide loading spinner or indicator
     },
     error: (err) => {
       console.error('Failed to fetch rooms:', err);
+      this.isLoading = false; // Hide loading spinner or indicator
     }
   });
 }
@@ -984,14 +1215,17 @@ loadRoomsByHotel(hotelId: number) {
 
 
 fetchHotelById(hotelId: number) {
+  this.isLoading = true; // Show loading spinner or indicator
   this.hotelierService.getHotelById(hotelId).subscribe(
     (response: any) => {
       // Store the fetched hotel data
       this.selectedHotel = response;
       console.log(this.selectedHotel);
+      this.isLoading = false; // Hide loading spinner or indicator
     },
     (error) => {
       console.error('Error fetching hotel:', error);
+      this.isLoading = false;
     }
   );
 }
