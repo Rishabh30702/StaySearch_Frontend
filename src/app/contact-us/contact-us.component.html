@@ -70,24 +70,27 @@
 
       <div class="gallery-container">
         <div class="gallery-header">
-         
-          <h2>{{ 'See our latest photos  from restaurant and hotel' | translate }}</h2>
-        </div>
-        
-        <div class="image-gallery">
-          <div class="gallery">
-         
-                <img src="landmark tower.jpg" alt="Beach">
-                <img src="oberoi.jpg" alt="Mountains">
-                <img src="rich.jpg" alt="Stairs">
-                <img src="raddisson.jpg" alt="Green Garden">
-                
-                
-           
+          <h2>{{ 'Tourism Headquarter' | translate }}</h2>
+      
+          <!-- Flex wrapper for card and map -->
+          <div class="card-map-wrapper">
+            
+            <!-- Head Office Card -->
+            <div class="card">
+              <div class="icon-circle">
+                <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="Map Icon">
+              </div>
+              <div class="text-content">
+                <h3>Head Office</h3>
+                <p>Rajarshi Purushottam Das Tandon, Paryatan Bhawan, C-13, Vipin Khand,</p>
+                <p>Gomti Nagar, Lucknow, Uttar Pradesh 226010</p>
+              </div>
+            </div>
+      
+            <!-- Map -->
+            <div id="map"></div>
+      
           </div>
-          
         </div>
       </div>
-      
-
 </div>

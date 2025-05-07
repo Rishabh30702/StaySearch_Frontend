@@ -546,11 +546,8 @@
               <td>{{ i + 1 }}</td>
               <td>{{ comment.username }}</td>
               <td>
-                <label *ngIf="!editclick">{{ comment.text }}</label>
-                <textarea
-                *ngIf="editclick"
-                [(ngModel)]="comment.text" rows="3" class="form-control" (change)="editclick = false"></textarea>
-              </td>
+                <label >{{ comment.text }}</label>
+               
               <td>
                 <span
                   class="badge"
@@ -567,8 +564,6 @@
                 <div class="btn-group-vertical">
                   <button class="btn btn-sm btn-success mb-2" (click)="onApprove(comment.id)">Approve</button>
                   
-                  <button class="btn btn-sm btn-warning mb-2" (click)="onEdit(comment.id)">Edit</button>
-
                   <button class="btn btn-sm btn-danger mb-2" (click)="onDelete(comment.id)">Delete</button>
                 </div>
               </td>

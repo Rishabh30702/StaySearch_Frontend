@@ -1,0 +1,64 @@
+.chairman-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #f9f9f9;
+    padding: 40px;
+    border-radius: 12px;
+    background-image: url("/image_up.png");
+    
+    flex-wrap: wrap;
+  }
+  
+  .chairman-content {
+    flex: 1;
+    min-width: 300px;
+    max-width: 60%;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .chairman-content h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .chairman-content .highlight {
+    color: green;
+  }
+  
+  .chairman-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  
+  .chairman-content .closing {
+    font-weight: bold;
+    color: #222;
+  }
+  
+  .chairman-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    width: 450px;
+  }
+  
+  .chairman-image img {
+    width: 70%;
+    height: auto;
+    border-radius: 12px;
+  }
+  
+  .chairman-caption {
+    margin-top: 10px;
+    text-align: center;
+    color: #c62828;
+    font-size: 1rem;
+  }
+  

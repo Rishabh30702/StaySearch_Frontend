@@ -1,0 +1,59 @@
+.md-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+ 
+    padding: 40px;
+    border-radius: 12px;
+    background-image: url("/image_up.png");
+    height: 700px;
+    flex-wrap: wrap;
+    
+  }
+  
+  .md-content {
+    flex: 1;
+    min-width: 300px;
+    max-width: 60%;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600;
+    
+    
+  }
+  
+  .md-content h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .md-content .highlight {
+    color: green;
+  }
+  
+  .md-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 12px 0;
+  }
+  
+  .md-signature {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #222;
+  }
+  
+  .md-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    min-width: 250px;
+  }
+  
+  .md-image img {
+    max-width: 80%;
+    height: 60%;
+    border-radius: 12px;
+  }
+  

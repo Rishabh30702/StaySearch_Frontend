@@ -489,10 +489,6 @@ updateUserRole(event: Event,currentUserid: number) {
 
 
 
-// Platform Moderatiion section
-
-editclick = false;
-
 commentSearchTerm = '';
 
 comments = [
@@ -561,10 +557,6 @@ onDelete(id: number) {
   
 }
 
-// edit comment
-onEdit(id: number) {
- this.editclick = true;
-}
 
 
 
