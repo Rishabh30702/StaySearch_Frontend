@@ -4,13 +4,13 @@
   }
 
 /* Hide the scrollbar completely */
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     display: none;
-}
+} */
 
 /* Ensure scrolling still works */
-html, body {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer & Edge */
-    overflow-y: auto; /* Keep vertical scrolling enabled */
-}
+/* html, body {
+    scrollbar-width: none;
+    -ms-overflow-style: none; 
+    overflow-y: auto; 
+} */
