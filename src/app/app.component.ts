@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router,NavigationEnd, RouterOutlet} from '@angular/router';
 import { NavbarComponent } from "./Layout/navbar/navbar.component";
 import { FooterComponent } from "./Layout/footer/footer.component";
@@ -45,5 +45,18 @@ export class AppComponent {
   switchLanguage(lang: string) {
     this.translate.use(lang);
     localStorage.setItem('language', lang); // Save preference
+  }
+
+
+
+  showGoTop = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.showGoTop = window.pageYOffset > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

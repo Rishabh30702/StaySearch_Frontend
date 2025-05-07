@@ -4,3 +4,9 @@
 <router-outlet></router-outlet>
 
 <app-footer *ngIf="!isAdminPanel"></app-footer>
+
+
+<!-- Go to Top Button -->
+<button class="go-to-top" *ngIf="showGoTop" (click)="scrollToTop()" title="Go to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>

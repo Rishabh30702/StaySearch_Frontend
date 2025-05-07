@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms'; 
@@ -7,6 +7,7 @@ import { ContactServiceService } from '../Core/Services/ContactService/contact-s
 import { Observable } from 'rxjs';
 import { SpinnerComponent } from "../Core/spinner/spinner.component";
 import { TranslateModule } from '@ngx-translate/core';
+import * as L from 'leaflet';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './contact-us.component.html',
   styleUrl: './contact-us.component.css'
 })
-export class ContactUsComponent {
+export class ContactUsComponent implements AfterViewInit  {
   contactForm: FormGroup;
   isLoading:boolean = false;
 
@@ -59,5 +60,27 @@ export class ContactUsComponent {
       });
   }
   
+
+
+  private map: any;
+
+  private initMap(): void {
+    this.map = L.map('map', {
+      center: [ 26.857311, 80.977264],
+      zoom: 15
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    const marker = L.marker([26.857311, 80.977264]);
+    marker.bindPopup("<b>Uttar Pradesh Tourism</b><br>Lucknow, Uttar Pradesh").openPopup();
+    marker.addTo(this.map);
+  }
+
+  ngAfterViewInit(): void {
+    this.initMap();
+  }
 
 }

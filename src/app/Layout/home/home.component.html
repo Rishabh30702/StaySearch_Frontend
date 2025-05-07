@@ -29,18 +29,18 @@
             <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACT US' | translate }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUT US' | translate }}
+            <a class="nav-link" >{{ 'ABOUT US' | translate }}
 
               <i class="fas fa-caret-down  ms-1"></i>
             </a>
             
             <ul class="submenu">
-                <li><a >State Tourism Department</a></li>
-                <li><a >History of the State</a></li>
-                <li><a >Cities and Districts</a></li>
-                <li><a >Chairman's Message</a></li>
-                <li><a >MD's Message</a></li>
-                <li><a >Administration Structure</a></li>
+                <li><a [routerLink]="'/about'">State Tourism Department</a></li>
+                <!-- <li><a >History of the State</a></li> -->
+                <!-- <li><a >Cities and Districts</a></li> -->
+                <li><a  [routerLink]="'/chairman_message'">Chairman's Message</a></li>
+                <li><a [routerLink]="'/md_message'">MD's Message</a></li>
+                <!-- <li><a >Administration Structure</a></li> -->
               </ul>
           </li>
          
@@ -175,61 +175,61 @@
         <!-- First Row -->
         <div class="image-container">
            
-            <div class="image-box">
-                <img src="ayo.png" alt="Ram Mandir" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{ 'Ram Mandir' |translate }}</span>
-                    <span class="explore-text">{{ 'Explore Ayodhya' |translate }}</span>
-                </div>
+          <div class="image-box" (click)="navigateTo('Ayodhya')">
+            <img src="ayo.png" alt="Ram Mandir" class="flex-image">
+            <div class="image-caption">
+                <span class="place-name">{{ 'Ram Mandir' |translate }}</span>
+                <span class="explore-text">{{ 'Explore Ayodhya' |translate }}</span>
             </div>
-
-            <div class="image-box">
-                <img src="kashiV.jpg" alt="Kashi Vishwanath" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{'Kashi Vishwanath' | translate}}</span>
-                    <span class="explore-text">{{ 'Explore Kashi Vishwanath' |translate }}</span>
-                </div>
-            </div>
-
-
-            <div class="image-box">
-                <img src="varanashi.jpg" alt="Varanasi" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{ 'Varanasi' |translate }}</span>
-                    <span class="explore-text">{{ 'Explore Varanasi' |translate }}</span>
-                </div>
-            </div>
-
-
         </div>
 
-        <!-- Second Row -->
-        <div class="image-container">
-
-            <div class="image-box">
-                <img src="taj2.jpg" alt="Taj Mahal" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{ 'Taj Mahal' |translate }}</span>
-                    <span class="explore-text">{{ 'Explore Agra' |translate }}</span>
-                </div>
+        <div class="image-box" (click)="navigateTo('Kashi')">
+            <img src="kashiV.jpg" alt="Kashi Vishwanath" class="flex-image">
+            <div class="image-caption">
+                <span class="place-name">{{'Kashi Vishwanath' | translate}}</span>
+                <span class="explore-text">{{ 'Explore Kashi Vishwanath' |translate }}</span>
             </div>
+        </div>
 
-            <div class="image-box">
-                <img src="holi.jpg" alt="Mathura" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{ 'Lath Maar Holi' |translate }}</span>
-                    <span class="explore-text">{{ 'Explore Mathura'|translate }}</span>
-                </div>
+
+        <div class="image-box" (click)="navigateTo('Varanashi')">
+            <img src="varanashi.jpg" alt="Varanasi" class="flex-image">
+            <div class="image-caption">
+                <span class="place-name">{{ 'Varanasi' |translate }}</span>
+                <span class="explore-text">{{ 'Explore Varanasi' |translate }}</span>
             </div>
-            <div class="image-box">
-                <img src="mathura.jpg" alt="Mathura" class="flex-image">
-                <div class="image-caption">
-                    <span class="place-name">{{ 'Prem Mandir' |translate }}</span>
-                    <span class="explore-text">{{ 'Explore Mathura'|translate }}</span>
-                </div>
+        </div>
+
+
+    </div>
+
+    <!-- Second Row -->
+    <div class="image-container">
+
+        <div class="image-box" style="cursor: pointer;" (click)="navigateTo('Agra')">
+            <img src="taj2.jpg" alt="Taj Mahal" class="flex-image">
+            <div class="image-caption">
+                <span class="place-name">{{ 'Taj Mahal' |translate }}</span>
+                <span class="explore-text">{{ 'Explore Agra' |translate }}</span>
+            </div>
+        </div>
+
+        <div class="image-box" (click)="navigateTo('Mathura')" style="cursor: pointer;"> 
+            <img src="holi.jpg" alt="Mathura" class="flex-image">
+            <div class="image-caption">
+                <span class="place-name">{{ 'Lath Maar Holi' |translate }}</span>
+                <span class="explore-text">{{ 'Explore Mathura'|translate }}</span>
+            </div>
+        </div>
+        <div class="image-box" (click)="navigateTo('Mathura')" style="cursor: pointer;">
+            <img src="mathura.jpg" alt="Mathura" class="flex-image">
+            <div class="image-caption">
+                <span class="place-name">{{ 'Prem Mandir' |translate }}</span>
+                <span class="explore-text">{{ 'Explore Mathura'|translate }}</span>
             </div>
         </div>
     </div>
+</div>
     <!-- Third Row with Animated Button -->
     <div class="third-row" style="background-image: url('navimage.jpg');">
         <button class="explore-btn" [routerLink]="'/listings'">{{ 'Explore More' |translate }}</button>
@@ -423,7 +423,7 @@
 <div class="Feedback-container" #feedbackContainer>
    
  
-    <div *ngFor="let feedback of feedbackList" class="feedback-card">
+    <div *ngFor="let feedback of feedbackList | slice:0:6" class="feedback-card">
         <div class="feedback-content">
             <!-- <img class="feedback-image" src="assets/images/{{ feedback.hotelName | lowercase }}.jpg" alt="{{ feedback.hotelName }}"> -->
             <h3 class="feedback-title">{{ feedback.hotelName }}</h3>

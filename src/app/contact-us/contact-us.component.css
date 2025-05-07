@@ -14,7 +14,8 @@ h2 {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
 }
 
 .contact-container {
@@ -97,6 +98,62 @@ textarea {
 
 
 
+/* head-office-card.component.css */
+.card-map-wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    border: 1px solid purple;
+    border-radius: 10px;
+    height: 300px;
+    padding: 20px;
+    width: 450px;
+    display: flex;
+    gap: 50px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .icon-circle {
+    background-color: #3dd1cf;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon-circle img {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .text-content h3 {
+    margin: 0 0 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .text-content p {
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  /* Map styling */
+  #map {
+    height: 300px;
+    width: 60%;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+
+
+
 .gallery-container {
     width: 90%;
     padding: 10px;
@@ -120,47 +177,7 @@ textarea {
     line-height: 1.2;
 }
 
-.image-gallery {
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-}
 
-.gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    padding: 10px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-}
-
-.gallery::-webkit-scrollbar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    padding: 10px;
-}
-
-.gallery img {
-    width: 280px;
-    height: 350px;
-    object-fit: cover;
-    border-radius: 8px;
-    transition: transform 0.3s ease-in-out;
-}
-
-.gallery img:hover {
-
-    transform: scale(1.03);
-   
-
-}
 
 @media (max-width: 768px) {
     .contact-container {
@@ -209,3 +226,5 @@ textarea {
         margin-bottom: 10px;
     }
 }
+
+

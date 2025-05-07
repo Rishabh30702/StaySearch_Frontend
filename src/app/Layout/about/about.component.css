@@ -31,24 +31,11 @@ h2 {
 .about-text p {
   color: #666;
   line-height: 1.6;
-}
-
-.read-more {
-  background: #5a54e7;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  cursor: pointer;
+  font-family: 'Segoe UI', sans-serif;
   font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-radius: 5px;
-}
+}  
 
-.read-more span {
-  font-size: 20px;
-}
+
 
 .about-images {
   display: flex;

@@ -142,6 +142,13 @@
                   placeholder="e.g., The Oberoi Amar Villas" required />
                 <div class="validation-note">Maximum 100 characters.</div>
               </div>
+
+              <div class="form-group">
+                <label for="propertyPrice">Property Price:</label>
+                <input type="number" id="propertyPrice" name="propertyPrice" ngModel required maxlength="6"
+                  placeholder="e.g., 1999" required />
+                <div class="validation-note">Maximum 6 characters.</div>
+              </div>
             </fieldset>
 
             <!-- Property Address & Location -->
@@ -543,11 +550,7 @@
             <!-- 🕒 Timestamp -->
             <p class="timestamp">🕒 {{ feedback.createdAt | date: 'medium' }}</p>
 
-            <!-- 🗑️ Delete Button -->
-            <button (click)="deleteFeedback(feedback.id)" class="btn btn-danger mt-2">
-              <i class="fas fa-trash"></i> Delete
-            </button>
-
+          
             <button class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)">
               <i class="fas fa-reply"></i> Reply
             </button>

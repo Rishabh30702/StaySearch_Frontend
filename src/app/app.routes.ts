@@ -8,6 +8,8 @@ import { UserProfileComponent } from './Layout/user-profile/user-profile.compone
 import { AdminAccessComponent } from './Layout/admin-access/admin-access.component';
 import { AdminHomeComponent } from './admin-panel/Layout/admin-home/admin-home.component';
 import { HotelliersComponent } from './Layout/hotelliers/hotelliers.component';
+import { ChairmanMessageComponent } from './Layout/chairman-message/chairman-message.component';
+import { MdMessageComponent } from './Layout/md-message/md-message.component';
 
 
 export const routes: Routes = [
@@ -56,7 +58,18 @@ export const routes: Routes = [
         path: 'hotellier', 
         component: HotelliersComponent,
         pathMatch: 'full'
+    },
+    {
+        path: 'chairman_message', 
+        component: ChairmanMessageComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'md_message', 
+        component: MdMessageComponent,
+        pathMatch: 'full'
     }
+
 
   
 ];

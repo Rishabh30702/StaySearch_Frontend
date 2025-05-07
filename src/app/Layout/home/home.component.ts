@@ -251,5 +251,13 @@ export class HomeComponent {
  
 
 
+
+  navigateTo(name:string){
+    console.log(name);
+    this.searchData.destination = name;
+    this.router.navigate(['/listings'], { queryParams: this.searchData });
+  }
+
+
 }
 

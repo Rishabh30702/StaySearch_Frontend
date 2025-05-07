@@ -296,7 +296,7 @@ hotels = [
   }
 
 
-  deleteFeedback(id: number) {
+  /*deleteFeedback(id: number) {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You will not be able to recover this feedback!',
@@ -317,7 +317,7 @@ hotels = [
         });
       }
     });
-  }
+  }*/
   
   
 
@@ -843,14 +843,14 @@ onFileSelected(event: Event) {
     const propertyData = {
       name: form.value.propertyName,
       address: form.value.propertyAddress,
-      destination: form.value.district,
+      destination: form.value.propertyAddress,
       description: form.value.longDescription,
       amenities: this.selectedAmenities,
       lat: this.latitude,
       lng: this.longitude,
       accommodationType: this.selectedProperty,
       rating: 4.8,
-      price: form.value.price,
+      price: form.value.propertyPrice,
       reviews: "",
       liked: true,
       checkIn: form.value.checkIn,

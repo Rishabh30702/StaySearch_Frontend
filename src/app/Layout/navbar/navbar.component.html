@@ -27,7 +27,20 @@
             <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACT US' | translate }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUT US' | translate }}</a>
+            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUT US' | translate }}
+
+              <i class="fas fa-caret-down  ms-1"></i>
+            </a>
+
+            <ul class="submenu">
+              <li><a [routerLink]="'/about'">State Tourism Department</a></li>
+              <!-- <li><a >History of the State</a></li> -->
+              <!-- <li><a >Cities and Districts</a></li> -->
+              <li><a  [routerLink]="'/chairman_message'">Chairman's Message</a></li>
+              <li><a [routerLink]="'/md_message'">MD's Message</a></li>
+              <!-- <li><a >Administration Structure</a></li> -->
+            </ul>
+            
           </li>
         </ul>
       </div>
