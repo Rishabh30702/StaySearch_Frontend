@@ -177,6 +177,18 @@ export class HomeComponent {
 
   ngOnInit() {
 
+    const hasLoggedOut = sessionStorage.getItem('hasLoggedOut');
+
+    // If the user has not logged out yet, check if there's a token
+    if (!hasLoggedOut) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        console.log('User is logged in. Logging out...');
+        this.authService.logout();  // Log out the user
+        sessionStorage.setItem('hasLoggedOut', 'true');  // Mark that user has been logged out
+      }
+    }
+
     this.currentLanguage = localStorage.getItem('language') || 'en';
     this.translate.use(this.currentLanguage);
     this.updateLangText();
