@@ -96,37 +96,41 @@
             <!-- Room Section -->
             <div id="rooms" class="mt-5">
               <h4 class="mb-3" style="color: #570E49; font-weight: bold;">Rooms</h4>
-            
               <div class="row">
                 <div *ngFor="let room of hotel.roomsList || []" class="col-12 mb-4">
                   <div class="card room-card" [class.expanded]="expandedRooms[room.id]">
-                    <div class="row g-0 align-items-center">
-                      
+                    <div class="row g-0 h-100">
+            
                       <!-- Room Image -->
                       <div class="col-md-4 room-image-container">
                         <img [src]="room.imageUrl" class="room-image" alt="{{ room.name }}">
                       </div>
             
-                      <!-- Room Details -->
-                      <div class="col-md-8 room-info position-relative">
-                        <div class="room-content">
-                          <h5>{{ room.name }}</h5>
+                      <!-- Room Info -->
+                      <div class="col-md-8 d-flex flex-column justify-content-between room-info">
+                        <div class="room-text">
+                          <h5 class="mb-2">{{ room.name }}</h5>
                           <p class="room-desc">
-                            {{ expandedRooms[room.id] ? room.description : (room.description | slice:0:100) + '...' }}
+                            {{
+                              expandedRooms[room.id]
+                                ? room.description
+                                : (room.description ? (room.description | slice: 0:100) + '...' : '')
+                            }}
                           </p>
                         </div>
-                      
-                        <!-- Expand Icon (Now at the bottom center) -->
+            
+                        <!-- Expand Icon -->
                         <div *ngIf="room.showExpandIcon" class="expand-icon" (click)="toggleRoomExpansion(room.id)">
                           <i [ngClass]="expandedRooms[room.id] ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
                         </div>
                       </div>
-                      
+            
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            
             
             
 
