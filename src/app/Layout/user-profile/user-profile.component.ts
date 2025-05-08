@@ -153,23 +153,41 @@ expandedWishlistIndex: number | null = null;
   }
   
   update() {
-    this.isLoading = true
+    this.isLoading = true;
+  
+    // Clamp rating between 1 and 5
     if (this.editFeedback.rating > 5) {
       this.editFeedback.rating = 5;
-      this.isLoading = false
     } else if (this.editFeedback.rating < 1) {
       this.editFeedback.rating = 1;
-      this.isLoading = false
-    } if (this.editingId !== null) {
-      this.editFeedback.likedAmenities = this.likedAmenitiesText.split(',').map(a => a.trim());
-      this.feedbackService.updateFeedback(this.editingId, this.editFeedback).subscribe(() => {
+    }
+  
+    if (this.editingId !== null) {
+      // Parse liked amenities from comma-separated string
+      const likedAmenities = this.likedAmenitiesText
+        .split(',')
+        .map(a => a.trim())
+        .filter(a => a); // remove empty strings
+  
+      // Prepare clean payload
+      const payload = {
+        hotelName: this.editFeedback.hotelName,
+        likedAmenities: likedAmenities,
+        rating: this.editFeedback.rating,
+        description: this.editFeedback.description,
+        createdAt: this.editFeedback.createdAt // include only if backend requires it
+      };
+  
+      this.feedbackService.updateFeedback(this.editingId, payload).subscribe(() => {
         this.loadFeedback();
         this.closeEditModal();
-        this.isLoading = false
+        this.isLoading = false;
       });
+    } else {
+      this.isLoading = false;
     }
   }
-
+  
   
   cancelEdit() {
     this.editing = false;
