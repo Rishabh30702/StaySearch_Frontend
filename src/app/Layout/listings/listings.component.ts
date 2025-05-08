@@ -70,32 +70,40 @@ private shuffleArray(array: any[]): any[] {
   return array;
 }
 
-  applyFilters(params: any): void {
-    console.log("Applying Filters with Params:", params);
-  
-    let matchedHotels = this.hotels.filter(hotel => {
-      const matchesDestination = !params['destination'] || 
-        (hotel.destination?.toLowerCase().trim() === params['destination'].toLowerCase().trim());
-  
-      const matchesCheckIn = !params['checkInDate'] || hotel.checkIn === params['checkInDate'];
-      const matchesCheckOut = !params['checkOutDate'] || hotel.checkOut === params['checkOutDate'];
-      const matchesGuests = !params['guests'] || +hotel.guests >= Number(params['guests']);
-      const matchesRooms = !params['rooms'] || +hotel.rooms >= Number(params['rooms']);
-  
-      return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
-    });
-  
-    let remainingHotels = this.hotels.filter(hotel => 
-      !matchedHotels.some(matched => matched.hotelId === hotel.hotelId)
-    );
-  
-    this.filteredHotels = [...matchedHotels, ...remainingHotels];
-  
-    console.log("✅ Filtered Hotels (Searched on top):", this.filteredHotels);
-  
-    // ✅ Update the map to focus on the first search result
-    this.updateMapToNearbyHotels();
-  }
+
+applyFilters(params: any): void {
+  console.log("Applying Filters with Params:", params);
+
+  let matchedHotels = this.hotels.filter(hotel => {
+    // Ensure case-insensitive matching
+    const destinationMatch = !params['destination'] || 
+      hotel.destination?.toLowerCase().includes(params['destination'].toLowerCase().trim());
+
+    // Partial matching based on first 4 characters of the input
+    const hotelNameMatch = !params['destination'] || 
+      hotel.name?.toLowerCase().includes(params['destination'].toLowerCase().slice(0, 4).trim());
+
+    const matchesDestination = destinationMatch || hotelNameMatch;  // Match either destination or name
+    const matchesCheckIn = !params['checkInDate'] || hotel.checkIn === params['checkInDate'];
+    const matchesCheckOut = !params['checkOutDate'] || hotel.checkOut === params['checkOutDate'];
+    const matchesGuests = !params['guests'] || +hotel.guests >= Number(params['guests']);
+    const matchesRooms = !params['rooms'] || +hotel.rooms >= Number(params['rooms']);
+
+    return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
+  });
+
+  let remainingHotels = this.hotels.filter(hotel => 
+    !matchedHotels.some(matched => matched.hotelId === hotel.hotelId)
+  );
+
+  this.filteredHotels = [...matchedHotels, ...remainingHotels];
+
+  console.log("✅ Filtered Hotels (Searched on top):", this.filteredHotels);
+
+  // ✅ Update the map to focus on the first search result
+  this.updateMapToNearbyHotels();
+}
+
   
   
   
