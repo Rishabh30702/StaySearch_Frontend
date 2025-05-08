@@ -852,7 +852,7 @@ onFileSelected(event: Event) {
       rating: 4.8,
       price: form.value.propertyPrice,
       reviews: "",
-      liked: true,
+      liked: false,
       checkIn: form.value.checkIn,
       checkOut: form.value.checkOut,
       guests: form.value.guests,
