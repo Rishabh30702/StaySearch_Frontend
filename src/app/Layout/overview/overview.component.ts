@@ -190,6 +190,7 @@ rateHotel(rating: number) {
 submitFeedback(): void {
   /* ---------- 1. Guard: must be logged in ---------- */
   if (!this.authService.isLoggedIn()) {
+    this.isFeedbackPopupVisible = !this.isFeedbackPopupVisible;
     Swal.fire({
       title: 'Please log in',
       text: 'You need to sign in to submit feedback.',
