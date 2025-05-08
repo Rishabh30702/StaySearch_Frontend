@@ -110,7 +110,6 @@ stars = Array(5).fill(0);
   }
   
   toggleRoomExpansion(roomId: number) {
-    console.log("Toggling Room:", roomId);
     this.expandedRooms[roomId] = !this.expandedRooms[roomId];
   }
 
