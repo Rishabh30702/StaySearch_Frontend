@@ -202,10 +202,13 @@ submitFeedback(): void {
       allowOutsideClick: false
     }).then(result => {
       if (result.isConfirmed) {
+        document.documentElement.style.overflow = ""; // Enable scrolling
         this.toggleModal();   // open your login modal
       }
     });
-    return;                   // ⛔ stop here until they really log in
+    document.documentElement.style.overflow = "";
+    return; 
+                      // ⛔ stop here until they really log in
   }
 
   /* ---------- 2. Already logged in ---------- */
