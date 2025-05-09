@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild,  } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild,  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RoomService } from './room.service';
@@ -167,6 +167,26 @@ hotels = [
   password: string ='';  
   phonenumber: number | null = null;
 
+  dropdownOpen = false;
+  searchText = '';
+  selectedDistrict = '';
+  @Output() clickOutside = new EventEmitter<void>();
+  allDistricts: string[] = [
+    'Agra', 'Aligarh', 'Allahabad', 'Amethi', 'Amroha', 'Auraiya', 'Azamgarh',
+    'Baghpat', 'Bahraich', 'Ballia', 'Balrampur', 'Banda', 'Barabanki',
+    'Bareilly', 'Basti', 'Bijnor', 'Badaun', 'Bulandshahr', 'Chandauli',
+    'Chitrakoot', 'Deoria', 'Etah', 'Etawah', 'Faizabad', 'Farrukhabad',
+    'Fatehpur', 'Firozabad', 'Gautam Buddh Nagar', 'Ghaziabad', 'Ghazipur',
+    'Gonda', 'Gorakhpur', 'Hamirpur', 'Hardoi', 'Hathras', 'Jalaun', 'Jaunpur',
+    'Jhansi', 'Kannauj', 'Kanpur Dehat', 'Kanpur Nagar', 'Kasganj', 'Kaushambi',
+    'Kheri', 'Kushinagar', 'Lalitpur', 'Lucknow', 'Maharajganj', 'Mahoba',
+    'Mainpuri', 'Mathura', 'Mau', 'Meerut', 'Mirzapur', 'Moradabad', 'Muzaffarnagar',
+    'Pilibhit', 'Pratapgarh', 'Raebareli', 'Rampur', 'Saharanpur', 'Sambhal',
+    'Sant Kabir Nagar', 'Shahjahanpur', 'Shamli', 'Shravasti', 'Siddharthnagar',
+    'Sitapur', 'Sonbhadra', 'Sultanpur', 'Unnao', 'Varanasi'
+  ];
+    sortedDistricts: string[] = [...this.allDistricts];
+  
 
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService,
@@ -175,7 +195,8 @@ hotels = [
     private hotelsService: HotelsService,
     private router: Router,
     private Aroute: ActivatedRoute,
-    private authService:AuthService
+    private authService:AuthService,
+    private elementRef: ElementRef
   ) {
 
     this.Aroute.queryParams.subscribe(params => {
@@ -192,6 +213,13 @@ hotels = [
 
   }
 
+ @HostListener('document:click', ['$event.target'])
+  public onClick(target: HTMLElement) {
+    const clickedInside = this.elementRef.nativeElement.contains(target);
+    if (!clickedInside) {
+      this.clickOutside.emit();
+    }
+  }
 
   ngOnDestroy(): void {
     this.mapService.destroyMap();
@@ -843,7 +871,7 @@ onFileSelected(event: Event) {
     const propertyData = {
       name: form.value.propertyName,
       address: form.value.propertyAddress,
-      destination: form.value.propertyAddress,
+      destination: this.selectedDistrict,
       description: form.value.longDescription,
       amenities: this.selectedAmenities,
       lat: this.latitude,
@@ -1275,5 +1303,54 @@ updatePassword() {
       input.value = '1';
     }
   }
+ toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
+    if (this.dropdownOpen) {
+      this.searchText = ''; // Reset search text
+      this.sortedDistricts = [...this.allDistricts]; // Reset list
+    }
+  }
 
+  // Close dropdown when clicking outside
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const dropdownPanel = document.querySelector('.dropdown-panel');
+    const triggerBox = document.querySelector('.dropdown-trigger');
+    
+    // Close dropdown if the click is outside of the dropdown and the trigger
+    if (dropdownPanel && !dropdownPanel.contains(target) && !triggerBox?.contains(target)) {
+      this.dropdownOpen = false;
+    }
+  }
+
+  // Filter districts based on the search text
+  sortDistricts() {
+    const query = this.searchText.trim().toLowerCase();
+    if (!query) {
+      this.sortedDistricts = [...this.allDistricts];
+      return;
+    }
+
+    const matches = [];
+    const nonMatches = [];
+
+    // Separate matching and non-matching districts
+    for (const district of this.allDistricts) {
+      if (district.toLowerCase().includes(query)) {
+        matches.push(district);
+      } else {
+        nonMatches.push(district);
+      }
+    }
+
+    this.sortedDistricts = [...matches, ...nonMatches];
+  }
+
+  // Select a district
+  selectDistrict(district: string) {
+    this.selectedDistrict = district;
+    this.dropdownOpen = false;
+    console.log('Selected district:', this.selectedDistrict);
+  }
 }
