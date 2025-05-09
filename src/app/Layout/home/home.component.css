@@ -209,7 +209,7 @@ h4.Find-Stay {
 }
 .offer-content
 {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .offer-card:hover {
@@ -241,6 +241,12 @@ h4.Find-Stay {
   font-size: 14px;
   color: #666666;
   margin-bottom: 10px;
+  height: 40px; /* fixed height */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  -webkit-box-orient: vertical;
 }
 
 .validity {
@@ -1274,7 +1280,12 @@ margin-bottom: 30px;
 }
 
 
-
+.offer-image{
+  height: auto;
+  width: auto;
+ max-width: 70x;
+ max-height: 120px;
+}
 
 
 

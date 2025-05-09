@@ -22,12 +22,7 @@
           <li class="nav-item">
             <a class="nav-link" href="#">{{ 'HOME' | translate }}</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/listings'">{{ 'HOTELS' | translate }}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACT US' | translate }}</a>
-          </li>
+    
           <li class="nav-item">
             <a class="nav-link" >{{ 'ABOUT US' | translate }}
 
@@ -43,6 +38,14 @@
                 <!-- <li><a >Administration Structure</a></li> -->
               </ul>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/listings'">{{ 'HOTELS' | translate }}</a>
+          </li>
+              
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACT US' | translate }}</a>
+          </li>
+         
          
           <!-- Search Modal Component -->
           <app-search-modal *ngIf="showModal" [showModal]="showModal" (close)="closeModal()"></app-search-modal>
@@ -243,8 +246,8 @@
     <div class="hotels-container">
         <!-- Hotel Card 1 -->
         <div class="hotel-card">
-            <img src="ramada.jpg" alt="Ramada Palace Agra" class="hotel-image">
-            <div class="hotel-overlay">
+            <img src="ramada.jpg" alt="Ramada Palace Agra"  class="hotel-image">
+            <div class="hotel-overlay" (click)="navigateTo('Ramada Palace')">
                 <p class="hotel-name">{{'Ramada Palace Agra' |translate}}</p>
                 <!-- <button class="hotel-button">{{'Check Me' |translate}}</button> -->
             </div>
@@ -252,16 +255,16 @@
 
         <!-- Hotel Card 2 -->
         <div class="hotel-card">
-            <img src="amarvilas.jpg" alt="Amar Villas Lucknow" class="hotel-image">
-            <div class="hotel-overlay">
+            <img src="amarvilas.jpg" alt="Amar Villas Lucknow"  class="hotel-image">
+            <div class="hotel-overlay" (click)="navigateTo('Amar Villas')">
                 <p class="hotel-name">{{'Amar Villas Lucknow' |translate}} </p>
                 <!-- <button class="hotel-button">{{'Check Me' |translate}}</button> -->
             </div>
         </div>
 
         <div class="hotel-card">
-            <img src="rama.jpg" alt="Amar Villas Lucknow" class="hotel-image">
-            <div class="hotel-overlay">
+            <img src="rama.jpg" alt="Amar Villas Lucknow"class="hotel-image">
+            <div class="hotel-overlay"  (click)="navigateTo('The Ramayana')" >
                 <p class="hotel-name">{{'The Ramayana, Ayodhya' | translate}}</p>
                 <!-- <button class="hotel-button">{{'Check Me' |translate}}</button> -->
             </div>
@@ -271,8 +274,8 @@
     <div class="hotels-container">
             <!-- Hotel Card 3 -->
             <div class="hotel-card">
-                <img src="lemontree.jpg" alt="Lemon Tree, Agra" class="hotel-image">
-                <div class="hotel-overlay">
+                <img src="lemontree.jpg" alt="Lemon Tree, Agra"  class="hotel-image">
+                <div class="hotel-overlay" (click)="navigateTo('Lemon Tree')">
                     <p class="hotel-name">{{'Lemon Tree, Agra' |translate}}</p>
                     <!-- <button class="hotel-button">{{'Check Me' |translate}}</button> -->
                 </div>
@@ -280,15 +283,15 @@
     
             <!-- Hotel Card 4 -->
             <div class="hotel-card">
-                <img src="jp.jpg" alt="JP Palace, Agra" class="hotel-image">
-                <div class="hotel-overlay">
+                <img src="jp.jpg" alt="JP Palace, Agra"  class="hotel-image">
+                <div class="hotel-overlay" (click)="navigateTo('JP Palace')">
                     <p class="hotel-name">{{'JP Palace, Agra' |translate}}</p>
                     <!-- <button class="hotel-button ">{{'Check Me' |translate}}</button> -->
                 </div>
             </div>
             <div class="hotel-card">
-                <img src="jp.jpg" alt="JP Palace, Agra" class="hotel-image">
-                <div class="hotel-overlay">
+                <img src="jp.jpg" alt="JP Palace, Agra"  class="hotel-image">
+                <div class="hotel-overlay" (click)="navigateTo('JP Palace')">
                     <p class="hotel-name">{{'JP Palace, Agra' |translate}}</p>
                     <!-- <button class="hotel-button ">{{'Check Me' |translate}}</button> -->
                 </div>
@@ -310,11 +313,13 @@
     <div class="offers-grid" #offersContainer>
       <div *ngFor="let offer of offers" class="offer-card">
         <span *ngIf="offer.badge" class="badge">{{ offer.badge }}</span>
+        <img class="offer-image" [src]="offer.image"  alt="offers"> 
         <div class="offer-content">
+          
           <h3 class="offer-title">{{ offer.title }}</h3>
           <p class="offer-description">{{ offer.description }}</p>
           <p *ngIf="offer.validity" class="validity">{{ offer.validity }}</p>
-          <a href="#" class="book-now">BOOK NOW</a>
+          <a [routerLink]="'/listings'" class="book-now">Explore Now</a>
           
         </div>
       </div>
