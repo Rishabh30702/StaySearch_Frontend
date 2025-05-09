@@ -524,7 +524,7 @@ onFileSelected(event: Event) {
           console.log(this.newRoom.deal);
           this.isLoading = false;
           alert('Room added successfully!');
-          this.loadRooms();
+          this.loadRoomsByHotel(this.currentHotelId);
           
           this.updateStats();
         },
