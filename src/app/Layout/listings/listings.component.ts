@@ -50,6 +50,7 @@ export class ListingsComponent implements AfterViewInit, OnInit {
         this.route.queryParams.subscribe(params => {
           console.log("Query Params Received:", params);
           this.applyFilters(params);
+          this.scrollToTop();
         });
       },
       (error: any) => {
@@ -338,7 +339,9 @@ applyFilters(params: any): void {
   
     console.log("✅ Filtered Hotels:", this.filteredHotels);
   }
-  
+  scrollToTop(): void {
+    window.scrollTo({ top: 0 });
+  }
 
 }
 

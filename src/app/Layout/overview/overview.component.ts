@@ -54,6 +54,7 @@ stars = Array(5).fill(0);
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       console.log("Query Params:", params); // Debugging
+     
 
       this.hotelId = params['hotelId'];
       console.log("Extracted hotelId:", this.hotelId); // Debugging
@@ -97,6 +98,7 @@ stars = Array(5).fill(0);
   
           this.isLoading = false;
           setTimeout(() => this.loadMap(), 500);
+          this.scrollToTop();
         } else {
           console.error("Invalid API response", data);
           this.isLoading = false;
@@ -276,7 +278,9 @@ toggleModal(): void {
 closeModal(): void {
   this.showModal = false;
 }
-
+scrollToTop(): void {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 }
 

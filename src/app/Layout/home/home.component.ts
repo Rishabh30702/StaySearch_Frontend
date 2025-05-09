@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SearchModalComponent } from "../../Core/search-modal/search-modal.component";
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -8,15 +8,17 @@ import { CommonModule } from '@angular/common';
 import { FeedbackServiceService } from '../../Core/Services/feedback-service.service';
 import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 import Swal from 'sweetalert2';
+import { SpinnerComponent } from '../../Core/spinner/spinner.component';
+import { HotelListingService } from '../../Core/Services/hotel-listing.service';
 
 
 @Component({
   selector: 'app-home',
-  imports: [SearchModalComponent,FormsModule,TranslateModule,RouterModule,CommonModule],
+  imports: [SearchModalComponent,FormsModule,TranslateModule,RouterModule,CommonModule,SpinnerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   @ViewChild('feedbackContainer', { static: false }) feedbackContainer!: ElementRef;
   @ViewChild('offersContainer', { static: false }) offersContainer!: ElementRef;
   currentLanguage = 'en';
@@ -24,6 +26,7 @@ export class HomeComponent {
   feedbackList: any[] = [];
   isLoggedIn = false;
   showModal: boolean = false;
+  isLoading: boolean = false;
 
 
 
@@ -145,7 +148,39 @@ export class HomeComponent {
   ];
   
 
-
+  topRatedHotels = [
+    {
+      name: 'Ramada Palace Agra',
+      image: 'ramada.jpg',
+      id:1
+    },
+    {
+      name: 'Amar Villas Lucknow',
+      image: 'amarvilas.jpg',
+      id:1
+    },
+    {
+      name: 'The Ramayana, Ayodhya',
+      image: 'rama.jpg',
+      id:1
+    },
+    {
+      name: 'Lemon Tree, Agra',
+      image: 'lemontree.jpg',
+      id:1
+    },
+    {
+      name: 'JP Palace, Agra',
+      image: 'jp.jpg',
+      id:1
+    },
+    {
+      name: 'JP Palace, Agra',
+      image: 'jp.jpg',
+      id:1
+    }
+  ];
+  
 
 
   searchData: SearchData = {
@@ -156,7 +191,9 @@ export class HomeComponent {
     rooms: 1
   };
   constructor (private router:Router,private translate: TranslateService,
-    private feedbackService: FeedbackServiceService, private authService:AuthService){
+    private feedbackService: FeedbackServiceService, private authService:AuthService,
+  private hoteListingService: HotelListingService
+  ){
       this.isLoggedIn = this.authService.isLoggedIn(); 
   }
 
@@ -206,7 +243,7 @@ export class HomeComponent {
     this.currentLanguage = localStorage.getItem('language') || 'en';
     this.translate.use(this.currentLanguage);
     this.updateLangText();
-
+    this.getHotels();
     this.generateStars();
     this.showFeedbacks();
   }
@@ -283,6 +320,51 @@ export class HomeComponent {
     this.searchData.destination = name;
     this.router.navigate(['/listings'], { queryParams: this.searchData });
   }
+
+
+
+  onHotelClick(hotel: any): void {
+    
+    // ✅ Reset filters by clearing query parameters
+    this.router.navigate(['listings/overview'], { 
+      queryParams: { hotelId: hotel },
+      queryParamsHandling: 'merge'  // Keeps only `hotelId` and removes others
+    });
+  
+  
+    
+  }
+
+ getHotels(){
+  this.isLoading = true;
+  this.hoteListingService.getHotels().subscribe(
+    (data: any) => {
+      if (!data || data.length === 0) {
+        console.log('No hotels data found');
+        this.isLoading = false;
+      } else {
+        // console.log('Data found');
+        // console.log(data);
+  
+         this.topRatedHotels = data.map((hotel: any) => ({
+          image: hotel.imageUrl,
+          id: hotel.hotelId || 0,
+          name: hotel.name
+        })); 
+  
+        this.isLoading = false;
+      }
+    },
+    (err) => {
+      this.isLoading = false;
+      console.error('Error fetching hotels:', err.message);
+    }
+  );
+  
+  
+ }
+
+
 
 
 }
