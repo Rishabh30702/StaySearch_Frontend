@@ -246,7 +246,7 @@
 
     <div class="hotels-container">
         <!-- Hotel Card 1 -->
-        <div class="hotel-card"  *ngFor="let hotel of topRatedHotels | slice:0:3">
+        <div class="hotel-card"  *ngFor="let hotel of topRatedHotels | slice:0:3" style="cursor: pointer;">
             <img [src]="hotel.image" alt="not available"  class="hotel-image">
             <div class="hotel-overlay"  (click)="onHotelClick(hotel.id)">
                 <p class="hotel-name">{{hotel.name}}</p>
@@ -258,7 +258,7 @@
     </div>
     <div class="hotels-container">
             
-        <div class="hotel-card"  *ngFor="let hotel of topRatedHotels | slice:3:6">
+        <div class="hotel-card"  *ngFor="let hotel of topRatedHotels | slice:3:6" style="cursor: pointer;">
           <img [src]="hotel.image" alt="not available"  class="hotel-image">
           <div class="hotel-overlay" (click)="onHotelClick(hotel.id)">
               <p class="hotel-name">{{hotel.name}}</p>

@@ -161,16 +161,34 @@
                   placeholder="e.g., Taj East Gate Rd,Paktola,Agra" />
               </div>
 
-              <div class="form-group">
-                <label for="district">District:</label>
-                <select id="district" name="district" ngModel required>
-                  <option value="" disabled selected>-- Select District --</option>
-                  <option value="district_1">Central District</option>
-                  <option value="district_2">Northern Heights</option>
-                  <option value="district_3">Riverside</option>
-                  <option value="district_4">West End</option>
-                </select>
+              <div class="form-group position-relative" style="width: 300px;">
+                <label>District:</label>
+
+                <!-- Trigger box (click to toggle dropdown) -->
+                <div class="dropdown-trigger form-control" (click)="toggleDropdown()">
+                  {{ selectedDistrict || 'Select a district' }}
+                </div>
+
+                <!-- Dropdown panel -->
+                <div class="dropdown-panel" *ngIf="dropdownOpen">
+                  <!-- Search input -->
+                  <input type="text" class="form-control dropdown-search" placeholder="Search district..."
+                    [(ngModel)]="searchText" [ngModelOptions]="{ standalone: true }" (input)="sortDistricts()"
+                    autofocus />
+
+
+                  <!-- Dropdown list -->
+                  <ul class="dropdown-list">
+                    <li *ngFor="let district of sortedDistricts" (click)="selectDistrict(district)">
+                      {{ district }}
+                    </li>
+                    <li *ngIf="sortedDistricts.length === 0" class="text-danger px-2 py-1">
+                      This district is not found.
+                    </li>
+                  </ul>
+                </div>
               </div>
+
 
               <div class="form-group">
                 <label for="village">Village / Area:</label>
@@ -550,7 +568,7 @@
             <!-- 🕒 Timestamp -->
             <p class="timestamp">🕒 {{ feedback.createdAt | date: 'medium' }}</p>
 
-          
+
             <button class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)">
               <i class="fas fa-reply"></i> Reply
             </button>
@@ -639,7 +657,7 @@
         <textarea [(ngModel)]="newRoom.description" placeholder="Description"></textarea>
 
 
-        
+
 
         <label>Update Image</label>
         <input type="file" (change)="onFileSelected($event)" accept="image/*" />
@@ -648,13 +666,13 @@
 
 
         <div class="deal-label">
-          
+
           <span style="color: black;">Deal Available</span>
           <input type="checkbox" [(ngModel)]="newRoom.deal" />
         </div>
 
 
-        
+
 
         <div class="modal-buttons">
           <button (click)="updateRoom()"><i class="fas fa-sync-alt"></i> Update</button>
