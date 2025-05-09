@@ -391,9 +391,9 @@
         <tr>
           <th>#</th>
           <th>ID</th>
-          <th>Hash#</th>
+          <th>Hotel Name</th>
           <th>Address</th>
-          <th>Full Name</th>
+          <th>Owner Name</th>
           <th>Contact Number</th>
           <th>User ID</th>
           <th>Review</th>
@@ -407,12 +407,12 @@
       <tbody>
         <tr *ngFor="let row of hotels">
           <td>{{ row.Sno }}</td>
-          <td>{{ row.col1 }}</td>
-          <td>{{ row.col2 }}</td>
-          <td>{{ row.col3 }}</td>
+          <td>{{ row.id }}</td>
+          <td>{{ row.h_name }}</td>
+          <td>{{ row.address}}</td>
           <td>{{ row.col4 }}</td>
           <td>{{ row.col5 }}</td>
-          <td>{{ row.id }}</td>
+          <td>{{ row.email }}</td>
           
             <td><button (click)="showModal = true" class="edit-btn">
               <i class="fas fa-clipboard-check"></i> Review

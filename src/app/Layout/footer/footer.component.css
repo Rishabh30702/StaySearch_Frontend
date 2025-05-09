@@ -73,6 +73,7 @@
 
 /* Footer Right (Newsletter) */
 .footer-right {
+  list-style: none;
   text-align: right;
 }
 

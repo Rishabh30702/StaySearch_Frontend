@@ -20,14 +20,9 @@
           <li class="nav-item">
             <a class="nav-link" href="#">{{ 'HOME' | translate }}</a>
           </li>
+         
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/listings'">{{ 'HOTELS' | translate }}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACT US' | translate }}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/about'">{{ 'ABOUT US' | translate }}
+            <a class="nav-link" >{{ 'ABOUT US' | translate }}
 
               <i class="fas fa-caret-down  ms-1"></i>
             </a>
@@ -41,6 +36,14 @@
               <!-- <li><a >Administration Structure</a></li> -->
             </ul>
             
+            
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/listings'">{{ 'HOTELS' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/contactUs'">{{ 'CONTACT US' | translate }}</a>
           </li>
         </ul>
       </div>

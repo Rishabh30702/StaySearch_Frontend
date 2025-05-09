@@ -40,9 +40,9 @@ export class ListingsComponent implements AfterViewInit, OnInit {
           console.error("API response is not an array:", data);
           return;
         }
-        // this.hotels = data;
+         this.hotels = data;
          // ✅ Shuffle hotels randomly
-      this.hotels = this.shuffleArray(data);
+      // this.hotels = this.shuffleArray(data);
         this.filteredHotels = [...this.hotels];
         this.isLoading = false;
 
@@ -62,13 +62,13 @@ export class ListingsComponent implements AfterViewInit, OnInit {
 
   
 // Utility method to shuffle an array
-private shuffleArray(array: any[]): any[] {
+/*private shuffleArray(array: any[]): any[] {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
-}
+}*/
 
 
 applyFilters(params: any): void {

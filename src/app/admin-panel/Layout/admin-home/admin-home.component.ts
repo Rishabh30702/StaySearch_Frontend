@@ -38,8 +38,8 @@ export class AdminHomeComponent implements OnInit {
   hotels = [
     {
       Sno: 1,
-      col1: 'Data', col2: 'Data', col3: 'Data', col4: 'Data',
-      col5: 'Data', id: 1 , col8: 'user', col9: 'Data', status: 'pending'
+      id: 'Data', h_name: 'Data', address: 'Data', col4: 'Data',
+      col5: 'Data', email: "fbu@gma" , col8: 'user', col9: 'Data', status: 'pending'
    
     },
     // Structure of hotels data table
@@ -272,6 +272,9 @@ export class AdminHomeComponent implements OnInit {
       this.fetchUsers();
     } else if (view === 'approvals') {
       this.fetchPendingHoteliers();
+    }
+    else if (view === 'hotels') {
+      this.getHotels();
     }
   }
 
@@ -588,5 +591,33 @@ scheduleContent() {
   console.log('Scheduling content:', this.scheduledContent);
 }
 
+getHotels(){
+  this.isLoading =true;
+  this.adminService.getAllHotelsData().subscribe({
+
+    next: (data) => {
+      if (!data || data.length === 0) {
+        console.log('No hotels data found');
+        this.isLoading = false;
+      } else {
+        console.log("data found");
+        console.log(data);
+        this.hotels = data.map((hotel: any,index: number) => ({
+          Sno: index+ 1,
+          address: hotel.address || 'Unknown Location',
+          id: hotel.hotelId || 0,
+          h_name:hotel.name
+        }))
+       
+        this.isLoading = false;
+      }
+    },
+    error: (err) => {
+      this.isLoading = false;
+      console.error('Error fetching hotels:', err.message);
+    }
+
+  })
+}
 
 }
