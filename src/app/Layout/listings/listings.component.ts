@@ -74,35 +74,42 @@ export class ListingsComponent implements AfterViewInit, OnInit {
 applyFilters(params: any): void {
   console.log("Applying Filters with Params:", params);
 
-  let matchedHotels = this.hotels.filter(hotel => {
-    // Ensure case-insensitive matching
-    const destinationMatch = !params['destination'] || 
-      hotel.destination?.toLowerCase().includes(params['destination'].toLowerCase().trim());
+  const destinationInput = params['destination']?.toLowerCase().trim() || '';
 
-    // Partial matching based on first 4 characters of the input
-    const hotelNameMatch = !params['destination'] || 
-      hotel.name?.toLowerCase().includes(params['destination'].toLowerCase().slice(0, 4).trim());
-
-    const matchesDestination = destinationMatch || hotelNameMatch;  // Match either destination or name
-    const matchesCheckIn = !params['checkInDate'] || hotel.checkIn === params['checkInDate'];
-    const matchesCheckOut = !params['checkOutDate'] || hotel.checkOut === params['checkOutDate'];
-    const matchesGuests = !params['guests'] || +hotel.guests >= Number(params['guests']);
-    const matchesRooms = !params['rooms'] || +hotel.rooms >= Number(params['rooms']);
-
-    return matchesDestination && matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
-  });
-
-  let remainingHotels = this.hotels.filter(hotel => 
-    !matchedHotels.some(matched => matched.hotelId === hotel.hotelId)
+  // Stage 1: Try destination match
+  let primaryMatches = this.hotels.filter(hotel =>
+    hotel.destination?.toLowerCase().includes(destinationInput)
   );
 
-  this.filteredHotels = [...matchedHotels, ...remainingHotels];
+  // Stage 2: Fallback to name match if no destination matches
+  if (primaryMatches.length === 0 && destinationInput) {
+    primaryMatches = this.hotels.filter(hotel =>
+      hotel.name?.toLowerCase().includes(destinationInput)
+    );
+  }
 
-  console.log("✅ Filtered Hotels (Searched on top):", this.filteredHotels);
+  // Stage 3: Apply other filters
+  const filteredMatches = primaryMatches.filter(hotel => {
+    const matchesCheckIn = !params['checkInDate'] || hotel.checkIn === params['checkInDate'];
+    const matchesCheckOut = !params['checkOutDate'] || hotel.checkOut === params['checkOutDate'];
+    const matchesGuests = !params['guests'] || Number(params['guests']) <= 1 || +hotel.guests >= Number(params['guests']);
+    const matchesRooms = !params['rooms'] || Number(params['rooms']) <= 1 || +hotel.rooms >= Number(params['rooms']);
 
-  // ✅ Update the map to focus on the first search result
+    return matchesCheckIn && matchesCheckOut && matchesGuests && matchesRooms;
+  });
+
+  // Stage 4: Add remaining hotels below the matched ones (optional)
+  const remainingHotels = this.hotels.filter(hotel =>
+    !filteredMatches.some(matched => matched.hotelId === hotel.hotelId)
+  );
+
+  this.filteredHotels = [...filteredMatches, ...remainingHotels];
+
+  console.log("✅ Filtered Hotels (Destination/Name matches first):", this.filteredHotels);
   this.updateMapToNearbyHotels();
 }
+
+
 
   
   
