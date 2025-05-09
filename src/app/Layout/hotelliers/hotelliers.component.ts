@@ -960,6 +960,8 @@ onFileSelected(event: Event) {
         this.poolImagePreview = '';
         this.lobbyImagePreview = '';
         this.isLoading = false;
+         this.checkHotelsData();
+         this.selectedMenu = 'dashboard';
       },
       error: (err: any) => {
         this.isLoading = false;
