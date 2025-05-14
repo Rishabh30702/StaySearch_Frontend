@@ -392,7 +392,7 @@
         <button (click)="showAddRoomForm = !showAddRoomForm" class="add-room-btn">
           {{ showAddRoomForm ? 'Cancel' : '➕ Add New Room' }}
         </button>
-
+      <h2>{{ currentHotelName }}</h2>
         <!-- Add Room Form -->
         <div *ngIf="showAddRoomForm" class="add-room-form">
           <h3>Add Room Details</h3>
@@ -462,19 +462,7 @@
       <!-- Deals -->
       <div *ngIf="selectedMenu === 'deal'" class="fade-in">
         <h2 class="section-title">Deals</h2>
-        <!-- <button (click)="toggleDealForm()" class="create-deal-btn">+ Create New Deal</button> -->
-
-        <div *ngIf="showDealForm" class="deal-form">
-          <input [(ngModel)]="newDeal.name" placeholder="Room Name" />
-          <input type="number" [(ngModel)]="newDeal.price" placeholder="Price" />
-          <input type="number" [(ngModel)]="newDeal.total" placeholder="Total Rooms" />
-          <input type="number" [(ngModel)]="newDeal.available" placeholder="Available Rooms" />
-
-          <!-- For newDeal -->
-          <label>Description</label>
-          <textarea [(ngModel)]="newDeal.description" name="dealDesc"></textarea>
-          <button (click)="createDeal()">Add Deal</button>
-        </div>
+       
 
         <!-- Deal Cards -->
         <div class="rooms">
@@ -656,7 +644,31 @@
         <label>Description</label>
         <textarea [(ngModel)]="newRoom.description" placeholder="Description"></textarea>
 
+         <!-- Date Pickers & Discount - Show only if selectedMenu is 'deal' -->
+<div *ngIf="selectedMenu === 'deal'">
+  <label>Start Date</label>
+  <input type="date" name="startDate" [(ngModel)]="discountInfo.validFrom" [min]="today" [max]="maxDate" />
 
+  <label>End Date</label>
+  <input type="date" name="endDate" [(ngModel)]="discountInfo.validTill" [min]="today2" [max]="maxDate" />
+
+  <!-- Discount Section -->
+  <div class="form-group">
+    <label for="discount"><strong>Discount (%)</strong></label>
+    <input
+      type="number"
+      class="form-control"
+      id="discount"
+      name="discount"
+      placeholder="Enter discount percentage"
+      min="1"
+      max="100"
+      [(ngModel)]="discountInfo.description"
+      (input)="onDiscountInput($event)"
+    />
+    <small class="text-muted">Valid range: 1–100</small>
+  </div>
+</div>
 
 
         <label>Update Image</label>

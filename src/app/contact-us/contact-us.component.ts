@@ -69,14 +69,14 @@ export class ContactUsComponent implements AfterViewInit  {
       center: [ 26.857311, 80.977264],
       zoom: 15
     });
-
+  
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
 
-    const marker = L.marker([26.857311, 80.977264]);
-    marker.bindPopup("<b>Uttar Pradesh Tourism</b><br>Lucknow, Uttar Pradesh").openPopup();
-    marker.addTo(this.map);
+    const marker = L.marker([26.857311, 80.977264])
+    .addTo(this.map)
+    .bindPopup("<b>Uttar Pradesh Tourism</b><br>Lucknow, Uttar Pradesh").openPopup();
   }
 
   ngAfterViewInit(): void {

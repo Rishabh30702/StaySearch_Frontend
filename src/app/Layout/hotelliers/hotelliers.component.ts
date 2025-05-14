@@ -80,6 +80,10 @@ isEditModalOpen =false;
   atLeastOnePropertyType: boolean = false; 
   propertyTypeTouched: boolean = false;
   
+
+  today: string | undefined;
+  maxDate: string | undefined;
+  today2: string | undefined;
   // Example array of hotels
 hotels = [
  {
@@ -90,6 +94,8 @@ hotels = [
     id:0
   },
 ];
+
+currentHotelName:string="";
 
   menuItems = [
     { key: 'dashboard', label: 'Dashboard', icon: 'fas fa-tachometer-alt' },
@@ -162,6 +168,16 @@ hotels = [
   selectedHotel: any;
 
 
+  discountInfo ={
+        title:"",
+        description:0,
+        badge:"APP Exclusive",
+        image:"",
+        validFrom:"",
+        validTill:""
+
+      }
+
   username: string = '';
   UserFullname: string  = '';
   password: string ='';  
@@ -209,10 +225,28 @@ hotels = [
       console.log('Full name:', this.UserFullname);
       console.log('Password:', this.password);
       console.log('Phone:', this.phonenumber);
+
+    
   });
+
+  const now = new Date();
+    const future = new Date();
+    
+    future.setDate(now.getDate() + 15);
+   const now2 = new Date();
+   now2.setDate(now.getDate()+1);
+    this.today2 = this.formatDate(now2)
+
+     this.today = this.formatDate(now);
+    this.maxDate = this.formatDate(future);
 
   }
 
+
+  
+  private formatDate(date: Date): string {
+    return date.toISOString().split('T')[0]; // Format as yyyy-mm-dd
+  }
  @HostListener('document:click', ['$event.target'])
   public onClick(target: HTMLElement) {
     const clickedInside = this.elementRef.nativeElement.contains(target);
@@ -688,6 +722,62 @@ onFileSelected(event: Event) {
     } else {
       alert('Please fill all fields!');
     }
+
+  
+// add offer section
+if(this.discountInfo.description && this.discountInfo.validFrom && this.discountInfo.validTill)
+{
+
+
+ 
+ if (this.selectedFile) {
+  this.discountInfo.image = URL.createObjectURL(this.selectedFile); // or use base64 if needed
+}
+else{
+   this.discountInfo.image  =  this.rooms[this.editIndex? this.editIndex:0].imageUrl || "";
+}
+ this.discountInfo.title = this.currentHotelName;
+
+
+console.log(this.discountInfo.description);
+console.log(this.discountInfo.validFrom);
+console.log(this.discountInfo.validTill);
+console.log(this.discountInfo.title);
+console.log(this.discountInfo.image);
+
+const newOffer =
+{
+  title: this.discountInfo.title,
+  description:this.discountInfo.description.toString(),
+  badge: this.discountInfo.badge,
+  image: this.discountInfo.image,
+  validFrom:this.discountInfo.validFrom,
+  validTill:this.discountInfo.validTill
+
+}
+
+
+/*newOffer.append("title", this.discountInfo.title);
+newOffer.append("description",this.discountInfo.description.toString());
+newOffer.append("badge",this.discountInfo.badge);
+newOffer.append("image",this.discountInfo.image);
+newOffer.append("validFrom",this.discountInfo.validFrom);
+newOffer.append()*/
+
+   this.hotelsService.createOffer(newOffer).subscribe({
+      next: response => {
+        console.log('Offer created:', response);
+      },
+      error: err => {
+        console.error('Error creating offer:', err);
+      }
+    });
+
+
+    
+  }
+
+
   }
   
   
@@ -1183,6 +1273,7 @@ checkHotelsData() {
         console.log('No hotels found');
         this.addNewProperty(); // Call your method to add a new property if needed
         this.isLoading = false;
+        
       } else {
         this.hotels = data.map((hotel: any) => ({
           name: hotel.name || 'Unnamed Hotel',
@@ -1193,6 +1284,7 @@ checkHotelsData() {
         }));
         this.currentHotelId = this.hotels[0].id;
         this.isLoading = false;
+        this.currentHotelName =this.hotels[0].name;
       }
     },
     error: (err) => {
@@ -1209,7 +1301,8 @@ onHotelSelect(event: Event, hotelId: number) {
   
   if (checked) {
     this.currentHotelId = hotelId; 
-    this.fetchHotelById(hotelId);  // 👈 Load specific hotel rooms
+    this.fetchHotelById(hotelId); 
+    //  Load specific hotel rooms
   } else {
     this.currentHotelId = 0;
     this.rooms = []; // 👈 Clear rooms when deselected
@@ -1252,6 +1345,8 @@ fetchHotelById(hotelId: number) {
       this.selectedHotel = response;
       console.log(this.selectedHotel);
       this.isLoading = false; // Hide loading spinner or indicator
+      alert("You are Viewing/Making changes to: "+this.selectedHotel.name);
+      this.currentHotelName = this.selectedHotel.name;
     },
     (error) => {
       console.error('Error fetching hotel:', error);
@@ -1353,4 +1448,8 @@ updatePassword() {
     this.dropdownOpen = false;
     console.log('Selected district:', this.selectedDistrict);
   }
+
+
+
+  
 }

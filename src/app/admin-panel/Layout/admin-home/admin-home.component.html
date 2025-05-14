@@ -601,13 +601,14 @@
               <input type="text" [(ngModel)]="content.title" name="contentTitle" required />
             </div>
       
-            <div class="form-group">
+           <div *ngIf="content.type !== 'banner'" class="form-group"> <!-- correct -->
+
               <label for="contentBody">Content</label>
               <textarea [(ngModel)]="content.body" name="contentBody" rows="5" required></textarea>
             </div>
       
             <div class="form-group">
-              <label for="imageUpload">Upload Image (optional)</label>
+              <label for="imageUpload">Upload Image </label>
               <input type="file" (change)="onImageUpload($event)" />
             </div>
       

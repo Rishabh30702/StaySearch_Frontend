@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
   isLoggedIn = false;
   showModal: boolean = false;
   isLoading: boolean = false;
+  loading: boolean = false;
 
 
 
@@ -183,6 +184,46 @@ export class HomeComponent implements OnInit {
   
 
 
+  // happenig in UP
+  events = [
+    {
+      title: 'Kumbh Mela 2025',
+      subtitle: 'Prayagraj Maha Kumbh Mela 2025',
+      description: 'Prayagraj holds a sacred significance as the confluence point..... of the Ganga, Yamuna, and Saraswati rivers, making it one of the pivotal destinations during the upcoming Maha Kumbh Mela in 2025. This historic city in the state of Uttar Pradesh is a veritable treasure trove for Hindu pilgrims and history enthusiasts alike. It offers a rich tapestry of ancient temples, monuments, and various tourist attractions. At the heart of Prayagraj lies the revered Triveni Sangam, where the three holy rivers meet, an absolute must-visit for anyone attending the Maha Kumbh Mela in 2025.',
+      image: 'kumb.jpg',
+      altText: 'Kumbh Mela',
+      className: 'kumbh-mela',
+      imageFirst: true
+    },
+    {
+      title: 'Braj Ki Holi',
+      subtitle: '',
+      description: 'The festival of color and joy is so much more in the land of Krishna! Holi at the auspicious “Braj Bhoomi” is outright divine and mesmerizing! Holi is essentially a festival of colors celebrated in different parts of India and here in Vrindavan, Uttar Pradesh, it hits a different level of enthusiasm!',
+      image: 'holi.jpg',
+      altText: 'Braj Ki Holi',
+      className: 'braj-holi',
+      imageFirst: false
+    }
+  ];
+
+
+    slides = [
+    {
+      image: 'uttar-pradesh.jpg',
+      alt: 'First Slide',
+      caption: 'Uttar Pradesh Tourism',
+      icon: 'MDI.png'
+    },
+    {
+      image: 'jhansi.jpg',
+      alt: 'Second Slide',
+      caption: 'Uttar Pradesh Tourism',
+      icon: 'MDI.png'
+    },
+    // Add more slides here
+  ];
+
+
   searchData: SearchData = {
     destination: '',
     checkInDate: '',
@@ -336,12 +377,14 @@ export class HomeComponent implements OnInit {
   }
 
  getHotels(){
-  this.isLoading = true;
+  this.loading = true;
+  
   this.hoteListingService.getHotels().subscribe(
     (data: any) => {
       if (!data || data.length === 0) {
         console.log('No hotels data found');
-        this.isLoading = false;
+        this.loading = false;
+       
       } else {
         // console.log('Data found');
         // console.log(data);
@@ -352,15 +395,16 @@ export class HomeComponent implements OnInit {
           name: hotel.name
         })); 
   
-        this.isLoading = false;
+        this.loading = false;
       }
     },
     (err) => {
-      this.isLoading = false;
+      this.loading = false;
       console.error('Error fetching hotels:', err.message);
     }
   );
   
+
   
  }
 

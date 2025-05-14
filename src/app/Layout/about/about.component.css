@@ -205,18 +205,19 @@ padding-bottom: 50px;
 }
 @media (max-width: 768px) {
   .table-container{
+    width: 350px;
      margin-left: 5px;
      margin-right: 5px;
   }
 .hotel-table {
-  width: 80%;
-  font-size: 11px; /* Make text smaller */
+  width: 320px;
+  font-size: 9px; /* Make text smaller */
 }
 
 .hotel-table th, 
 .hotel-table td {
   padding: 4px; /* Reduce padding */
-  font-size: 11px; /* Smaller text inside cells */
+  font-size: 9px; /* Smaller text inside cells */
   
 }
 }

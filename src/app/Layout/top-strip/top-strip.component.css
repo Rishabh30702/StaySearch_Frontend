@@ -141,3 +141,46 @@
   
   transform: scale(1.05);
 }
+
+@media (max-width: 786px) {
+  .top-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .date-time {
+    margin-bottom: 0.5rem;
+  }
+
+  .text-resize {
+    margin-bottom: 0.5rem;
+  }
+
+  .social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .social-icons a {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+  .top-strip > *:last-child {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+  }
+
+  .admin-btn {
+    font-size: 10px;
+    padding: 0.5rem 1rem;
+  }
+}
