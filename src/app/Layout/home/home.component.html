@@ -136,36 +136,34 @@
 
 
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="uttar-pradesh.jpg" class="d-block w-100 carousel-img" alt="First Slide">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">
-                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <img class="heart" src="MDI.png" ></div>
-         
-            </div>
+  <div class="carousel-inner">
+    <div 
+      class="carousel-item" 
+      *ngFor="let slide of slides; let i = index" 
+      [class.active]="i === 0">
+      
+      <img [src]="slide.image" class="d-block w-100 carousel-img" [alt]="slide.alt">
+      <div class="carousel-overlay"></div>
+      <div class="carousel-caption">
+        <div class="text-container">
+          {{ slide.caption | translate }}
+          <img class="heart" [src]="slide.icon" alt="Heart Icon">
         </div>
-       
-        <div class="carousel-item">
-            <img src="jhansi.jpg" class="d-block w-100 carousel-img" alt="Third Slide">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-caption">
-                <div class="text-container">{{'Uttar Pradesh Tourism' | translate}} <img class="heart" src="MDI.png" ></div>
-                
-        </div>
-        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
 </div>
+
 <!-- New Section Below Carousel -->
 <section class="explore-section">
     <!-- Black Header -->
@@ -233,18 +231,23 @@
             </div>
         </div>
     </div>
-</div>
+ </div>
     <!-- Third Row with Animated Button -->
     <div class="third-row" style="background-image: url('navimage.jpg');">
         <button class="explore-btn" [routerLink]="'/listings'">{{ 'Explore More' |translate }}</button>
     </div>
-</section>
+  </section>
 
   <!-- Top Rated Hotels Section -->
   <div class="top-rated-hotels">
-    <h2 class="section-header">{{'Top Rated Hotels' |translate}}</h2>
+    
+     <h2 class="section-header">{{'Top Rated Hotels' |translate}}</h2>
+     <!-- Spinner -->
+     <div *ngIf="loading" class="spinner-container">
+     <div class="spinner"></div>
+     </div>
 
-    <div class="hotels-container">
+     <div class="hotels-container" *ngIf="!loading">
         <!-- Hotel Card 1 -->
         <div class="hotel-card"  *ngFor="let hotel of topRatedHotels | slice:0:3" style="cursor: pointer;">
             <img [src]="hotel.image" alt="not available"  class="hotel-image">
@@ -255,8 +258,8 @@
         </div>
 
 
-    </div>
-    <div class="hotels-container">
+     </div>
+     <div class="hotels-container" *ngIf="!loading">
             
         <div class="hotel-card"  *ngFor="let hotel of topRatedHotels | slice:3:6" style="cursor: pointer;">
           <img [src]="hotel.image" alt="not available"  class="hotel-image">
@@ -266,6 +269,8 @@
           </div>
       </div>
     </div>
+
+
 </div>
 
 
@@ -309,32 +314,35 @@
 <div class="happening-container mt-4 pt-4">
     <h2 class="happening-h">{{'Happening In Uttar Pradesh' | translate}}</h2>
   
-    <div class="events-wrapper">
-      <!-- Kumbh Mela Section (Left: Image First) -->
-      <div class="event kumbh-mela">
-        <img src="kumb.jpg" alt="Kumbh Mela">
-        <div class="event-text">
-          <h3 class="highlight">{{"Kumbh Mela 2025" | translate}}</h3>
-          <h4>{{'Prayagraj Maha Kumbh Mela 2025' | translate}}</h4>
-          <p class="happening-p">
-           
-{{"Prayagraj holds a sacred  significance as the confluence point..... of the Ganga, Yamuna, and Saraswati rivers, making it one of the pivotal destinations during the upcoming  Maha Kumbh Mela in 2025. This historic city in the state of Uttar  Pradesh is a veritable treasure trove for Hindu pilgrims and history  enthusiasts alike. It offers a rich tapestry of ancient temples,  monuments, and various tourist attractions. At the heart of Prayagraj  lies the revered Triveni Sangam, where the three holy rivers meet, an  absolute must-visit for anyone attending the Maha Kumbh Mela in 2025." | translate}}
-          </p>
-        </div>
+   <div class="events-wrapper">
+  <div 
+    class="event" 
+    *ngFor="let event of events; let i = index"
+    [ngClass]="event.className">
+    
+    <!-- Left Image, Right Text -->
+    <ng-container *ngIf="event.imageFirst">
+      <img [src]="event.image" [alt]="event.altText">
+      <div class="event-text">
+        <h3 class="highlight">{{ event.title | translate }}</h3>
+        <h4 *ngIf="event.subtitle">{{ event.subtitle | translate }}</h4>
+        <p class="happening-p">{{ event.description | translate }}</p>
       </div>
-  
-      <!-- Braj Ki Holi Section (Right: Text First, Then Image) -->
-      <div class="event braj-holi">
-        <div class="event-text">
-          <h3 class="highlight">{{'Braj Ki Holi' | translate}}</h3>
-          <p class="happening-p">
-          
-{{'The festival of color and joy is so much more in the land of Krishna!  Holi at the auspicious \“Braj Bhoomi\” is outright divine and mesmerizing! Holi is essentially a festival of colors celebrated in different parts  of India and here in Vrindavan, Uttar Pradesh, it hits a different level of enthusiasm!' | translate}}
-          </p>
-        </div>
-        <img src="holi.jpg" alt="Braj Ki Holi">
+    </ng-container>
+
+    <!-- Left Text, Right Image -->
+    <ng-container *ngIf="!event.imageFirst">
+      <div class="event-text">
+        <h3 class="highlight">{{ event.title | translate }}</h3>
+        <h4 *ngIf="event.subtitle">{{ event.subtitle | translate }}</h4>
+        <p class="happening-p">{{ event.description | translate }}</p>
       </div>
-    </div>
+      <img [src]="event.image" [alt]="event.altText">
+    </ng-container>
+
+  </div>
+</div>
+
   </div>
 
 
@@ -393,8 +401,9 @@
   
 <h5 class="heading">{{'Feedback That matters' |translate}}</h5>
 <div style="position: relative; width: 100%;">
+   
 <button class="scroll-btn left" (click)="scrollLeft()">&#10094;</button>
-<div class="Feedback-container" #feedbackContainer>
+<div class="Feedback-container" #feedbackContainer >
    
  
     <div *ngFor="let feedback of feedbackList | slice:0:6" class="feedback-card">
