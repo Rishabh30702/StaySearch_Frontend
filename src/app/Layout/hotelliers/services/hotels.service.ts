@@ -11,7 +11,7 @@ export class HotelsService {
 
   private baseUrl = 'https://staysearchbackend.onrender.com/v1/mine/hotels';
 
- private base2 = 'https://staysearchbackend.onrender.com/api/offers' ;
+ private base2 = 'https://staysearchbackend.onrender.com/' ;
   
   getHotels(): Observable<any> {
     const token = localStorage.getItem('token');
@@ -38,7 +38,19 @@ export class HotelsService {
 
 
     createOffer(data: any): Observable<any> {
-    return this.http.post(this.base2, data);
+    return this.http.post(this.base2+"api/offers", data);
+  }
+  
+  getAllOffers(): Observable<any> {
+    return this.http.get<any>(this.base2+"api/offers");
+  }
+
+
+  approveOfferById(offerId: number,data: any) {
+    const url = `${this.base2}api/offers/${offerId}`;
+    
+
+    return this.http.put(url, data);
   }
 
 }

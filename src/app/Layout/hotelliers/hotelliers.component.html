@@ -646,11 +646,26 @@
 
          <!-- Date Pickers & Discount - Show only if selectedMenu is 'deal' -->
 <div *ngIf="selectedMenu === 'deal'">
-  <label>Start Date</label>
-  <input type="date" name="startDate" [(ngModel)]="discountInfo.validFrom" [min]="today" [max]="maxDate" />
+<!-- Start Date -->
+<label>Start Date & Time</label>
+<input
+  type="datetime-local"
+  name="startDate"
+  [(ngModel)]="discountInfo.validFrom"
+  [min]="minDateTime"
+  [max]="maxDateTime"
+/>
 
-  <label>End Date</label>
-  <input type="date" name="endDate" [(ngModel)]="discountInfo.validTill" [min]="today2" [max]="maxDate" />
+<label>End Date & Time</label>
+<input
+  type="datetime-local"
+  name="endDate"
+  [(ngModel)]="discountInfo.validTill"
+  [min]="minDateTime"
+  [max]="maxDateTime"
+/>
+
+
 
   <!-- Discount Section -->
   <div class="form-group">
@@ -670,12 +685,12 @@
   </div>
 </div>
 
-
+     <div  *ngIf="selectedMenu !== 'deal'">
         <label>Update Image</label>
         <input type="file" (change)="onFileSelected($event)" accept="image/*" />
-
+     
         <img *ngIf="newRoom.imageUrl" [src]="newRoom.imageUrl" alt="Room Image" class="room-image-preview" />
-
+     </div>
 
         <div class="deal-label">
 

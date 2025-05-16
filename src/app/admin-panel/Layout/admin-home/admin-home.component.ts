@@ -6,6 +6,9 @@ import { SpinnerComponent } from "../../../Core/spinner/spinner.component";
 import { AdminService } from './Admin.Service';
 import { FormsModule } from '@angular/forms';
 import { FeedbackService } from '../../../Layout/hotelliers/feedback.service';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { HotelsService } from '../../../Layout/hotelliers/services/hotels.service';
+import { Title } from '@angular/platform-browser';
 
 
 @Component({
@@ -13,7 +16,14 @@ import { FeedbackService } from '../../../Layout/hotelliers/feedback.service';
   standalone: true,
   imports: [CommonModule, SpinnerComponent, FormsModule],
   templateUrl: './admin-home.component.html',
-  styleUrls: ['./admin-home.component.css']
+  styleUrls: ['./admin-home.component.css'],
+  animations: [
+    trigger('removeCard', [
+      state('in', style({ opacity: 1, transform: 'scale(1)' })),
+      state('removed', style({ opacity: 0, transform: 'scale(0.8)' })),
+      transition('in => removed', animate('300ms ease-out')),
+    ]),
+  ],
 })
 export class AdminHomeComponent implements OnInit {
 
@@ -49,6 +59,19 @@ export class AdminHomeComponent implements OnInit {
   rejectModal: boolean =false;
 
 
+pendingOffers: any[] = [];
+
+ offers = [
+    { id: 1, title: 'Summer Sale', description: 'Get 30% off on all items.', status:"", image:"",badge:"",validFrom:"",validTill:"" },
+    { id: 2, title: 'Flash Deal', description: 'Limited time offer.', status:"", image:"",badge:"",validFrom:"",validTill:"" },
+    { id: 3, title: 'New User Promo', description: 'Exclusive for new signups.',status:"", image:"", badge:"",validFrom:"",validTill:""},
+    
+    // Add more offers here
+  ];
+
+  removedOfferId: number | null = null;
+
+  
 
   showNotificationDropdown = false;
 
@@ -82,7 +105,8 @@ export class AdminHomeComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private adminService: AdminService,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private HotelsService:HotelsService
    
   ) {
     this.updateUnreadCount();
@@ -91,6 +115,8 @@ export class AdminHomeComponent implements OnInit {
   ngOnInit(): void {
     this.fetchUsers();
     this.fetchComments();
+    this.getAllOffers();
+     
   }
 
   toggleGroup(group: string): void {
@@ -619,5 +645,68 @@ getHotels(){
 
   })
 }
+
+
+getAllOffers(){
+  this.HotelsService.getAllOffers().subscribe({
+      next: (res) => {
+        this.offers = res.map((offer: any) => {
+        return {
+          ...offer,
+          description: offer.description + '% off',
+        };
+      });
+      console.log("Offers data", this.offers)
+      this.filterPendingOffers();
+       
+      },
+      error: (err) => {
+        console.error('Error fetching offers:', err);
+      },
+    });
+  }
+
+filterPendingOffers() {
+  this.pendingOffers = this.offers.filter(o => o.status === 'PENDING');
+  
+}
+  approveOffer(id: number, offer: any) {
+    this.removedOfferId = id;
+    const data ={title: offer.title,
+      status:"APPROVED",
+      description: offer.description,
+      validFrom: offer.validFrom,
+      validTill:offer.validTill,
+      badge: offer.badge,
+      image: offer.image
+
+    }
+     this.HotelsService.approveOfferById(id,data).subscribe({
+      next: () => {
+        // wait for animation end before removing
+        Swal.fire("Offer Approval", "Offer Approved",'success')
+      },
+      error: err => {
+         Swal.fire("Offer Approval", "Offer not Approved",'error')
+        console.error('Failed to approve offer:', err);
+        this.removedOfferId = null;
+      }
+    });
+  
+
+  }
+
+  onAnimationDone(event: any, id: number) {
+    if (this.removedOfferId === id) {
+      this.offers = this.offers.filter(offer => offer.id !== id);
+      this.removedOfferId = null;
+    }
+  }
+
+  trackByOfferId(index: number, offer: any) {
+    return offer.id;
+  }
+
+
 
 }

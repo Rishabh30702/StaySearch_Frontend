@@ -16,6 +16,7 @@ import { HotelsService } from './services/hotels.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 
+
 @Component({
   selector: 'app-hotelliers',
   standalone: true,
@@ -35,9 +36,14 @@ export class HotelliersComponent implements OnInit,OnDestroy {
   longitude: number = 0;
   mapInitialized = false;
   showmenu: boolean = true;
+  today: Date = new Date();
+
+   minDateTime: string ="";
+maxDateTime: string="";
 
 
 isLoading: boolean = false;
+isDeal = false;
 updateHotel = { name: '', address: '', amenities: '' };
 
 isEditModalOpen =false;
@@ -81,9 +87,6 @@ isEditModalOpen =false;
   propertyTypeTouched: boolean = false;
   
 
-  today: string | undefined;
-  maxDate: string | undefined;
-  today2: string | undefined;
   // Example array of hotels
 hotels = [
  {
@@ -170,7 +173,7 @@ currentHotelName:string="";
 
   discountInfo ={
         title:"",
-        description:0,
+        description:1,
         badge:"APP Exclusive",
         image:"",
         validFrom:"",
@@ -229,24 +232,11 @@ currentHotelName:string="";
     
   });
 
-  const now = new Date();
-    const future = new Date();
-    
-    future.setDate(now.getDate() + 15);
-   const now2 = new Date();
-   now2.setDate(now.getDate()+1);
-    this.today2 = this.formatDate(now2)
-
-     this.today = this.formatDate(now);
-    this.maxDate = this.formatDate(future);
-
-  }
-
-
   
-  private formatDate(date: Date): string {
-    return date.toISOString().split('T')[0]; // Format as yyyy-mm-dd
+
   }
+
+
  @HostListener('document:click', ['$event.target'])
   public onClick(target: HTMLElement) {
     const clickedInside = this.elementRef.nativeElement.contains(target);
@@ -259,6 +249,12 @@ currentHotelName:string="";
     this.mapService.destroyMap();
     this.destroy();
   }
+
+   
+formatDateTimeLocal(date: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
 
    ngOnInit(): void {
 
@@ -293,9 +289,10 @@ currentHotelName:string="";
     }
   }
   
+ this.minDateTime = this.formatDateTimeLocal(new Date());
+  this.maxDateTime = this.formatDateTimeLocal(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
 
   }
-  
 
 
   destroy(){
@@ -389,6 +386,7 @@ currentHotelName:string="";
   }
 
   selectMenu(menu: string) {
+    this.isDeal =false;
     
       if (this.selectedMenu === 'hotels' && menu !== 'hotels') {
         this.mapService.destroyMap();
@@ -402,6 +400,10 @@ currentHotelName:string="";
 
       if (menu === 'dashboard') {
         this.checkHotelsData();
+      }
+      if (menu === 'deal') {
+        this.isDeal = true;
+         this.loadRoomsByHotel(this.currentHotelId);
       }
     
       if (menu === 'hotels') {
@@ -651,33 +653,33 @@ onFileSelected(event: Event) {
   
 
 
-  updateRoom() {
-    if (this.newRoom.id === undefined) return;
+ updateRoom() {
+       if (this.newRoom.id === undefined) return;
   
-    if (
-      this.newRoom.name &&
-      this.newRoom.available >= 0 &&
-      this.newRoom.total > 0 &&
-      this.newRoom.price > 0
-    ) {
-      this.isLoading = true;
-      // Create a FormData object
-      const formData = new FormData();
+        if (
+       this.newRoom.name &&
+        this.newRoom.available >= 0 &&
+        this.newRoom.total > 0 &&
+        this.newRoom.price > 0
+        ) {
+        this.isLoading = true;
+        // Create a FormData object
+        const formData = new FormData();
   
-      // Append room data to FormData
-      formData.append('hotelId', this.currentHotelId.toString());
-      formData.append('id', this.newRoom.id?.toString() || '');
-      formData.append('name', this.newRoom.name);
-      formData.append('available', this.newRoom.available.toString());
-      formData.append('total', this.newRoom.total.toString());
-      formData.append('price', this.newRoom.price.toString());
-      formData.append('deal', this.newRoom.deal ? 'true' : 'false');
-      formData.append('description', this.newRoom.description || '');
-      formData.append('showFullDesc', this.newRoom.showFullDesc ? 'true' : 'false');
+        // Append room data to FormData
+       formData.append('hotelId', this.currentHotelId.toString());
+       formData.append('id', this.newRoom.id?.toString() || '');
+       formData.append('name', this.newRoom.name);
+       formData.append('available', this.newRoom.available.toString());
+       formData.append('total', this.newRoom.total.toString());
+       formData.append('price', this.newRoom.price.toString());
+       formData.append('deal', this.newRoom.deal ? 'true' : 'false');
+       formData.append('description', this.newRoom.description || '');
+       formData.append('showFullDesc', this.newRoom.showFullDesc ? 'true' : 'false');
   
   
-      // Send FormData as multipart/form-data
-      this.roomService.updateRoom(this.newRoom.id, formData).subscribe({
+        // Send FormData as multipart/form-data
+       this.roomService.updateRoom(this.newRoom.id, formData).subscribe({
         next: (updatedRoom: Room) => {
           
           if (this.editIndex !== null) {
@@ -718,64 +720,65 @@ onFileSelected(event: Event) {
           Swal.fire('Error', 'Failed to update room.', 'error');
           this.isLoading = false;
         },
-      });
-    } else {
-      alert('Please fill all fields!');
-    }
+         });
+        } else {
+         alert('Please fill all fields!');
+        }
 
   
-// add offer section
-if(this.discountInfo.description && this.discountInfo.validFrom && this.discountInfo.validTill)
-{
-
-
+     // add offer section
+   if(this.isDeal){
+      if(this.discountInfo.description >0 && this.discountInfo.validFrom && this.discountInfo.validTill)
+      {
  
- if (this.selectedFile) {
-  this.discountInfo.image = URL.createObjectURL(this.selectedFile); // or use base64 if needed
-}
-else{
-   this.discountInfo.image  =  this.rooms[this.editIndex? this.editIndex:0].imageUrl || "";
-}
- this.discountInfo.title = this.currentHotelName;
+       this.discountInfo.image  =  this.rooms[this.editIndex? this.editIndex:0].imageUrl || "";
+       
+       this.discountInfo.title = this.currentHotelName;
 
 
-console.log(this.discountInfo.description);
-console.log(this.discountInfo.validFrom);
-console.log(this.discountInfo.validTill);
-console.log(this.discountInfo.title);
-console.log(this.discountInfo.image);
+      console.log(this.discountInfo.description);
+       console.log(this.discountInfo.validFrom);
+      console.log(this.discountInfo.validTill);
+       console.log(this.discountInfo.title);
+       console.log(this.discountInfo.image);
 
-const newOffer =
-{
-  title: this.discountInfo.title,
-  description:this.discountInfo.description.toString(),
-  badge: this.discountInfo.badge,
-  image: this.discountInfo.image,
-  validFrom:this.discountInfo.validFrom,
-  validTill:this.discountInfo.validTill
+      const newOffer =
+       {
+      title: this.discountInfo.title,
+      description:this.discountInfo.description.toString(),
+      badge: this.discountInfo.badge,
+      image: this.discountInfo.image,
+       validFrom:this.discountInfo.validFrom,
+        validTill:this.discountInfo.validTill,
+       status: "PENDING"
 
-}
+        }
 
-
-/*newOffer.append("title", this.discountInfo.title);
-newOffer.append("description",this.discountInfo.description.toString());
-newOffer.append("badge",this.discountInfo.badge);
-newOffer.append("image",this.discountInfo.image);
-newOffer.append("validFrom",this.discountInfo.validFrom);
-newOffer.append()*/
-
-   this.hotelsService.createOffer(newOffer).subscribe({
+      this.hotelsService.createOffer(newOffer).subscribe({
       next: response => {
         console.log('Offer created:', response);
-      },
-      error: err => {
+           this.discountInfo.title="";
+           this.discountInfo.description=0;
+           this.discountInfo.image="",
+           this.discountInfo.validFrom="",
+           this.discountInfo.validTill=""
+           alert("Offer creation successfull awaiting approval")
+
+          },
+         error: err => {
         console.error('Error creating offer:', err);
-      }
-    });
+          }
+         });
 
 
     
-  }
+      }
+
+       else{
+     alert("Please Fill offer details correctly to create offer ")
+      }
+
+      }
 
 
   }
