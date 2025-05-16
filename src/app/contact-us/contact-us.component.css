@@ -177,44 +177,47 @@ textarea {
     line-height: 1.2;
 }
 
-@media (max-width: 1080px) {
+
+@media (max-width: 768px) {
+ h2 {
+        font-size: calc(1.2rem + 1vw);
+        margin-bottom: 5vh;
+        margin-top: 3vh;
+        margin-left: 3vw;
+    }
+
     .contact-container {
-        width: 80%;
-        margin: 15px auto;
-        padding: 20px 10px;
+        width: 90%;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
     .form-container {
-        flex-direction: column; /* Stack form elements */
-        align-items: center;
-        gap: 15px;
-        padding: 0;
-        width: 90%
+        flex-direction: column;
+        padding: 0 20px;
+        gap: 20px;
     }
 
-    .right-form {
-        width: 400px; /* Make right form full width */
-    }
-
-    .right-form input,
     textarea {
-        width: 400px; /* Make form inputs full width */
-        font-size: 16px;
+        height: 150px;
+    }
+
+    .right-form input {
+        padding: 12px;
     }
 
     .send-btn {
-        width: 100%; /* Make button full width */
-        padding: 10px;
+        width: 100%;
+        padding: 15px;
         font-size: 18px;
     }
- 
+
     .contact-info {
-        flex-direction: column; /* Stack contact info items */
+        flex-direction: column;
         align-items: center;
-        text-align: center;
-        gap: 25px;
-        margin-top: 30px;
+        gap: 20px;
     }
+
 
     .info-item {
         width: 80%; /* Make info items full width */
@@ -224,27 +227,6 @@ textarea {
 
     .icon {
         margin-bottom: 10px;
-    }
-
-    
-}
-@media (max-width: 768px) {
-
-    .form-container {
-         width: 90%;        
-  }
-
-      .right-form {
-       width: 100%;        }
-
-   .right-form input,
-    textarea {
-    width: 10  0%;        
-     }
-
-    .send-btn {
-    width: 100%;
-
     }
     
     .card-map-wrapper {
@@ -264,5 +246,4 @@ textarea {
         height: 250px; /* Adjust height for smaller screens */
         order: 2; /* Ensure map is below the card */
     }
-
-    }
+}

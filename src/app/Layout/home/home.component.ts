@@ -10,6 +10,7 @@ import { AuthService } from '../../Core/Services/AuthService/services/auth.servi
 import Swal from 'sweetalert2';
 import { SpinnerComponent } from '../../Core/spinner/spinner.component';
 import { HotelListingService } from '../../Core/Services/hotel-listing.service';
+import { HotelsService } from '../hotelliers/services/hotels.service';
 
 
 @Component({
@@ -233,7 +234,7 @@ export class HomeComponent implements OnInit {
   };
   constructor (private router:Router,private translate: TranslateService,
     private feedbackService: FeedbackServiceService, private authService:AuthService,
-  private hoteListingService: HotelListingService
+  private hoteListingService: HotelListingService,private HotelsService:HotelsService
   ){
       this.isLoggedIn = this.authService.isLoggedIn(); 
   }
@@ -287,6 +288,7 @@ export class HomeComponent implements OnInit {
     this.getHotels();
     this.generateStars();
     this.showFeedbacks();
+    this.getAllOffers();
   }
 
   generateStars() {
@@ -409,6 +411,23 @@ export class HomeComponent implements OnInit {
  }
 
 
+getAllOffers(){
+  this.HotelsService.getAllOffers().subscribe({
+      next: (res) => {
+        this.offers = res.map((offer: any) => {
+        return {
+          ...offer,
+          description: offer.description + '% off',
+        };
+      });
+      console.log("Offers data", this.offers)
+       
+      },
+      error: (err) => {
+        console.error('Error fetching offers:', err);
+      },
+    });
+  }
 
 
 }
