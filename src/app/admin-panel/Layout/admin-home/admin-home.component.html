@@ -639,11 +639,12 @@
    
 
   <div class="offers-container">
-  <h1 class="offers-heading">
-    Offer Creation Requests ({{ offers.length }})
+    <h1 class="offers-heading">
+    Offer Creation Requests ({{ pendingOffers.length }})
   </h1>
 
   <div *ngIf="pendingOffers.length > 0" class="offer-grid">
+  
     <div
       *ngFor="let offer of pendingOffers; trackBy: trackByOfferId"
   [@removeCard]="removedOfferId === offer.id ? 'removed' : 'in'"
@@ -651,7 +652,7 @@
   class="offer-card">
       <h2>{{ offer.title }}</h2>
       <p>{{ offer.status }}</p>
-      <p><strong>Discount:</strong> {{ offer.description }}</p>
+      <p><strong>Discount:</strong> {{ offer.description }}% off</p>
       <button (click)="approveOffer(offer.id,offer)">Approve</button>
     </div>
   </div>

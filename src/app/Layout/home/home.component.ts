@@ -412,14 +412,9 @@ export class HomeComponent implements OnInit {
 
 
 getAllOffers(){
-  this.HotelsService.getAllOffers().subscribe({
+  this.HotelsService.getOffers().subscribe({
       next: (res) => {
-        this.offers = res.map((offer: any) => {
-        return {
-          ...offer,
-          description: offer.description + '% off',
-        };
-      });
+       this.offers = res.map((offer: any) => ({ ...offer }));
       console.log("Offers data", this.offers)
        
       },

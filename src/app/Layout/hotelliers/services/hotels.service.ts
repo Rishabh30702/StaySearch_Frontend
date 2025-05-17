@@ -45,6 +45,9 @@ export class HotelsService {
     return this.http.get<any>(this.base2+"api/offers");
   }
 
+  getOffers(): Observable<any> {
+    return this.http.get<any>(this.base2+"api/offers/active");
+  }
 
   approveOfferById(offerId: number,data: any) {
     const url = `${this.base2}api/offers/${offerId}`;

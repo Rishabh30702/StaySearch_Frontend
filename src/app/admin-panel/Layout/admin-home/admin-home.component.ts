@@ -650,12 +650,7 @@ getHotels(){
 getAllOffers(){
   this.HotelsService.getAllOffers().subscribe({
       next: (res) => {
-        this.offers = res.map((offer: any) => {
-        return {
-          ...offer,
-          description: offer.description + '% off',
-        };
-      });
+       this.offers = res.map((offer: any) => ({ ...offer }));
       console.log("Offers data", this.offers)
       this.filterPendingOffers();
        
