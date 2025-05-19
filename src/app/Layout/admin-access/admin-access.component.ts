@@ -69,19 +69,40 @@ export class AdminAccessComponent implements OnInit {
   login() {
       // Clear old token before any new login
   localStorage.removeItem('token');
-    if (this.selectedRole === 'admin') {
-      // Admin logic (for now just routing)
-      this.router.navigate(['adminAccess/adminPanel']);
-      return;
-    }
-  
     this.isLoading =true;
     const payload = {
       username: this.loginUsername,
       password: this.loginPassword
     };
-  
-    this.hotelierService.loginHotelier(payload).subscribe({
+
+     if (this.selectedRole === 'admin') {
+    // Call admin login API
+    this.hotelierService.loginAdmin(payload).subscribe({
+      next: (res: any) => {
+        if (res.token) {
+          localStorage.setItem('token', res.token);
+          this.isLoading = false;
+          this.router.navigate(['adminAccess/adminPanel']);
+        } else {
+          this.isLoading = false;
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: 'Invalid admin credentials.',
+          });
+        }
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: err?.error?.message || 'Invalid admin credentials.',
+        });
+      },
+    });
+  } else if (this.selectedRole === 'owner') {
+     this.hotelierService.loginHotelier(payload).subscribe({
       
       next: (res: any) => {
        
@@ -120,6 +141,8 @@ export class AdminAccessComponent implements OnInit {
       }
         
     });
+
+  }
   }
   
 
@@ -194,9 +217,6 @@ export class AdminAccessComponent implements OnInit {
                 }
             });
 }
-
- 
-
 
   resetPassword() {
     if (!this.resetEmail) {

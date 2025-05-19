@@ -35,4 +35,8 @@ export class AuthPortalService {
    getHotelById(hotelId: number): Observable<any> {
     return this.http.get(`${this.base2}/v1/hotel/${hotelId}`);
   }
+
+  loginAdmin(credentials: { username: string; password: string }) {
+  return this.http.post<any>(`${this.baseUrl}/login/admin`, credentials);
+}
 }
