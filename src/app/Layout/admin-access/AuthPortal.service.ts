@@ -37,6 +37,6 @@ export class AuthPortalService {
   }
 
   loginAdmin(credentials: { username: string; password: string }) {
-  return this.http.post<any>(`${this.baseUrl}/login/admin`, credentials);
+  return this.http.post<any>(`${this.baseUrl}login/admin`, credentials);
 }
 }
