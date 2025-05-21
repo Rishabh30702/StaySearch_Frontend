@@ -318,7 +318,7 @@ formatDateTimeLocal(date: Date): string {
 
  
   fetchFeedbacks(): void {
-    this.feedbackService.getAllFeedbacks().subscribe({
+    this.feedbackService.getFeedback().subscribe({
       next: (data) => {
         this.feedbacks = data;
       },
@@ -775,7 +775,7 @@ onFileSelected(event: Event) {
       }
 
        else{
-     alert("Please Fill offer details correctly to create offer ")
+     alert("Please Fill offer details(Date,Time and discount ) correctly to create offer ")
       }
 
       }

@@ -140,5 +140,104 @@
 }
 
 
+@media (max-width: 1140px) {
+  .container-fluid {
+    height: auto;
+    padding: 20px 10px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
+  .row {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap: 20px;
+  }
+.map-container{
 
+  width:90%;
+  margin-top: 10px;
+}
+  #main-map {
+    position: relative;
+    height: 380px; /* ⬆️ increased height */
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 20px; /* ⬆️ spacing from next section */
+  }
+
+  .filter-container {
+    width: 90%;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .listings-container {
+    width: 90%;
+    height: 50vh;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 15px;
+    padding-bottom: 80px;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+  }
+
+  #main-map {
+    width: 95%;
+    height: 320px; /* ⬆️ increased height */
+    position: relative;
+    border-radius: 10px;
+    margin-bottom: 20px; /* ⬆️ spacing */
+  }
+
+  .filter-container {
+    width: 95%;
+    padding: 10px;
+    overflow: visible;
+    height: auto;
+  }
+
+  .listings-container {
+    width: 95%;
+    height: 50vh;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 10px;
+  }
+
+  .hotel-card {
+    padding: 10px;
+    flex-direction: column;
+    font-size: 10px;
+  }
+
+  .priceAndrating {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hotel-map {
+    width: 100%;
+    padding: 10px;
+    height: 200px;
+  }
+}

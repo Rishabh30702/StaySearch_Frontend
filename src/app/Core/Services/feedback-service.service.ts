@@ -12,7 +12,7 @@ export class FeedbackServiceService {
   constructor(private http: HttpClient) {}
 
   getFeedback(): Observable<any[]> {
-    return this.http.get<any[]>(this.baseAPI+"/getAllFeedbacks");
+    return this.http.get<any[]>('https://staysearchbackend.onrender.com/api/feedbacks/feedbacks/public');
   }
 
   submitFeedback(feedbackData: any): Observable<any> {

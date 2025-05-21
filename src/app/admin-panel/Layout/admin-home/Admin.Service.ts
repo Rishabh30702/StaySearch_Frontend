@@ -37,4 +37,20 @@ export class AdminService {
        );
 
   }
+
+
+ postContent(Data: FormData): Observable<any> {
+    return this.http.post('https://staysearchbackend.onrender.com/api/homepage-banner', Data);
+  }  
+
+   getContent(): Observable<any> {
+    return this.http.get('https://staysearchbackend.onrender.com/api/homepage-banner');
+  }
+
+    updateContent(Data: FormData, id: number): Observable<any> {
+      console.log(id);
+   return this.http.put(`https://staysearchbackend.onrender.com/api/homepage-banner/${id}`, Data);
+
+  }  
+
 }

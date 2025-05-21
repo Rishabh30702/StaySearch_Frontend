@@ -609,3 +609,225 @@ input, textarea {
   color: #6b7280;
   padding: 1rem;
 }
+
+
+
+/* ============================= */
+/* ===== MEDIA QUERIES ======== */
+/* ============================= */
+
+/* ----------- Tablets (≤ 1080px) ----------- */
+@media screen and (max-width: 1080px) {
+  .card-container,
+  .offer-grid,
+  .grid {
+    /* Use minmax to keep columns flexible but not too small */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem; /* Add some gap for spacing */
+  }
+
+  .modal-content,
+  .modal-content2,
+  .newuser-content {
+    width: 90%;
+    height: auto; /* Let height adjust automatically */
+    padding: 16px;
+  }
+
+  .content-management-container {
+    padding: 15px;
+  }
+
+  .slc {
+    display: flex; /* Ensure flex container */
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px; /* Space between flex items */
+  }
+
+  .con {
+    width: 100%;
+  }
+
+  .status-dropdown select {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  input,
+  textarea {
+    font-size: 14px;
+  }
+
+  .offers-container {
+    padding: 1rem;
+  }
+}
+
+/* ----------- Small Screens (≤ 768px) ----------- */
+@media screen and (max-width: 768px) {
+  .card-container,
+  .offer-grid,
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .modal-content,
+  .modal-content2,
+  .newuser-content {
+    width: 95%;
+    padding: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  input,
+  textarea,
+  select,
+  .submit-btn,
+  .open-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .status-dropdown select {
+    width: 100%;
+  }
+
+  .section-heading,
+  .offers-heading {
+    font-size: 1.25rem;
+  }
+
+  .slc {
+    display: flex; /* make sure flex container */
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .con {
+    width: 100%;
+  }
+
+  /* Responsive table */
+  table.security {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: separate;
+  }
+
+  .security thead {
+    display: none; /* Hide table header on small screens */
+  }
+
+  .security tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+  }
+
+  .security td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  .security td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    flex: 1;
+  }
+
+  .collapse-wrapper.expanded {
+    max-height: 500px;
+    overflow: auto; /* add overflow in case content is long */
+    transition: max-height 0.3s ease;
+  }
+}
+
+ .audit-logs-table {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto; /* center it */
+  }
+
+  .audit-logs-table table {
+    width: 100%;
+    table-layout: fixed;
+    word-wrap: break-word;
+    border-collapse: collapse;
+  }
+
+  .audit-logs-table td,
+  .audit-logs-table th {
+    white-space: normal !important;
+    word-break: break-word;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .audit-logs-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .audit-logs-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    flex-basis: 40%;
+    color: #333;
+  }
+
+  .audit-logs-table thead {
+    display: none;
+  }
+
+  .audit-logs-table td {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+  }
+/* Default desktop/tablet layout */
+.dashboard-content {
+  flex: 1;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* Make table use full width on mobile */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 12px;
+    text-align: left;
+  }
+
+  table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px 12px;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+    display: block;
+  }
+}

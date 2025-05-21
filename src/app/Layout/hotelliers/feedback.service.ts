@@ -15,7 +15,16 @@ export class FeedbackService {
     return this.http.get<Feedback[]>(this.baseAPI+"/getAllFeedbacks");
   }
 
+  getFeedback(): Observable<any[]> {
+    return this.http.get<any[]>('https://staysearchbackend.onrender.com/api/feedbacks/feedbacks/public');
+  }
+
   deleteFeedback(id: number, options = {}): Observable<any> {
     return this.http.delete(this.baseAPI+"/delete/"+id, options);
+  }
+
+
+  approveFeedback(data: any,id: number): Observable<any>{
+    return this.http.put(this.baseAPI+`/feedbacks/${id}/approve`,data, { responseType: 'text' as const });
   }
 }

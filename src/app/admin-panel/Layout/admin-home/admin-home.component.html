@@ -549,17 +549,17 @@
                 <label >{{ comment.text }}</label>
                
               <td>
-                <span
-                  class="badge"
-                  [ngClass]="{
-                    'bg-warning text-dark': comment.status === 'pending',
-                    'bg-success': comment.status === 'approved',
-                    
-                  }"
-                >
-                  {{ comment.status | titlecase }}
-                </span>
-              </td>
+  <span
+    class="badge"
+    [ngClass]="{
+      'bg-success': comment.status.toLowerCase() === 'approved',
+      'bg-warning text-dark': comment.status.toLowerCase() === 'pending'
+    }"
+  >
+    {{ comment.status | titlecase }}
+  </span>
+</td>
+
               <td>
                 <div class="btn-group-vertical">
                   <button class="btn btn-sm btn-success mb-2" (click)="onApprove(comment.id)">Approve</button>
@@ -595,14 +595,24 @@
                 <option value="promo">Promotional Material</option>
               </select>
             </div>
-      
+      <span 
+  *ngIf="content.type == 'banner' && contentUpdateid == 0" 
+  style="display: inline-block; margin-bottom: 10px;">
+  You are Modifying Banner 1
+</span>
+
+<span 
+  *ngIf="content.type == 'banner' && contentUpdateid != 0" 
+  style="display: inline-block; margin-bottom: 10px;">
+  You are Modifying Banner 2
+</span>
+
             <div class="form-group">
               <label for="contentTitle">Title</label>
               <input type="text" [(ngModel)]="content.title" name="contentTitle" required />
             </div>
       
            <div *ngIf="content.type !== 'banner'" class="form-group"> <!-- correct -->
-
               <label for="contentBody">Content</label>
               <textarea [(ngModel)]="content.body" name="contentBody" rows="5" required></textarea>
             </div>
@@ -611,6 +621,7 @@
               <label for="imageUpload">Upload Image </label>
               <input type="file" (change)="onImageUpload($event)" />
             </div>
+
       
             <button type="submit" class="btn btn-primary">Update Content</button>
           </form>

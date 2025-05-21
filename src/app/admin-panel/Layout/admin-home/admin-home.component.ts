@@ -57,6 +57,7 @@ export class AdminHomeComponent implements OnInit {
 
 
   rejectModal: boolean =false;
+  secBanner = false;
 
 
 pendingOffers: any[] = [];
@@ -87,6 +88,10 @@ pendingOffers: any[] = [];
   rejectedHoteliers: any[] = [];
   otherHoteliers: any[] = [];
 
+
+
+    bannersData: any[] = [];
+
   // Pagination variables
   currentPage: number = 1;
   pageSize: number = 5;
@@ -102,6 +107,9 @@ pendingOffers: any[] = [];
   showModal: boolean = false;
   oldPassword:string = '';
 
+
+  contentUpdateid = 0;
+
   constructor(
     private authService: AuthService,
     private adminService: AdminService,
@@ -116,6 +124,7 @@ pendingOffers: any[] = [];
     this.fetchUsers();
     this.fetchComments();
     this.getAllOffers();
+    console.log("Content ID",this.contentUpdateid);
      
   }
 
@@ -521,7 +530,7 @@ updateUserRole(event: Event,currentUserid: number) {
 commentSearchTerm = '';
 
 comments = [
-  { id: 1, username: 'user1', text: 'Nice hotel!', status: 'pending' },
+  { id: 1, username: 'user1', text: 'Nice hotel!', status: '' },
   
   // Add more dummy comments as needed
 ];
@@ -534,7 +543,7 @@ fetchComments(): void {
         id: item.id,
         username: item.user.fullname || item.user.username,
         text: item.description || 'No comments provided.',
-        status: "pending"
+        status: item.status
       }));
     },
     error: (err) => {
@@ -552,11 +561,31 @@ filteredComments() {
 
 // Approve comment
 onApprove(id: number) {
+  this.isLoading= true;
   const comment = this.comments.find(c => c.id === id);
   if (comment) {
-    comment.status = 'approved';
-    console.log(`Approved comment ID: ${id}`);
-    alert(`Approved comment from ${comment.username}`);
+           const payload = {
+                 id: comment.id,
+                 username: comment.username,
+                 text: comment.text,
+                    };
+
+    this.feedbackService.approveFeedback(payload, id).subscribe({
+  next: (value) =>{
+    console.log('Response:', value);
+     // Should be plain text
+     this.fetchComments();
+    this.isLoading= false;
+    Swal.fire("Feedback Approval", "Feedback approved successfully!", "success");
+
+  },
+  error: (err) => {
+     this.isLoading= false;
+    console.log(err);
+    Swal.fire("Feedback Approval", "Error while approving feedback", "error");
+  }
+});
+
   }
 }
 
@@ -610,6 +639,84 @@ onImageUpload(event: any) {
 submitContentUpdate() {
   // send `this.content` to backend
   console.log('Submitting content update:', this.content);
+  if(this.content.type == "banner"){
+     if(!this.content.image){
+      alert("please select an image first");
+      return ;
+     }
+      this.isLoading = true;
+     //to check current data and then perform updations accordingly
+      this.adminService.getContent().subscribe({
+      next: (banners) => {
+         this.bannersData = banners;
+         console.log("Length of data is: ",this.bannersData.length)
+         this.contentAddBanner();
+        }
+      ,
+      error: (err) => console.error('Failed to load banners:', err)
+        });
+
+   } 
+
+
+}
+
+
+contentAddBanner(){
+
+     if(!this.bannersData || this.bannersData.length < 2){
+       
+       const Data = new FormData();
+       Data.append('title', this.content.title);
+       Data.append('image', this.content.image?? "No Image Avail");
+       this.adminService.postContent(Data).subscribe({
+       next: (response) => {
+        console.log('submitted successfully', response);
+        this.isLoading = false;
+        Swal.fire("Content Changes", "Content Updated Successfully",'success');
+       },
+       error: (error) => {
+        this.isLoading = false;
+         Swal.fire("Content Changes", "Content Update failed",'error');
+        console.error('Error submitting ', error);
+         },
+        });
+     }
+     else{
+      console.log("Data Already exists");
+      if(this.contentUpdateid == 0)
+      {this.contentUpdateid = this.bannersData?.[0]?.id;}
+      else{
+        this.contentUpdateid = this.bannersData?.[1]?.id;
+        this.secBanner= true;
+      }
+       const Data = new FormData();
+       Data.append('title', this.content.title);
+       Data.append('image', this.content.image?? "No Image Avail");
+       this.adminService.updateContent(Data,this.contentUpdateid).subscribe({
+       next: (response) => {
+        console.log(' submitted successfully', response);
+        this.isLoading = false;
+        if(this.secBanner){
+         Swal.fire("Content Changes", "Content Updated Successfully for Banner 2",'success');
+        }
+         else {
+          
+          Swal.fire("Content Changes", "Content Updated Successfully for Banner 1",'success');
+         }
+       
+       },
+       error: (error) => {
+        this.isLoading = false;
+         Swal.fire("Content Changes", "Content Update failed",'error');
+        console.error('Error submitting ', error);
+         },
+        });
+
+
+
+
+     }
 }
 
 scheduleContent() {
@@ -701,6 +808,8 @@ filterPendingOffers() {
   trackByOfferId(index: number, offer: any) {
     return offer.id;
   }
+
+
 
 
 
