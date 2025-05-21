@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import { SpinnerComponent } from '../../Core/spinner/spinner.component';
 import { HotelListingService } from '../../Core/Services/hotel-listing.service';
 import { HotelsService } from '../hotelliers/services/hotels.service';
+import { AdminService } from '../../admin-panel/Layout/admin-home/Admin.Service';
 
 
 @Component({
@@ -210,16 +211,16 @@ export class HomeComponent implements OnInit {
 
     slides = [
     {
-      image: 'uttar-pradesh.jpg',
-      alt: 'First Slide',
-      caption: 'Uttar Pradesh Tourism',
-      icon: 'MDI.png'
+      image: '',
+      alt: '',
+      caption: '',
+      icon: ''
     },
     {
-      image: 'jhansi.jpg',
-      alt: 'Second Slide',
-      caption: 'Uttar Pradesh Tourism',
-      icon: 'MDI.png'
+      image: '',
+      alt: '',
+      caption: '',
+      icon: ''
     },
     // Add more slides here
   ];
@@ -234,7 +235,8 @@ export class HomeComponent implements OnInit {
   };
   constructor (private router:Router,private translate: TranslateService,
     private feedbackService: FeedbackServiceService, private authService:AuthService,
-  private hoteListingService: HotelListingService,private HotelsService:HotelsService
+  private hoteListingService: HotelListingService,private HotelsService:HotelsService,
+  private adminService: AdminService
   ){
       this.isLoggedIn = this.authService.isLoggedIn(); 
   }
@@ -289,6 +291,7 @@ export class HomeComponent implements OnInit {
     this.generateStars();
     this.showFeedbacks();
     this.getAllOffers();
+    this.getBannerContent();
   }
 
   generateStars() {
@@ -424,6 +427,28 @@ getAllOffers(){
     });
   }
 
+
+  getBannerContent(){
+    this.adminService.getContent().subscribe(
+      {
+
+         next: (banners) => {
+            //  for now only 2nd and 3rd item is shown
+               this.slides = banners.slice(0, 2).map((item: any, index: number) => ({
+               caption: item.title,
+               image: item.imageUrl,
+               alt: index == 0? 'First Slide' : 'Second Slide',
+               icon: 'MDI.png' 
+                  }));
+         console.log("banner content ",banners)
+        
+        }
+      ,
+      error: (err) => console.error('Failed to load banners:', err)
+
+      }
+    )
+  }
 
 }
 

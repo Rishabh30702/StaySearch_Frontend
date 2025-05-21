@@ -136,7 +136,11 @@
 
 
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
+   <!-- Spinner -->
+     <div *ngIf="loading" class="spinner-container">
+     <div class="spinner"></div>
+     </div>
+  <div *ngIf="!loading" class="carousel-inner">
     <div 
       class="carousel-item" 
       *ngFor="let slide of slides; let i = index" 
