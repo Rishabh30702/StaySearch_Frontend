@@ -368,10 +368,86 @@
               </div>
             </fieldset>
 
-            <!-- Submit -->
-            <button type="submit" class="submit" id="submitButton">
-              Submit and Proceed
-            </button>
+          <button type="button" class="submit" (click)="openStripeModal()">
+  Submit and Proceed
+</button>
+
+<!-- Modal -->
+<!-- Stripe style modal backdrop -->
+<div *ngIf="showStripeModal" class="modal-backdrop">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div
+      class="bg-white w-full max-w-xl rounded-2xl shadow-lg p-8"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+<div class="flex items-center justify-between mb-6 relative">
+  <h2 id="modal-title" class="text-xl font-semibold text-gray-900">
+    Add payment method
+  </h2>
+
+  <button
+    (click)="closeStripeModal()"
+    class="text-green-600 hover:text-green-700 focus:outline-none absolute right-0 top-1/2 transform -translate-y-1/2 text-2xl"
+    aria-label="Cancel adding payment method"
+    title="Cancel"
+  >
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+      <div class="space-y-6">
+       <!-- Email Display -->
+<div class="enhanced-field animate-field">
+  <label class="field-label">Email</label>
+  <div class="field-display">
+    {{ "" }}
+  </div>
+</div>
+
+<!-- Card Element -->
+<div class="enhanced-field animate-field">
+  <label class="field-label">Add a payment method</label>
+  <div id="card-element" class="field-input"></div>
+  <div id="card-errors" role="alert" class="field-error">
+    {{ cardErrors }}
+  </div>
+</div>
+
+<!-- Country Select -->
+<div class="enhanced-field animate-field">
+  <label class="field-label">Country or region</label>
+  <select class="field-select" aria-label="Country or region">
+    <option>India</option>
+    <option>United States</option>
+    <option>United Kingdom</option>
+  </select>
+</div>
+
+        <!-- Submit Button -->
+      <button
+  (click)="payWithCard()"
+  [disabled]="isLoading"
+  class="pay-button animate-field mx-auto block text-white font-semibold py-3 rounded-lg transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed max-w-xs w-full"
+>
+  <span>Pay Now</span>
+</button>
+      </div>
+
+      <div
+        class="text-xs text-gray-400 text-center mt-8 space-x-2"
+        aria-label="Modal footer links"
+      >
+        <a href="#" class="hover:underline">Terms</a>·
+        <a href="#" class="hover:underline">Privacy</a>·
+        <a href="#" class="hover:underline">Cookie settings</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
             <div *ngIf="!propertyNgForm.valid" class="text-red-500 text-sm mt-2">
               Please fill out all required fields.
             </div>

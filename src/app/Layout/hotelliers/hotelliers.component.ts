@@ -15,6 +15,8 @@ import { AuthPortalService } from '../admin-access/AuthPortal.service';
 import { HotelsService } from './services/hotels.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
+import { loadStripe, Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
+import { StripeService } from './services/stripe.service';
 
 
 @Component({
@@ -205,7 +207,51 @@ currentHotelName:string="";
     'Sitapur', 'Sonbhadra', 'Sultanpur', 'Unnao', 'Varanasi'
   ];
     sortedDistricts: string[] = [...this.allDistricts];
-  
+ 
+  showStripeModal = false;
+
+  stripe!: Stripe | null;
+  card!: StripeCardElement;
+  cardErrors: string = '';
+  elements!: StripeElements;
+
+  async ngAfterViewInit() {
+    this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ');
+
+    // Wait for DOM and modal to be visible
+    const interval = setInterval(() => {
+      const cardElement = document.getElementById('card-element');
+      if (cardElement && this.stripe) {
+        clearInterval(interval);
+        this.mountCardElement();
+      }
+    }, 100);
+  }
+
+  mountCardElement() {
+    this.elements = this.stripe!.elements();
+
+    const style = {
+      base: {
+        color: '#32325d',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a',
+      },
+    };
+
+    this.card = this.elements.create('card', { style });
+    this.card.mount('#card-element');
+  }
+
+
 
   constructor(private roomService: RoomService, private http: HttpClient,
     private feedbackService: FeedbackService,
@@ -215,7 +261,8 @@ currentHotelName:string="";
     private router: Router,
     private Aroute: ActivatedRoute,
     private authService:AuthService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private stripeService:StripeService
   ) {
 
     this.Aroute.queryParams.subscribe(params => {
@@ -248,7 +295,179 @@ currentHotelName:string="";
   ngOnDestroy(): void {
     this.mapService.destroyMap();
     this.destroy();
+    this.destroyStripeElements();
+      if (this.card) {
+      this.card.destroy();
+    }
   }
+
+   async setupStripe() {
+    this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ'); // replace with your Stripe publishable key
+
+    if (!this.stripe) {
+      console.error('Stripe failed to load');
+      return;
+    }
+
+    const elements = this.stripe.elements();
+
+    this.card = elements.create('card', {
+      style: {
+        base: {
+          fontSize: '16px',
+          color: '#32325d',
+          '::placeholder': {
+            color: '#a0aec0',
+          },
+        },
+      },
+    });
+
+    this.card.mount('#card-element');
+
+   this.card.on('change', (event) => {
+  if (event.error) {
+    this.cardErrors = event.error.message;   // just update the string
+  } else {
+    this.cardErrors = '';
+  }
+});
+  }
+
+openStripeModal() {
+  this.showStripeModal = true;
+
+  // Use requestAnimationFrame + setTimeout to wait for DOM to render
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      if (!this.stripe) return;
+
+      const elements = this.stripe.elements();
+
+      // Avoid remounting if already mounted
+      if (!this.card) {
+        this.card = elements.create('card', {
+          style: {
+            base: {
+              fontSize: '16px',
+              color: '#32325d',
+              '::placeholder': {
+                color: '#a0aec0',
+              },
+            },
+          },
+        });
+
+        this.card.mount('#card-element');
+
+        this.card.on('change', (event) => {
+          this.cardErrors = event.error ? event.error.message : '';
+        });
+      }
+    }, 0);
+  });
+}
+
+
+  closeStripeModal() {
+    this.showStripeModal = false;
+    this.cardErrors = '';
+
+    if (this.card) {
+      this.card.destroy();
+      // Reset card element to undefined so it can be created fresh next open
+      this.card = undefined!;
+      // Alternatively: this.card = null as well
+    }
+  }
+
+async payWithCard() {
+  // ✅ Step 1: Validate your form before proceeding
+  if (!this.atLeastOneAmenitySelected) {
+    alert('Please select at least one amenity.');
+    return;
+  }
+
+  if (!this.atLeastOnePropertyType) {
+    alert('Please select the type of property.');
+    return;
+  }
+
+  const form = this.propertyNgForm;
+  if (!form.valid) {
+    alert('Please fill all required fields correctly.');
+    return;
+  }
+
+  if (this.imageFiles.length === 0) {
+    alert('Please upload at least one image.');
+    return;
+  }
+
+  this.isLoading = true;
+
+  try {
+    const { clientSecret } = await this.createPaymentIntentOnBackend();
+
+    if (!this.stripe || !this.card) {
+      alert('Stripe.js has not loaded properly.');
+      this.isLoading = false;
+      return;
+    }
+
+    const result = await this.stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: this.card,
+      }
+    });
+
+    if (result.error) {
+      this.cardErrors = result.error.message || 'Payment failed.';
+      this.isLoading = false;
+    } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+      alert('Payment successful!');
+      this.closeStripeModal();
+
+      // ✅ Payment succeeded, now run the main hotel registration logic
+      this.log();
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Payment process failed. Please try again.');
+  }
+
+  this.isLoading = false;
+}
+
+  // Dummy method, replace with your real backend call
+async createPaymentIntentOnBackend(): Promise<{ clientSecret: string }> {
+  const response = await fetch('https://staysearchbackend.onrender.com/api/payment/create-payment-intent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: 9900 })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create payment intent on backend');
+  }
+
+  const res = await response.json();
+
+  if (!res || !res.clientSecret) {
+    throw new Error('Missing clientSecret in backend response');
+  }
+
+  return res;
+}
+
+
+  destroyStripeElements() {
+    if (this.card) {
+      this.card.unmount();
+      // this.card = null;
+    }
+  }
+
 
    
 formatDateTimeLocal(date: Date): string {
@@ -256,7 +475,8 @@ formatDateTimeLocal(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-   ngOnInit(): void {
+   async ngOnInit() {
+     this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ');
 
     this.checkHotelsData();
     this.loadRooms();
@@ -291,6 +511,33 @@ formatDateTimeLocal(date: Date): string {
   
  this.minDateTime = this.formatDateTimeLocal(new Date());
   this.maxDateTime = this.formatDateTimeLocal(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
+
+    if (this.stripe) {
+      const elements = this.stripe.elements();
+      this.card = elements.create('card', {
+        style: {
+          base: {
+            fontSize: '16px',
+            color: '#32325d',
+            '::placeholder': {
+              color: '#a0aec0',
+            },
+          },
+          invalid: {
+            color: '#e53e3e',
+          },
+        },
+      });
+      this.card.mount('#card-element');
+
+      this.card.on('change', (event) => {
+        if (event.error) {
+          this.cardErrors = event.error.message ?? '';
+        } else {
+          this.cardErrors = '';
+        }
+      });
+    }
 
   }
 
@@ -1002,7 +1249,7 @@ onFileSelected(event: Event) {
         password: this.password,
         phonenumber: this.phonenumber
       };
-  
+  this.isLoading = true;
       this.hotelierService.registerHotelier(userData).subscribe({
         next: () => {
           const loginPayload = {
@@ -1010,8 +1257,9 @@ onFileSelected(event: Event) {
             password: this.password
           };
   
-          this.authService.login(loginPayload).subscribe({
+          this.authService.loginHot(loginPayload).subscribe({
             next: (res: any) => {
+              this.isLoading = true;
               if (res.token) {
                 localStorage.setItem('token', res.token);
                 this.registerHotel(formData);
@@ -1022,6 +1270,7 @@ onFileSelected(event: Event) {
                   title: 'Login Failed',
                   text: 'Login failed. Please try again.'
                 });
+                this.isLoading = false;
               }
             },
             error: (err: any) => {

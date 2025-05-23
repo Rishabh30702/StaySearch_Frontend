@@ -877,7 +877,7 @@ select:required:invalid:focus {
 }
 
 /* --- Buttons --- */
-button[type="submit"] {
+.submit{
   background-color: #570E49; 
   color: white;
   padding: 12px 25px;
@@ -893,11 +893,11 @@ button[type="submit"] {
   margin: 30px auto 0; 
 }
 
-button[type="submit"]:hover {
+.submit:hover {
   background-color: #570E49; 
 }
 
-button[type="submit"]:active {
+.submit:active {
   transform: translateY(1px); 
 }
 
@@ -1175,15 +1175,42 @@ button[type="submit"]:active {
 
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background-size: 800% 800%;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
 }
+
+.modal-backdrop > .fixed > div::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.15));
+  animation: shimmer 8s infinite linear;
+  z-index: -1;
+  border-radius: 24px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes zoomFadeIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 
 .update-modal {
   background: #fff;
@@ -1341,5 +1368,235 @@ color: #761461;
 
 .dropdown-list li:hover {
   background-color: #f1f1f1;
+}
+/* Backdrop fade-in */
+.modal-backdrop {
+  animation: fadeIn 0.3s ease forwards;
+  background-color: rgba(0, 0, 0, 0.55); /* dark overlay */
+}
+
+/* FadeIn keyframe */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal container zoom fade-in */
+/* Target modal container div directly inside backdrop */
+.modal-backdrop > .fixed > div {
+  opacity: 0;
+  transform: scale(0.95);
+  animation: zoomFadeIn 0.3s ease forwards;
+  animation-delay: 0.1s;
+  max-width: 650px;
+  width: 90vw;
+  min-height: 520px;
+  /* border-radius: 24px; */
+  padding: 36px 40px;
+  box-shadow: 0 15px 40px rgba(16, 185, 129, 0.25); /* greenish shadow */
+  background: linear-gradient(145deg, #f9fafb, #e6ffed);
+  overflow-y: auto;
+  color: #0f172a; /* dark slate text */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@keyframes zoomFadeIn {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animate fields fade+slide+color */
+.modal-backdrop .animate-field {
+  opacity: 0;
+  animation-name: fadeSlideUpColor;
+  animation-duration: 0.45s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0 3px 10px rgba(5, 150, 105, 0.1); /* subtle greenish shadow */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+@keyframes fadeSlideUpColor {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    background-color: #d1fae5; /* lighter green */
+    color: #166534; /* dark green */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+}
+
+/* Animate delay per field */
+.modal-backdrop .animate-field:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.modal-backdrop .animate-field:nth-child(2) {
+  animation-delay: 0.28s;
+}
+.modal-backdrop .animate-field:nth-child(3) {
+  animation-delay: 0.46s;
+}
+.modal-backdrop .animate-field:nth-child(4) {
+  animation-delay: 0.64s;
+}
+
+/* Center the Continue button */
+.modal-backdrop button.animate-field.mx-auto {
+  max-width: 280px;
+  width: 100%;
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Close button styles (assuming it uses a Font Awesome icon) */
+.modal-backdrop button[aria-label="Cancel adding payment method"] {
+  position: absolute;
+  right: 40px;
+  top: 36px;
+  color: #059669; /* emerald-500 */
+  font-size: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.modal-backdrop button[aria-label="Cancel adding payment method"]:hover,
+.modal-backdrop button[aria-label="Cancel adding payment method"]:focus {
+  color: #065f46; /* emerald-700 */
+  outline: none;
+}
+
+.pay-button {
+  background: linear-gradient(135deg, #6a11cb, #2575fc); /* Purple to Blue */
+  box-shadow: 0 4px 14px rgba(101, 31, 255, 0.4);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.pay-button:hover {
+  background: linear-gradient(135deg, #8f35ff, #1e90ff);
+  box-shadow: 0 6px 20px rgba(101, 31, 255, 0.6);
+  transform: scale(1.02);
+}
+
+.pay-button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  transform: skewX(-20deg);
+  transition: all 0.5s ease-in-out;
+}
+
+.pay-button:hover::after {
+  left: 100%;
+}
+
+.pay-button span {
+  position: relative;
+  z-index: 1;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+/* Label Styling */
+.field-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6a11cb;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.4px;
+}
+
+/* Shared Field Container */
+.enhanced-field {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(106, 17, 203, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(106, 17, 203, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* On Hover Glow */
+.enhanced-field:hover {
+  box-shadow: 0 6px 16px rgba(106, 17, 203, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Email display box */
+.field-display {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Card input field */
+.field-input {
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid #8ab4f8;
+  color: #111;
+}
+
+/* Error text */
+.field-error {
+  margin-top: 0.25rem;
+  color: #ef4444;
+  font-size: 0.85rem;
+}
+
+/* Select box */
+.field-select {
+  width: 100%;
+  border: 1px solid #8ab4f8;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.5);
+  color: #111;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.field-select:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.3);
+  outline: none;
 }
 
