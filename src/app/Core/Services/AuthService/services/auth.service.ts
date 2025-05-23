@@ -47,6 +47,14 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/auth/login`, userData);
   }
 
+    loginHot(userData: { username: string; password: string }) {
+    return this.http.post(`${this.baseUrl}/auth/normallogin`, userData);
+  }
+
+    loginHotellier(userData: { username: string; password: string; role: string }) {
+    return this.http.post(`${this.baseUrl}/auth/login/hotelier`, userData);
+  }
+
   logout(): void {
     localStorage.removeItem('token'); // Remove token from storage
   }
