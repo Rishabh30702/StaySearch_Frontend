@@ -145,9 +145,20 @@
 
               <div class="form-group">
                 <label for="propertyPrice">Property Price:</label>
-                <input type="number" id="propertyPrice" name="propertyPrice" ngModel required maxlength="6"
-                  placeholder="e.g., 1999" required />
-                <div class="validation-note">Maximum 6 characters.</div>
+<div class="price-input-wrapper">
+  <span class="rupee-icon">₹</span>
+  <input
+    type="number"
+    id="propertyPrice"
+    name="propertyPrice"
+    ngModel
+    required
+    max="999999"
+    placeholder="e.g., 1999"
+  />
+</div>
+<div class="validation-note">Maximum 6 characters.</div>
+
               </div>
             </fieldset>
 

@@ -42,7 +42,14 @@ export class HotelliersComponent implements OnInit,OnDestroy {
 
    minDateTime: string ="";
 maxDateTime: string="";
-
+ updateHotelDataid =0;
+ updateHotelData = {
+  name:"",
+  location:"",
+  rating:"",
+  amenities: [],
+  id:"",
+ }
 
 isLoading: boolean = false;
 isDeal = false;
@@ -1080,6 +1087,13 @@ onFileSelected(event: Event) {
 
 
   editHotel(hotel: any): void {
+
+ this.updateHotelDataid = hotel.id;
+  this.updateHotelData.name = hotel.name;
+  this.updateHotelData.location = hotel.location;
+  this.updateHotelData.amenities = hotel.amenities;
+  this.updateHotelData.rating = hotel.rating;
+  this.updateHotelData.id = hotel.id;
     this.isEditModalOpen = true;
     // Example: Navigate or open modal with hotel data
     console.log('Editing:', hotel);
@@ -1478,6 +1492,29 @@ closeEditModal() {
 saveHotel() {
   // TODO: Send `editHotel` data to backend or update in list
   console.log('Saved hotel:', this.editHotel);
+
+/*
+  const updateHotelData =
+  {
+    name: this.updateHotel.name, // updated name for now
+    location:  this.updateHotelData.location,
+    amenities:  this.updateHotelData.amenities,
+    rating: this.updateHotelData.rating,
+    id: this.updateHotelData.id
+  }
+  
+    this.hotelsService.updateHotel(this.updateHotelDataid.toString(), updateHotelData).subscribe({
+      next: response => {
+        console.log('Hotel updated:', response);
+         this.updateHotelData.id
+      },
+      error: err => {
+        console.error('Error updating hotel:', err);
+      }
+    });
+  
+*/
+
   this.closeEditModal();
 }
 

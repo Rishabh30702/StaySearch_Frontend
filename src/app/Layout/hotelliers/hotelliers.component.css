@@ -1602,7 +1602,37 @@ color: #761461;
 
 
 
-@media screen and (max-width: 480px) {
+.price-input-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.rupee-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 16px;
+  color: #555;
+  pointer-events: none;
+  user-select: none;
+}
+
+.price-input-wrapper input {
+  padding-left: 25px; /* space for the rupee icon */
+  height: 36px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 150px;
+}
+
+
+
+
+
+
+@media screen and (max-width: 768px) {
   /* General Reset */
   * {
     box-sizing: border-box !important;
