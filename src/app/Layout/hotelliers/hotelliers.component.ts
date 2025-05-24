@@ -666,9 +666,25 @@ formatDateTimeLocal(date: Date): string {
             setTimeout(() => this.mapService.invalidateSize(), 300);
           }
         }, 200);
+           if(this.username){
+            console.log(" No  profile needed");
+           }
+           else{
+            this.getUserProfile();
+           }
+
       }
     
-    
+    if (menu === 'profile') {
+       if(this.username){
+            console.log(" No  profile needed");
+           }
+           else{
+            this.getUserProfile();
+           }
+
+    }
+
 
 
   }
@@ -678,7 +694,7 @@ formatDateTimeLocal(date: Date): string {
   }
 
   logout() {
-    console.log('Logout called');
+  
     Swal.fire({
       title: 'You are about to sign out!',
       text: 'Do you want to clear your session?',
@@ -686,6 +702,7 @@ formatDateTimeLocal(date: Date): string {
       showCancelButton: true,
       confirmButtonText: 'Yes, I know',
       cancelButtonText: 'Stay',
+    
     }).then(result => {
       if (result.isConfirmed) {
         localStorage.removeItem('token');
@@ -1616,21 +1633,78 @@ getFilteredMenuItems() {
 
 
 updatePassword() {
+   this.isLoading = true;
     console.log('Updating password with:', {
-      email: this.userprofile.email,
       oldPassword: this.userprofile.password,
       newPassword: this.userprofile.newPassword
     });
-    alert('Password updated successfully!');
+  
+  
+    if (this.userprofile.password && this.userprofile.newPassword) {
+      this.authService.updatePassword(this.userprofile.password, this.userprofile.newPassword).subscribe({
+        next: (res) => {
+          Swal.fire({ text: res.message, icon: 'success' });
+          this.userprofile.password = '';
+         this.userprofile.newPassword = '';
+           this.isLoading = false;
+         },
+         error: (err) => {
+           let errorMessage = 'Failed to update password.';
+  
+         if (typeof err.error === 'string') {
+             errorMessage = err.error;
+           } else if (err.error?.message) {
+            errorMessage = err.error.message;
+           }
+  
+          Swal.fire({ text: errorMessage, icon: 'error' });
+           this.isLoading = false;
+        }
+       });
+    } else {
+      Swal.fire({ text: 'Please fill in both password fields.', icon: 'warning' });
+      this.isLoading = false;
+    }
+
+
+
   }
   
   updateProfile() {
+    this.isLoading = true;
     console.log('Updating profile with:', {
       fullName: this.userprofile.fullName,
-      email: this.userprofile.email,
       contact: this.userprofile.contact
     });
-    alert('Profile updated successfully!');
+   const payload ={
+    fullname: this.userprofile.fullName,
+    phonenumber: this.userprofile.contact
+   }
+
+       this.authService.updateUserProfile(payload).subscribe({
+          next: (response) => {
+            console.log('Profile updated successfully:', response);
+            Swal.fire({
+              title: 'Success',
+              text: 'Profile updated successfully',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            });
+            this.isLoading = false
+          },
+          error: (error) => {
+            console.error('Error updating profile:', error);
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to update profile',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            this.isLoading = false
+          }
+        });
+      
+   
   }
 
   onSubmit() {
@@ -1702,6 +1776,19 @@ updatePassword() {
   }
 
 
+getUserProfile()
+{
+   this.authService.getUserProfile().subscribe({
+        next: (data) => {
+      this.userprofile.email=this.username = data.email;
+         this.userprofile.contact= this.phonenumber = data.phoneNumber;
+         this.userprofile.fullName = data.fullName;
+         },
+        error: (err) => {
+         console.error('Error fetching users:', err);
+             }
+            });
 
+}
   
 }

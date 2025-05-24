@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { AuthService } from "../../Core/Services/AuthService/services/auth.service";
 
 @Component({
   selector: 'app-admin-access',
@@ -16,7 +17,8 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
   styleUrl: './admin-access.component.css'
 })
 export class AdminAccessComponent implements OnInit {
-  constructor(private router: Router, private hotelierService: AuthPortalService) {}
+  constructor(private router: Router, private hotelierService: AuthPortalService
+  ) {}
   ngOnInit(): void {
     
     history.pushState(null, '', location.href);
@@ -30,7 +32,8 @@ export class AdminAccessComponent implements OnInit {
 
   isLoading: boolean = false;
 
-
+userEmail = "";
+phoneNumber = "";
   // Form visibility
   showLogin: boolean = true;
   showSignup: boolean = false;
@@ -238,4 +241,6 @@ export class AdminAccessComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+
+   
 }

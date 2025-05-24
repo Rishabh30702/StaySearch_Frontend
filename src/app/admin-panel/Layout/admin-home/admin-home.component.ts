@@ -58,6 +58,7 @@ export class AdminHomeComponent implements OnInit {
 
   rejectModal: boolean =false;
   secBanner = false;
+  secInfo = false;
 
 
 pendingOffers: any[] = [];
@@ -91,6 +92,7 @@ pendingOffers: any[] = [];
 
 
     bannersData: any[] = [];
+      infoData: any[] = [];
 
   // Pagination variables
   currentPage: number = 1;
@@ -109,6 +111,7 @@ pendingOffers: any[] = [];
 
 
   contentUpdateid = 0;
+   contentUpdateid2 = 0;
 
   constructor(
     private authService: AuthService,
@@ -416,7 +419,7 @@ updateDataFromUsers(): void {
     Sno: index + 1,
     col1: user.username || 'N/A',
     col2: user.password.slice(0,10),
-    col3: '43/125 Sikandra,Agra -282007 U.P India',
+    col3: 'N/A',
     col4: user.fullname || 'N/A' ,
     col5: user.phonenumber || 'N/A',
     id: user.id,
@@ -457,29 +460,29 @@ addUser = false;
 closeNewUserModal()
 {
   this.addUser = false;
-  this.newUser.fullName = ""
-  this.newUser.email = ""
-  this.newUser.phone = ""
-  this.newUser.role = ""
+  
+  this.newUser.username = ""
+ 
+  this.newUser.password = ""
 }
 
 newUser = {
-  fullName: '',
-  email: '',
-  phone: '',
-  role: ''
+  username: '',
+  password: '',
+  role: 'USER'
 };
 
 addnewUser() {
   console.log('User added:', this.newUser);
   // Optionally reset form and close modal manually if needed
+if(this.newUser.password && this.newUser.username){
+this.createNewUser();
+}
+else{
+  alert("Please fill email and password fields correctly");
+}
 
 
-  this.addUser = false;
-  this.newUser.fullName = ""
-  this.newUser.email = ""
-  this.newUser.phone = ""
-  this.newUser.role = ""
 }
 
 
@@ -637,12 +640,18 @@ onImageUpload(event: any) {
 }
 
 submitContentUpdate() {
+
   // send `this.content` to backend
   console.log('Submitting content update:', this.content);
   if(this.content.type == "banner"){
      if(!this.content.image){
       alert("please select an image first");
       return ;
+     }
+     if(this.content.title.length <1)
+     {
+      alert("Please Enter a Title");
+      return;
      }
       this.isLoading = true;
      //to check current data and then perform updations accordingly
@@ -659,7 +668,104 @@ submitContentUpdate() {
    } 
 
 
+
+   else if(this.content.type == 'info'){
+          if(!this.content.image){
+            alert("please select an image first");
+               return ;
+            }
+             if(this.content.title.length <1)
+                {
+                 alert("Please Enter a Title");
+                 return;
+                   }
+                   
+                 if(this.content.body.length <1)
+                {
+                 alert("Please Enter the text for content");
+                 return;
+                   }
+                   this.isLoading=true;
+            this.adminService.getInfopage().subscribe({
+              next: (info) => {
+         this.infoData = info;
+         console.log("Length of data is: ",this.infoData.length)
+         this.infoContentAdd();
+         
+        }
+      ,
+      error: (err) => console.error('Failed to load info content:', err)
+            });
+
+
+   }
+
+   else{
+    alert("Please select type of content to update");
+   }
+
+
 }
+
+infoContentAdd(){
+  if(!this.infoData || this.infoData.length < 2){
+     const Data = new FormData();
+       Data.append('title', this.content.title);
+       Data.append('image', this.content.image?? "No Image Avail");
+       Data.append('content', this.content.body );
+
+       this.adminService.postInfopage(Data).subscribe({
+        next: (response) => {
+        console.log('submitted successfully', response);
+        this.isLoading = false;
+        Swal.fire("Content Changes", "Content added Successfully",'success');
+       },
+       error: (error) => {
+        this.isLoading = false;
+         Swal.fire("Content Changes", "Content add failed",'error');
+        console.error('Error submitting ', error);
+         },
+
+       })
+
+  }
+  else{
+    console.log("Data already exists");
+
+     if(this.contentUpdateid2 == 0)
+      {this.contentUpdateid2 = this.infoData?.[0]?.id;}
+      else{
+        this.contentUpdateid2 = this.infoData?.[1]?.id;
+        this.secInfo= true;
+      }
+       const Data = new FormData();
+       Data.append('title', this.content.title);
+       Data.append('image', this.content.image?? "No Image Avail");
+       Data.append('content', this.content.body);
+
+       this.adminService.updateInfopage(Data,this.contentUpdateid2).subscribe({
+            next: (response) => {
+        console.log(' submitted successfull', response);
+        this.isLoading = false;
+        if(this.secInfo){
+         Swal.fire("Content Changes", "Content Updated Successfully for Info 2 ",'success');
+        }
+         else {
+          
+          Swal.fire("Content Changes", "Content Updated Successfully for Info 1",'success');
+         }
+       
+       },
+       error: (error) => {
+        this.isLoading = false;
+         Swal.fire("Content Changes", "Content Update failed for Info Page",'error');
+        console.error('Error submitting ', error);
+         },
+
+       });
+  }
+}
+
 
 
 contentAddBanner(){
@@ -810,6 +916,30 @@ filterPendingOffers() {
   }
 
 
+
+
+ createNewUser() {
+    this.isLoading = true;
+    this.authService.register(this.newUser).subscribe(
+      response => {
+        Swal.fire({title:'Success.',text:'New User creation success.', icon:'success'});
+        this.isLoading = false;
+        this.fetchUsers();
+         this.addUser = false;
+          this.newUser.username = ""
+           this.newUser.password = ""
+
+      },
+      error => {
+        Swal.fire({title:'Failed.',text:'Creation failed.', icon:'error'})
+        this.isLoading = false;
+        this.addUser = false;
+  this.newUser.username = ""
+  this.newUser.password = ""
+
+      }
+    );
+  }
 
 
 

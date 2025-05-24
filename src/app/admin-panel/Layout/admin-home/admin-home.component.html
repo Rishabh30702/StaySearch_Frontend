@@ -170,16 +170,7 @@
 
             <form (ngSubmit)="addnewUser()" #addUserForm="ngForm">
               <div class="modal-body">
-                <div class="mb-3">
-                  <label class="form-label">Full Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="fullName"
-                    [(ngModel)]="newUser.fullName"
-                    required
-                  />
-                </div>
+               
       
                 <div class="mb-3">
                   <label class="form-label">Email</label>
@@ -187,38 +178,25 @@
                     type="email"
                     class="form-control"
                     name="email"
-                    [(ngModel)]="newUser.email"
+                    [(ngModel)]="newUser.username"
                     required
                   />
                 </div>
       
-                <div class="mb-3">
-                  <label class="form-label">Phone</label>
-                  <input
-                    type="tel"
+               <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input
+                   type="password"
                     class="form-control"
-                    name="phone"
-                    [(ngModel)]="newUser.phone"
-                    pattern="^[0-9]{10}$"
-                    maxlength="10"
-                    required
-                  />
-                </div>
+                     name="password"
+                      [(ngModel)]="newUser.password"
+                       required
+                        />
+                 </div>
+
       
-                <div class="mb-3">
-                  <label class="form-label">Role</label>
-                  <select
-                    class="form-select"
-                    name="role"
-                    [(ngModel)]="newUser.role"
-                    required
-                  >
-                    <option value="" disabled selected>Select Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="moderator">Moderator</option>
-                    <option value="user">User</option>
-                  </select>
-                </div>
+              
+                 
               </div>
       
               
@@ -232,7 +210,6 @@
                    <button
                     type="submit"
                     class="btn btn-primary"
-                    [disabled]="addUserForm.invalid"
                         >
                          Add User
                           </button>
@@ -605,6 +582,20 @@
   *ngIf="content.type == 'banner' && contentUpdateid != 0" 
   style="display: inline-block; margin-bottom: 10px;">
   You are Modifying Banner 2
+</span>
+
+
+
+      <span 
+  *ngIf="content.type == 'info' && contentUpdateid2 == 0" 
+  style="display: inline-block; margin-bottom: 10px;">
+  You are Modifying Info Content 1
+</span>
+
+<span 
+  *ngIf="content.type == 'info' && contentUpdateid2 != 0" 
+  style="display: inline-block; margin-bottom: 10px;">
+  You are Modifying Info Content 2
 </span>
 
             <div class="form-group">
