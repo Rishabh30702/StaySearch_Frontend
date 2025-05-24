@@ -53,4 +53,24 @@ export class AdminService {
 
   }  
 
+
+
+
+  postInfopage(Data: FormData): Observable<any> {
+    return this.http.post('https://staysearchbackend.onrender.com/api/informational-page', Data);
+  }  
+
+   getInfopage(): Observable<any> {
+    return this.http.get('https://staysearchbackend.onrender.com/api/informational-page');
+  }
+
+    updateInfopage(Data: FormData, id: number): Observable<any> {
+      console.log(id);
+   return this.http.put(`https://staysearchbackend.onrender.com/api/informational-page/${id}`, Data);
+
+  }  
+
+
+
+
 }

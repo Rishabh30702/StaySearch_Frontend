@@ -136,11 +136,8 @@
 
 
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-   <!-- Spinner -->
-     <div *ngIf="loading" class="spinner-container">
-     <div class="spinner"></div>
-     </div>
-  <div *ngIf="!loading" class="carousel-inner">
+  
+  <div class="carousel-inner">
     <div 
       class="carousel-item" 
       *ngFor="let slide of slides; let i = index" 
@@ -315,7 +312,11 @@
 </div>
 
 <!-- Happening in Uttar Pradesh Section -->
-<div class="happening-container mt-4 pt-4">
+  <!-- Spinner -->
+     <div *ngIf="loading" class="spinner-container">
+     <div class="spinner"></div>
+     </div>
+<div class="happening-container mt-4 pt-4" *ngIf="!loading">
     <h2 class="happening-h">{{'Happening In Uttar Pradesh' | translate}}</h2>
   
    <div class="events-wrapper">
@@ -329,7 +330,6 @@
       <img [src]="event.image" [alt]="event.altText">
       <div class="event-text">
         <h3 class="highlight">{{ event.title | translate }}</h3>
-        <h4 *ngIf="event.subtitle">{{ event.subtitle | translate }}</h4>
         <p class="happening-p">{{ event.description | translate }}</p>
       </div>
     </ng-container>
@@ -338,7 +338,6 @@
     <ng-container *ngIf="!event.imageFirst">
       <div class="event-text">
         <h3 class="highlight">{{ event.title | translate }}</h3>
-        <h4 *ngIf="event.subtitle">{{ event.subtitle | translate }}</h4>
         <p class="happening-p">{{ event.description | translate }}</p>
       </div>
       <img [src]="event.image" [alt]="event.altText">

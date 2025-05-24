@@ -346,25 +346,14 @@
               <!-- Phone Number -->
               <div class="form-group">
                 <label for="phoneInput">Phone Number</label>
-                <input type="tel" id="phoneInput" name="phone" ngModel #phoneInput="ngModel" required maxlength="10"
-                  pattern="^\d{10}$" placeholder="Enter 10-digit phone number" />
-                <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)"
-                  class="alert alert-danger error-message">
-                  <small *ngIf="phoneInput.errors?.['required']">Phone number is required!</small>
-                  <small *ngIf="phoneInput.errors?.['pattern']">Enter a valid 10-digit phone number.</small>
-                </div>
+                <input type="tel" id="phoneInput" name="phone" [(ngModel)]="phonenumber" disabled />
+                
               </div>
 
               <!-- Email -->
               <div class="form-group">
                 <label for="emailInput">Email</label>
-                <input type="email" id="emailInput" name="email" ngModel #emailInput="ngModel" required email
-                  placeholder="Enter your email" />
-                <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)"
-                  class="alert alert-danger error-message">
-                  <small *ngIf="emailInput.errors?.['required']">Email is required!</small>
-                  <small *ngIf="emailInput.errors?.['email']">Please enter a valid email address.</small>
-                </div>
+                <input type="email" id="emailInput" name="email" [(ngModel)]="username" disabled />
               </div>
             </fieldset>
 
@@ -399,16 +388,16 @@
 
       <div class="space-y-6">
        <!-- Email Display -->
-<div class="enhanced-field animate-field">
+<div class="enhanced-field animate-field" style="margin-bottom: 5px;">
   <label class="field-label">Email</label>
   <div class="field-display">
-    {{ "" }}
+    {{ username }}
   </div>
 </div>
 
 <!-- Card Element -->
-<div class="enhanced-field animate-field">
-  <label class="field-label">Add a payment method</label>
+<div class="enhanced-field animate-field"  style="margin-bottom: 5px;">
+  <label class="field-label">Pay Via Card</label>
   <div id="card-element" class="field-input"></div>
   <div id="card-errors" role="alert" class="field-error">
     {{ cardErrors }}
@@ -416,7 +405,7 @@
 </div>
 
 <!-- Country Select -->
-<div class="enhanced-field animate-field">
+<div class="enhanced-field animate-field" style="margin-bottom: 5px;">
   <label class="field-label">Country or region</label>
   <select class="field-select" aria-label="Country or region">
     <option>India</option>
@@ -647,7 +636,7 @@
       <div *ngIf="selectedMenu === 'profile'" class="fade-in">
         <div class="profile-container">
           <h2 class="profile-title">Profile Settings</h2>
-          <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+          <form  #profileForm="ngForm">
 
             <div class="form-group2">
               <label for="fullName">Full Name</label>
@@ -656,7 +645,7 @@
 
             <div class="form-group2">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" [(ngModel)]="userprofile.email" required />
+              <input type="email" id="email" name="email" [(ngModel)]="userprofile.email" disabled  />
             </div>
 
             <div class="form-group2">
@@ -679,6 +668,11 @@
               <button class="secondary-btn" (click)="updateProfile()">Update Profile</button>
             </div>
           </form>
+          <div style="display: flex; justify-content: center; margin-top: 20px;">
+           <button (click)="logout()" style="margin-top: 20px; margin-left: 20px;  border-radius: 8px; color: white; background-color: red; padding: 8px 16px; border: none;">
+             Log Out
+            </button>
+        </div>
         </div>
 
       </div>

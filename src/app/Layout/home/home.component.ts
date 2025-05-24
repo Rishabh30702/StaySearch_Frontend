@@ -189,19 +189,17 @@ export class HomeComponent implements OnInit {
   // happenig in UP
   events = [
     {
-      title: 'Kumbh Mela 2025',
-      subtitle: 'Prayagraj Maha Kumbh Mela 2025',
-      description: 'Prayagraj holds a sacred significance as the confluence point..... of the Ganga, Yamuna, and Saraswati rivers, making it one of the pivotal destinations during the upcoming Maha Kumbh Mela in 2025. This historic city in the state of Uttar Pradesh is a veritable treasure trove for Hindu pilgrims and history enthusiasts alike. It offers a rich tapestry of ancient temples, monuments, and various tourist attractions. At the heart of Prayagraj lies the revered Triveni Sangam, where the three holy rivers meet, an absolute must-visit for anyone attending the Maha Kumbh Mela in 2025.',
-      image: 'kumb.jpg',
+      title: '',
+      description: '',
+      image: '',
       altText: 'Kumbh Mela',
       className: 'kumbh-mela',
       imageFirst: true
     },
     {
-      title: 'Braj Ki Holi',
-      subtitle: '',
-      description: 'The festival of color and joy is so much more in the land of Krishna! Holi at the auspicious “Braj Bhoomi” is outright divine and mesmerizing! Holi is essentially a festival of colors celebrated in different parts of India and here in Vrindavan, Uttar Pradesh, it hits a different level of enthusiasm!',
-      image: 'holi.jpg',
+      title: '',
+      description: '',
+      image: '',
       altText: 'Braj Ki Holi',
       className: 'braj-holi',
       imageFirst: false
@@ -292,6 +290,7 @@ export class HomeComponent implements OnInit {
     this.showFeedbacks();
     this.getAllOffers();
     this.getBannerContent();
+    this.getInfoContent();
   }
 
   generateStars() {
@@ -429,6 +428,7 @@ getAllOffers(){
 
 
   getBannerContent(){
+    this.isLoading = true;
     this.adminService.getContent().subscribe(
       {
 
@@ -440,11 +440,41 @@ getAllOffers(){
                alt: index == 0? 'First Slide' : 'Second Slide',
                icon: 'MDI.png' 
                   }));
+                  this.isLoading = false;
          console.log("banner content ",banners)
         
         }
       ,
-      error: (err) => console.error('Failed to load banners:', err)
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Failed to load banners:', err)}
+
+      }
+    )
+  }
+
+
+
+
+  getInfoContent(){
+    this.adminService.getInfopage().subscribe(
+      {
+
+         next: (res) => {
+            //  for now only 2nd and 3rd item is shown
+               this.events = res.slice(0, 2).map((item: any, index: number) => ({
+               title: item.title,
+               image: item.imageUrl,
+               description: item.content,
+               altText: item.title,
+               classname: index == 0? 'kumbh-mela' : 'braj-holi',
+               imageFirst: index == 0? true : false
+                  }));
+         console.log("info content ",res)
+        
+        }
+      ,
+      error: (err) => console.error('Failed to load Info page:', err)
 
       }
     )

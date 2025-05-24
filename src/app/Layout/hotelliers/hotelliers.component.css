@@ -1600,3 +1600,150 @@ color: #761461;
   outline: none;
 }
 
+
+
+@media screen and (max-width: 480px) {
+  /* General Reset */
+  * {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
+  body {
+    overflow-x: hidden !important;
+  }
+
+  /* Main Containers */
+  .hotels-section,
+  .main-hotel-container,
+  .hotel-wrapper,
+  .form-group,
+  .form-control,
+  .upload-section,
+  .image-upload,
+  .map-container {
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 10px !important;
+    display: block;
+    overflow: hidden;
+  }
+
+  /* Hotel Cards */
+  .hotel-card,
+  .hotel-item,
+  .hotel-info {
+    width: 100% !important;
+    display: block;
+    margin-bottom: 1rem;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+
+  /* Feedback Section (important fix) */
+  .reviews-section,
+  .feedback-section,
+  .reviews-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 1rem !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Edit Button */
+  .edit-btn {
+    display: inline-block !important;
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.9rem !important;
+    margin-top: 0.4rem;
+    border-radius: 6px;
+  }
+
+  /* ✅ Scrollable Table */
+  .hotels-table-wrapper {
+    overflow-x: auto !important;
+    width: 100% !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hotels-table {
+    width: 100% !important;
+    border-collapse: collapse;
+    min-width: 600px; /* enables scrolling */
+  }
+
+  .hotels-table th,
+  .hotels-table td {
+    font-size: 0.9rem !important;
+    padding: 0.4rem !important;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  /* Rating */
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+  }
+
+  .star-icon {
+    color: gold;
+    font-size: 1rem;
+  }
+
+  /* Table Header */
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+    padding: 0 10px;
+  }
+
+  /* Search Input */
+  .search-location-container {
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    gap: 0.5rem;
+  }
+
+  .search-location-icon {
+    font-size: 18px;
+    max-width: 24px;
+    margin-right: 4px;
+  }
+
+  .search-location-wrapper {
+    flex: 1 1 0;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .search-location-wrapper input[type="text"],
+  .search-location-container input[type="text"] {
+    width: 100% !important;
+    padding: 8px !important;
+    font-size: 14px !important;
+    text-overflow: ellipsis;
+  }
+
+  /* File Inputs */
+  input[type="file"] {
+    width: 100% !important;
+    font-size: 14px;
+  }
+
+  /* Add Property Button */
+  .add-property-btn {
+    width: 100% !important;
+    padding: 0.6rem !important;
+    font-size: 1rem;
+  }
+}
