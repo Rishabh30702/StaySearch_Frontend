@@ -10,7 +10,7 @@
       </div>
 
       <form>
-        <input type="text" [(ngModel)]="loginUsername" name="loginUsername" placeholder="Username">
+        <input type="text" [(ngModel)]="loginUsername" name="loginUsername" placeholder="Email">
         <div style="position: relative;
         display: flex;
         align-items: center;">
@@ -61,7 +61,7 @@
 
   <form #signupForm="ngForm">
     <input type="text" [(ngModel)]="signupUsername" name="signupUsername" required placeholder="Email Address">
-    <input type="email" [(ngModel)]="signupEmail" name="signupEmail" required placeholder="Username">
+    <input type="email" [(ngModel)]="signupEmail" name="signupEmail" required placeholder="Name">
     <input type="password" [(ngModel)]="signupPassword" name="signupPassword" required placeholder="Password">
     <input type="password" [(ngModel)]="signupRepeatPassword" name="signupRepeatPassword" required placeholder="Repeat Password">
     <input type="tel" [(ngModel)]="signupContact" name="signupContact" required pattern="[0-9]{10}" maxlength="10" placeholder="Contact number">

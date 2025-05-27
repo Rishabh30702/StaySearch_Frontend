@@ -9,6 +9,7 @@ import { FeedbackService } from '../../../Layout/hotelliers/feedback.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HotelsService } from '../../../Layout/hotelliers/services/hotels.service';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class AdminHomeComponent implements OnInit {
 
 
   // security and access controls
-
+statusFilter: string = 'pending'; 
 
   auditLogs = [
     { timestamp: '2025-04-18 10:23', user: 'Alice', action: 'Login', details: 'Successful login' },
@@ -73,6 +74,9 @@ pendingOffers: any[] = [];
 
   removedOfferId: number | null = null;
 
+  totalUsers: number = 0;
+totalFeedbacks: number = 0;
+pendingHoteliersCount: number = 0;
   
 
   showNotificationDropdown = false;
@@ -117,7 +121,8 @@ pendingOffers: any[] = [];
     private authService: AuthService,
     private adminService: AdminService,
     private feedbackService: FeedbackService,
-    private HotelsService:HotelsService
+    private HotelsService:HotelsService,
+    private router: Router
    
   ) {
     this.updateUnreadCount();
@@ -237,6 +242,7 @@ pendingOffers: any[] = [];
         this.filterHotelierGroups();
         this.updateDataFromUsers(); //added to the table
         this.showPendingToast();
+        this.totalUsers = this.users.length;
         this.isLoading = false;
       },
       error: (err) => {
@@ -269,6 +275,8 @@ pendingOffers: any[] = [];
     this.approvedHoteliers = allHoteliers.filter(user => user.status === 'APPROVED');
     this.pendingHoteliers = allHoteliers.filter(user => user.status === 'PENDING');
     this.rejectedHoteliers = allHoteliers.filter(user => user.status === 'REJECTED');
+
+    this.pendingHoteliersCount = this.pendingHoteliers.length;
   }
 
 
@@ -548,6 +556,7 @@ fetchComments(): void {
         text: item.description || 'No comments provided.',
         status: item.status
       }));
+      this.totalFeedbacks = this.comments.length;
     },
     error: (err) => {
       console.error('Error fetching comments:', err);
@@ -557,9 +566,21 @@ fetchComments(): void {
 
 // Filter comments based on search term
 filteredComments() {
-  return this.comments.filter(c =>
-    c.text.toLowerCase().includes(this.commentSearchTerm.toLowerCase())
-  );
+
+    return this.comments.filter(comment => {
+    const matchesStatus =
+      !this.statusFilter || this.statusFilter === 'all'
+        ? true
+        : comment.status.toLowerCase() === this.statusFilter.toLowerCase();
+
+    const matchesSearch =
+      !this.commentSearchTerm
+        ? true
+        : comment.text.toLowerCase().includes(this.commentSearchTerm.toLowerCase());
+
+    return matchesStatus && matchesSearch;
+  });
+  
 }
 
 // Approve comment
@@ -940,6 +961,28 @@ filterPendingOffers() {
       }
     );
   }
+
+
+
+   logout() {
+    
+      Swal.fire({
+        title: 'You are about to sign out!',
+        text: 'Do you want to clear your session?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I know',
+        cancelButtonText: 'Stay',
+      
+      }).then(result => {
+        if (result.isConfirmed) {
+          localStorage.removeItem('token');
+          this.router.navigate(['/adminAccess']);
+        }
+      });
+  
+     
+    }
 
 
 

@@ -33,6 +33,10 @@ export class HotelliersComponent implements OnInit,OnDestroy {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
   }*/
+ @HostListener('window:resize', ['$event'])
+onResize(event: any) {
+  this.isSidebarCollapsed = event.target.innerWidth <= 768;
+}
 
   latitude: number = 0;
   longitude: number = 0;
@@ -43,17 +47,11 @@ export class HotelliersComponent implements OnInit,OnDestroy {
    minDateTime: string ="";
 maxDateTime: string="";
  updateHotelDataid =0;
- updateHotelData = {
-  name:"",
-  location:"",
-  rating:"",
-  amenities: [],
-  id:"",
- }
+
 
 isLoading: boolean = false;
 isDeal = false;
-updateHotel = { name: '', address: '', amenities: '' };
+updateHotel = { name: '', address: '', Description: '' };
 
 isEditModalOpen =false;
 
@@ -103,7 +101,8 @@ hotels = [
     location: 'Agra, Uttar Pradesh',
     rating: 4.8,
     amenities: ['Wi-Fi', 'Pool', 'AC'],
-    id:0
+    id:0,
+     
   },
 ];
 
@@ -483,6 +482,7 @@ formatDateTimeLocal(date: Date): string {
 }
 
    async ngOnInit() {
+     this.isSidebarCollapsed = window.innerWidth <= 768;
      this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ');
 
     this.checkHotelsData();
@@ -546,6 +546,7 @@ formatDateTimeLocal(date: Date): string {
       });
     }
 
+  
   }
 
 
@@ -700,25 +701,7 @@ formatDateTimeLocal(date: Date): string {
     this.showDropdown = !this.showDropdown;
   }
 
-  logout() {
-  
-    Swal.fire({
-      title: 'You are about to sign out!',
-      text: 'Do you want to clear your session?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, I know',
-      cancelButtonText: 'Stay',
-    
-    }).then(result => {
-      if (result.isConfirmed) {
-        localStorage.removeItem('token');
-        this.router.navigate(['/adminAccess']);
-      }
-    });
-
-   
-  }
+ 
 
   toggleDealForm() {
     this.showDealForm = !this.showDealForm;
@@ -1089,11 +1072,9 @@ onFileSelected(event: Event) {
   editHotel(hotel: any): void {
 
  this.updateHotelDataid = hotel.id;
-  this.updateHotelData.name = hotel.name;
-  this.updateHotelData.location = hotel.location;
-  this.updateHotelData.amenities = hotel.amenities;
-  this.updateHotelData.rating = hotel.rating;
-  this.updateHotelData.id = hotel.id;
+ 
+
+ 
     this.isEditModalOpen = true;
     // Example: Navigate or open modal with hotel data
     console.log('Editing:', hotel);
@@ -1491,31 +1472,46 @@ closeEditModal() {
 
 saveHotel() {
   // TODO: Send `editHotel` data to backend or update in list
-  console.log('Saved hotel:', this.editHotel);
+ //console.log('Saved hotel:', this.editHotel);
 
-/*
+
+  if(this.updateHotel.name && this.updateHotel.address && this.updateHotel.Description){
+      this.isLoading = true;
   const updateHotelData =
   {
     name: this.updateHotel.name, // updated name for now
-    location:  this.updateHotelData.location,
-    amenities:  this.updateHotelData.amenities,
-    rating: this.updateHotelData.rating,
-    id: this.updateHotelData.id
+    address:  this.updateHotel.address,
+    description: this.updateHotel.Description,
+   
   }
-  
+
+
+  console.log("Data ready to send",updateHotelData);
+   
     this.hotelsService.updateHotel(this.updateHotelDataid.toString(), updateHotelData).subscribe({
       next: response => {
         console.log('Hotel updated:', response);
-         this.updateHotelData.id
+        this.isLoading = false;
+        this.isEditModalOpen = false;
+         alert("Hotel details Updated Successfully");
       },
       error: err => {
         console.error('Error updating hotel:', err);
+         alert("Error while updating hotel");
+        this.isLoading = false;
+        this.isEditModalOpen = false;
       }
     });
   
-*/
 
+}
+
+else{
+  alert("Please provide all values");
   this.closeEditModal();
+}
+
+  
 }
 
 //  checkHotelsData(){
@@ -1581,12 +1577,15 @@ checkHotelsData() {
         this.isLoading = false;
         
       } else {
+        console.log(data);
         this.hotels = data.map((hotel: any) => ({
           name: hotel.name || 'Unnamed Hotel',
           location: hotel.address || 'Unknown Location',
           rating: hotel.rating || 0,
           amenities: hotel.amenities || [],
-          id: hotel.hotelId || 0
+          id: hotel.hotelId || 0,
+         
+
         }));
         this.currentHotelId = this.hotels[0].id;
         this.isLoading = false;
@@ -1827,5 +1826,29 @@ getUserProfile()
             });
 
 }
+
+
+ logout() {
+  
+    Swal.fire({
+      title: 'You are about to sign out!',
+      text: 'Do you want to clear your session?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, I know',
+      cancelButtonText: 'Stay',
+    
+    }).then(result => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token');
+        this.router.navigate(['/adminAccess']);
+      }
+    });
+
+   
+  }
+
+
+
   
 }

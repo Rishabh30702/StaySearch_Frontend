@@ -1036,7 +1036,6 @@ select:required:invalid:focus {
   background: #fff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   border-radius: 12px;
-  overflow: hidden;
   animation: fadeIn 0.6s ease-in-out;
 }
 
@@ -1628,19 +1627,45 @@ color: #761461;
 }
 
 
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* for smooth scrolling on iOS */
+}
+
 
 
 
 
 @media screen and (max-width: 768px) {
-  /* General Reset */
-  * {
-    box-sizing: border-box !important;
-    max-width: 100% !important;
+
+
+
+.feedback-wrapper {
+    padding: 16px;
   }
 
-  body {
-    overflow-x: hidden !important;
+  .feedbacks {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .feedback-card {
+    padding: 14px;
+  }
+
+  .amenity-tag {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+ 
+
+ 
+  /* General Reset */
+ .sidebar {
+  width: 160px;
+  padding: 2px;
+ 
   }
 
   /* Main Containers */
@@ -1670,6 +1695,8 @@ color: #761461;
     white-space: normal;
   }
 
+
+    
   /* Feedback Section (important fix) */
   .reviews-section,
   .feedback-section,
@@ -1693,24 +1720,20 @@ color: #761461;
     border-radius: 6px;
   }
 
-  /* ✅ Scrollable Table */
-  .hotels-table-wrapper {
-    overflow-x: auto !important;
-    width: 100% !important;
-    -webkit-overflow-scrolling: touch;
-  }
+
 
   .hotels-table {
-    width: 100% !important;
+    width: 100px !important;
     border-collapse: collapse;
-    min-width: 600px; /* enables scrolling */
+    overflow-x: auto;
+    min-width: 600px;
   }
 
   .hotels-table th,
   .hotels-table td {
     font-size: 0.9rem !important;
     padding: 0.4rem !important;
-    white-space: normal;
+    white-space: nowrap;
     word-wrap: break-word;
   }
 
@@ -1776,4 +1799,8 @@ color: #761461;
     padding: 0.6rem !important;
     font-size: 1rem;
   }
+
+
+
+  
 }
