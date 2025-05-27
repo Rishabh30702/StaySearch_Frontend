@@ -72,7 +72,7 @@
         
       
         <!-- Profile Icon -->
-        <button class="btn btn-light">
+        <button (click)="logout()" class="btn btn-light">
           <i class="fas fa-user-circle fs-5"></i>
         </button>
       </div>
@@ -81,8 +81,37 @@
 
 <!-- DASHBOARD VIEW WITH STATUS CARDS -->
 <div *ngIf="activeView === 'dashboard'" class="dashboard-section container-fluid">
+  <div class="row my-4">
+  <div class="col-md-4 mb-3">
+    <div class="card text-white bg-primary h-100">
+      <div class="card-body">
+        <h5 class="card-title">Total Users</h5>
+        <p class="card-text fs-3">{{totalUsers}} </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="card text-white bg-success h-100">
+      <div class="card-body">
+        <h5 class="card-title">Total Feedbacks</h5>
+        <p class="card-text fs-3">{{ totalFeedbacks }} </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="card text-white bg-warning h-100">
+      <div class="card-body">
+        <h5 class="card-title">Hoteliers in Pending</h5>
+        <p class="card-text fs-3"> {{pendingHoteliersCount}} </p>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Manage Hoteliers</h2>
+
     <div class="dropdown">
       <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         Show: {{ selectedStatus | titlecase }}
@@ -95,9 +124,16 @@
     </div>
   </div>
 
+
+
   <!-- Pending Hoteliers -->
   <div *ngIf="selectedStatus === 'pending'" class="row">
+     <!-- Show message if no pending hoteliers -->
+  <div *ngIf="pendingHoteliers.length === 0" class="d-flex justify-content-center align-items-center" style="height: 200px;">
+    <div class="text-center text-muted fs-5">There are no hotelliers to approve.</div>
+  </div>
     <div class="col-md-4 mb-4" *ngFor="let user of pendingHoteliers">
+      
       <div class="card shadow-sm h-100">
         <div class="card-body">
           <h5 class="card-title text-warning fw-bold">{{ user.fullname }}</h5>
@@ -112,6 +148,9 @@
 
   <!-- Approved Hoteliers -->
   <div *ngIf="selectedStatus === 'approved'" class="row">
+    <div *ngIf="approvedHoteliers.length === 0" class="d-flex justify-content-center align-items-center" style="height: 200px;">
+    <div class="text-center text-muted fs-5">There are no approved Hotelliers</div>
+  </div>
     <div class="col-md-4 mb-4" *ngFor="let user of approvedHoteliers">
       <div class="card shadow-sm h-100">
         <div class="card-body">
@@ -125,6 +164,9 @@
 
   <!-- Rejected Hoteliers -->
   <div *ngIf="selectedStatus === 'rejected'" class="row">
+    <div *ngIf="rejectedHoteliers.length === 0" class="d-flex justify-content-center align-items-center" style="height: 200px;">
+    <div class="text-center text-muted fs-5">There are no rejected hotels</div>
+  </div>
     <div class="col-md-4 mb-4" *ngFor="let user of rejectedHoteliers">
       <div class="card shadow-sm h-100">
         <div class="card-body">
@@ -136,6 +178,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
 
@@ -506,6 +549,15 @@
         [(ngModel)]="commentSearchTerm"
         class="search-input"
       />
+
+       <div class="status-dropdown">
+    <label for="status">Status:</label>
+    <select id="status" [(ngModel)]="statusFilter">
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="all">All</option>
+    </select>
+  </div>
     
       <div class="scrollable-table">
         <table class="userstb" border="2" cellpadding="8" cellspacing="0">
@@ -569,7 +621,6 @@
               <select class="con" [(ngModel)]="content.type" name="contentType" required>
                 <option value="banner">Homepage Banner</option>
                 <option value="info">Informational Page</option>
-                <option value="promo">Promotional Material</option>
               </select>
             </div>
       <span 
@@ -620,7 +671,7 @@
       
         <hr />
       
-        <!-- 🕒 Content Scheduling Section -->
+        <!-- 🕒 Content Scheduling Section 
         <section class="content-scheduling-section">
           <h3>Schedule Content Change</h3>
           <form (ngSubmit)="scheduleContent()">
@@ -636,7 +687,7 @@
       
             <button type="submit" class="btn btn-success">Schedule</button>
           </form>
-        </section>
+        </section>  -->
 
    
 

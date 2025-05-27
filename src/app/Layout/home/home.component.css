@@ -75,35 +75,8 @@
   }
 }
 
-@media (max-width: 768px) {
-  .carousel {
-      height: 60vh; /* Reduce height for smaller devices */
-  }
 
-  .carousel-item {
-      height: 60vh;
-  }
 
-  .carousel-caption {
-      font-size: 3.5vw;
-      padding: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .carousel {
-      height: 50vh; /* Further reduce height for mobile screens */
-  }
-
-  .carousel-item {
-      height: 50vh;
-  }
-
-  .carousel-caption {
-      font-size: 4vw; /* Increase text size for better readability */
-      padding: 6px;
-  }
-}
 
 
   
@@ -736,6 +709,25 @@ h4.Find-Stay {
   
   /* Responsive Design */
   @media (max-width: 1024px) {
+      .hotels-container {
+        gap: 3%;
+        padding: 0 2%;
+    }
+
+    .hotel-card {
+        width: calc(55% - 25%);
+        height: auto;
+        padding-bottom: calc(100% / (25% - 3%));
+    }
+
+    .hotel-overlay {
+        font-size: 0.9rem;
+    }
+
+    .hotel-button {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
     .event {
       width: 100%; /* Full width for medium screens */
       gap: 20px;
@@ -1314,23 +1306,15 @@ margin-bottom: 30px;
 
 @media (max-width: 768px) {
   .carousel {
-    height: 60vh;
+    height: 40vh;
   }
 
   .carousel-item {
-    height: 60vh;
+    height: 40vh;
   }
-
-  .carousel-caption {
-    left: 0 !important;
-    right: 0 !important;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-    width: 100vw;
-    max-width: 100vw;
-    padding: 10px 5vw;
-    box-sizing: border-box;
+    .carousel-caption {
+    font-size: 1rem;
+    padding: 0.75rem;
   }
 
   .text-container {

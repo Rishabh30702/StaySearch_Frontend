@@ -38,7 +38,7 @@ export class HotelsService {
 
 
   updateHotel(hotelId: string, hotelData: any) {
-    return this.http.put(`https://staysearchbackend.onrender.com/v1/updateHotel/${hotelId}`, hotelData);
+    return this.http.patch(`https://staysearchbackend.onrender.com/v1/updateHotel/${hotelId}`, hotelData);
   }
 
     createOffer(data: any): Observable<any> {
