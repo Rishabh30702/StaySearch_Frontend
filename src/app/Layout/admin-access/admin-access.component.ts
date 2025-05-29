@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, NgModule, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthPortalService } from "./AuthPortal.service";
 import Swal from "sweetalert2";
 import { SpinnerComponent } from "../../Core/spinner/spinner.component";
@@ -17,8 +17,9 @@ import { AuthService } from "../../Core/Services/AuthService/services/auth.servi
   styleUrl: './admin-access.component.css'
 })
 export class AdminAccessComponent implements OnInit {
-  constructor(private router: Router, private hotelierService: AuthPortalService
+  constructor(private router: Router, private hotelierService: AuthPortalService,private route: ActivatedRoute
   ) {}
+  accessKey: string | null = null;
   ngOnInit(): void {
     
     history.pushState(null, '', location.href);
@@ -26,9 +27,23 @@ export class AdminAccessComponent implements OnInit {
       history.pushState(null, '', location.href);
     };
 
+
+ this.route.queryParamMap.subscribe(params => {
+      this.accessKey = params.get('key');
+
+    });
+    
+      if (this.accessKey == 'admin' ) {
+    this.selectedRole = 'admin';
+      }
+      if (this.accessKey == 'owner' ) {
+    this.selectedRole = 'owner';
+      }
+
+
   }
 
-  selectedRole: string = 'owner';
+  selectedRole: string = '';
 
   isLoading: boolean = false;
 

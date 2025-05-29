@@ -1304,37 +1304,44 @@ margin-bottom: 30px;
 
 
 
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
+    
   .carousel {
-    height: 40vh;
+    height: 60vh; 
   }
 
   .carousel-item {
-    height: 40vh;
+    height: 60vh; 
   }
-    .carousel-caption {
-    font-size: 1rem;
-    padding: 0.75rem;
-  }
+  
 
-  .text-container {
-    font-size: 6vw;
-    width: 100%;
+ .carousel-caption {
+    left: 0 !important;
+    right: 0 !important;
+    top: 50%;
+    transform: translateY(-50%);
     text-align: center;
-    margin: 0 auto;
-    padding: 0;
-    border: none;
-    white-space: normal;
-    word-wrap: break-word;
+    width: 90vw;
+    max-width: 90vw;
+    padding: 10px 5vw;
+    box-sizing: border-box;
+  
   }
+  .text-container{
+ font-size: 10px;
+ line-height: 1; 
+  }
+    
+
+  
 
   .profile-container {
-    margin: 5px;
+    margin: 5px; /* Slightly reduced margin */
   }
 
   .profile-btn {
     width: 32px;
-    height: 32px;
+    height: 32px; /* Smaller button for smaller screens */
   }
 
   .profile-icon {
@@ -1342,203 +1349,223 @@ margin-bottom: 30px;
     height: 100%;
   }
 
-  .search-filter-wrapper {
-    width: 85%;
-    bottom: -75%;
-  }
+    .search-filter-wrapper {
+        width: 85%;
+        bottom: -75%px;
+    }
+    .search-filter {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .search-filter > * {
+        min-width: 100px;
+    }
+    .search-filter .animated-input input {
+        min-width: 120px;
+    }
+    .search-filter .animated-button {
+        min-width: 90px;
+    }
 
-  .search-filter {
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 10px;
-    -webkit-overflow-scrolling: touch;
-  }
+    .offers-section {
+        margin: 15px 8px;
+        margin-top: 70px;
+    }
 
-  .search-filter > * {
-    min-width: 100px;
-  }
+    .text-container {
+        font-size: 40px;
+        padding-top: 30px;
+        border-right-width: 3px;
+    }
 
-  .search-filter .animated-input input {
-    min-width: 120px;
-  }
+    .offers-heading {
+        font-size: 26px;
+    }
+    .offers-grid {
+        grid-template-rows: repeat(1, 1fr);
+        gap: 15px;
+    }
+    .offer-card {
+        width: 240px;
+        padding: 15px;
+    }
+    .offer-title {
+        font-size: 16px;
+    }
+    .offer-description {
+        font-size: 13px;
+    }
 
-  .search-filter .animated-button {
-    min-width: 90px;
-  }
+    .background-wrapper {
+        padding: 30px 5%;
+    }
+    .image-container {
+        flex-direction: column;
+        gap: 25px;
+    }
+    .image-box {
+        width: 70vw;
+        height: 50vw;
+        max-width: 320px;
+        max-height: 250px;
+    }
+    .place-name {
+        font-size: 1rem;
+    }
+    .explore-text {
+        font-size: 0.9rem;
+    }
 
-  .offers-section {
-    margin: 20px 10px;
-    margin-top: 80px;
-  }
+    .third-row {
+        padding: 40px 0;
+    }
+    .explore-btn {
+        padding: 14px 28px;
+        font-size: 1.1rem;
+    }
 
-  .offers-heading {
-    font-size: 26px;
-  }
+    .hotels-container {
+        gap: 15px;
+    }
+    .hotel-card {
+        width: calc(50% - 10px);
+        max-width: none;
+        height: 200px;
+        margin-bottom: 15px;
+    }
+    .hotel-button {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
 
-  .offers-grid {
-    grid-template-rows: repeat(1, 1fr);
-    gap: 15px;
-  }
+    .stay-tuned {
+        padding: 25px 0;
+    }
+    .view-hotels-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
 
-  .offer-card {
-    width: 240px;
-    padding: 15px;
-  }
+    .happening-container h2 {
+        font-size: 24px;
+    }
+    .event {
+        flex-direction: column;
+        width: 95%;
+        gap: 20px;
+    }
+    .event.braj-holi {
+        flex-direction: column;
+    }
+    .event img {
+        width: 100%;
+        max-width: 350px;
+        height: auto;
+    }
+    .event-text {
+        width: 100%;
+        text-align: center;
+        max-width: 100%;
+    }
+    h3.highlight {
+        font-size: 20px;
+    }
+    .happening-p {
+        font-size: 15px;
+    }
 
-  .offer-title {
-    font-size: 16px;
-  }
+    .explore-up {
+        padding: 30px 5%;
+    }
+    .explore-header {
+        font-size: 1.8rem;
+    }
+    .explore-card {
+        flex-direction: column;
+    }
+    .explore-card.reverse {
+        flex-direction: column;
+    }
+    .explore-image-container {
+        width: 100%;
+        height: 200px;
+    }
+    .explore-content {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+        padding: 20px;
+    }
+    .explore-button {
+        align-self: center;
+        font-size: 0.9rem;
+        padding: 10px 20px;
+    }
 
-  .offer-description {
-    font-size: 13px;
-  }
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+    .nav-item .nav-link {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+    .language-toggle {
+        margin-left: 10px;
+    }
+    .input-container {
+        width: 100px;
+        height: 32px;
+        font-size: 13px;
+    }
+    .auth-container button {
+        padding: 7px 14px;
+        font-size: 13px;
+    }
+    .navbar-collapse .language-toggle,
+    .navbar-collapse .auth-container {
+        margin-left: 0;
+        margin-top: 10px;
+        width: auto;
+    }
+     .navbar-collapse .auth-container button {
+        width: 100%;
+        text-align: center;
+    }
+     .navbar-collapse .language-toggle .input-container {
+        width: 100%;
+        justify-content: center;
+    }
 
-  .background-wrapper {
-    padding: 30px 5%;
-  }
-
-  .image-container {
-    flex-direction: column;
-    gap: 25px;
-  }
-
-  .image-box {
-    width: 70vw;
-    height: 50vw;
-    max-width: 320px;
-    max-height: 250px;
-  }
-
-  .place-name {
-    font-size: 1rem;
-  }
-
-  .explore-text {
-    font-size: 0.9rem;
-  }
-
-  .third-row {
-    padding: 40px 0;
-  }
-
-  .explore-btn {
-    padding: 14px 28px;
-    font-size: 1.1rem;
-  }
-
-  .hotels-container {
-    gap: 15px;
-  }
-
-  .hotel-card {
-    width: calc(50% - 10px);
-    max-width: none;
-    height: 200px;
-    margin-bottom: 15px;
-  }
-
-  .hotel-button {
-    font-size: 0.8rem;
-    padding: 6px 12px;
-  }
-
-  .stay-tuned {
-    padding: 25px 0;
-  }
-
-  .view-hotels-btn {
-    padding: 12px 25px;
-    font-size: 1rem;
-  }
-
-  .happening-container h2 {
-    font-size: 24px;
-  }
-
-  .event {
-    flex-direction: column;
-    width: 95%;
-    gap: 20px;
-  }
-
-  .event.braj-holi {
-    flex-direction: column;
-  }
-
-  .event img {
-    width: 100%;
-    max-width: 350px;
-    height: auto;
-  }
-
-  .event-text {
-    width: 100%;
-    text-align: center;
-    max-width: 100%;
-  }
-
-  h3.highlight {
-    font-size: 20px;
-  }
-
-  .happening-p {
-    font-size: 15px;
-  }
-
-  .explore-up {
-    padding: 30px 5%;
-  }
-
-  .explore-header {
-    font-size: 1.8rem;
-  }
-
-  .explore-card {
-    flex-direction: column;
-  }
-
-  .explore-card.reverse {
-    flex-direction: column;
-  }
-
-  .explore-image-container {
-    width: 100%;
-    height: 200px;
-  }
-
-  .explore-content {
-    width: 100%;
-    text-align: center;
-    align-items: center;
-    padding: 20px;
-  }
-
-  .explore-button {
-    align-self: center;
-    font-size: 0.9rem;
-    padding: 10px 20px;
-  }
-
-  .navbar-brand {
-    font-size: 1.3rem;
-  }
-
-  .nav-item .nav-link {
-    font-size: 0.9rem;
-    padding: 8px 10px;
-  }
-
-  .language-toggle {
-    margin-left: 10px;
-  }
-
-  .input-container {
-    width: 100px;
-    height: 32px;
-    font-size: 13px;
-  }
-
-  .auth-container {
+    h5.heading {
+        font-size: 24px;
+    }
+    .Feedback-container {
+        margin-left: 10px;
+        margin-right: 10px;
+        gap: 15px;
+    }
+    .feedback-card {
+        width: 260px;
+        padding: 15px;
+    }
+    .feedback-title {
+        font-size: 18px;
+    }
+    .scroll-btn {
+        padding: 8px;
+        font-size: 18px;
+    }
+    .scroll-btn.left {
+        left: -2px;
+        margin-left: 10px;
+    }
+    .scroll-btn.right {
+        right: -10px;
+        margin-right: 10px
+    }
+.auth-container {
     flex-direction: column;
     align-items: flex-start;
     margin-left: 2vw;
@@ -1549,55 +1576,12 @@ margin-bottom: 30px;
     font-size: 12px;
     padding: 6px 12px;
     margin-top: 5px;
-    width: 100%;
+    width: 100%; /* Optional: make buttons full-width */
   }
+h5.heading {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
 
-  .navbar-collapse .language-toggle,
-  .navbar-collapse .auth-container {
-    margin-left: 0;
-    margin-top: 10px;
-    width: auto;
-  }
 
-  .navbar-collapse .auth-container button {
-    width: 100%;
-    text-align: center;
   }
-
-  .navbar-collapse .language-toggle .input-container {
-    width: 100%;
-    justify-content: center;
-  }
-
-  h5.heading {
-    font-size: 24px;
-  }
-
-  .Feedback-container {
-    margin-left: 10px;
-    margin-right: 10px;
-    gap: 15px;
-  }
-
-  .feedback-card {
-    width: 260px;
-    padding: 15px;
-  }
-
-  .feedback-title {
-    font-size: 18px;
-  }
-
-  .scroll-btn {
-    padding: 8px;
-    font-size: 18px;
-  }
-
-  .scroll-btn.left {
-    left: -5px;
-  }
-
-  .scroll-btn.right {
-    right: -5px;
-  }
-}
