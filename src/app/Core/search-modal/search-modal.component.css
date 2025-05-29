@@ -417,49 +417,71 @@ input {
     user-select: none;
   }
   
-  
-@media (max-width: 768px) {
+ @media (max-width: 768px) {
 
 
     .modal-overlay{
         
       top: 50px;
       left:5px;
+      
         height: 500px;
-        width: 395px;
+        width: 360px;
     }
    
     .modal-content {
         padding: 0px;
        width: 100%;
-       height: 580px;
+       height: 450px;
       }
 .cont{
-    width: 100%;
-    height: 500px;
+    position: relative;
+        width: 100%;
+        height: 500px;
+        overflow-y:hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
 
 }
 .form{
-    width: 200px;
+    width: 100%;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    transition: transform 0.6s ease-in-out;
     
 }
 .img{
-    width: 120px;
+   width: 110px;
+        margin-bottom: 15px;
 
 }
 form button.submit {
-   width: 200px;
+        width: 50%;
+        padding: 10px;
+        font-size: 16px;
+         margin-bottom: 2px;
+         margin-top: 10px;
+         margin-left: 30px;
+
   }
 
   form input {
     width: 75%;
+    padding: 5px;
+    font-size: 14px;
   }
 
   
 .sub-cont{
  left: 260px;
  padding-left: 70px;
- width: 300px;
+ width: 250px;
 
 
 

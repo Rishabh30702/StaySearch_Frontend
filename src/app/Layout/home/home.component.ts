@@ -317,7 +317,7 @@ export class HomeComponent implements OnInit {
         // Sort feedback from newest to oldest based on createdAt timestamp
         this.feedbackList = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   
-        console.log('Sorted Feedback Data:', this.feedbackList);
+        // console.log('Sorted Feedback Data:', this.feedbackList);
       },
       (error) => {
         console.error('Error fetching feedback:', error);
@@ -416,8 +416,25 @@ export class HomeComponent implements OnInit {
 getAllOffers(){
   this.HotelsService.getOffers().subscribe({
       next: (res) => {
-       this.offers = res.map((offer: any) => ({ ...offer }));
-      console.log("Offers data", this.offers)
+
+        //filtering on the basis of most recent first -> higher discount
+        
+   this.offers = res
+  .map((offer: any) => ({ ...offer }))
+  .sort((a: { validFrom: string, description: string }, b: { validFrom: string, description: string }) => {
+    const dateA = new Date(a.validFrom).getTime();
+    const dateB = new Date(b.validFrom).getTime();
+
+    if (dateA !== dateB) {
+      return dateB - dateA; // Newest first
+    }
+
+    const descA = parseFloat(a.description);
+    const descB = parseFloat(b.description);
+
+    return descB - descA; // Higher description value first
+  });
+      // console.log("Offers data", this.offers)
        
       },
       error: (err) => {
@@ -441,7 +458,7 @@ getAllOffers(){
                icon: 'MDI.png' 
                   }));
                   this.isLoading = false;
-         console.log("banner content ",banners)
+        //  console.log("banner content ",banners)
         
         }
       ,
@@ -470,7 +487,7 @@ getAllOffers(){
                classname: index == 0? 'kumbh-mela' : 'braj-holi',
                imageFirst: index == 0? true : false
                   }));
-         console.log("info content ",res)
+        //  console.log("info content ",res)
         
         }
       ,

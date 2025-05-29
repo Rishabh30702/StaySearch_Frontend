@@ -10,6 +10,7 @@ import { AdminHomeComponent } from './admin-panel/Layout/admin-home/admin-home.c
 import { HotelliersComponent } from './Layout/hotelliers/hotelliers.component';
 import { ChairmanMessageComponent } from './Layout/chairman-message/chairman-message.component';
 import { MdMessageComponent } from './Layout/md-message/md-message.component';
+import { adminAccessGuard } from './Layout/admin-access/guards/admin-access.guard';
 
 
 export const routes: Routes = [
@@ -47,7 +48,8 @@ export const routes: Routes = [
     {
         path: 'adminAccess', 
         component: AdminAccessComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+         canActivate: [adminAccessGuard]
     },
     {
         path: 'adminAccess/adminPanel', 

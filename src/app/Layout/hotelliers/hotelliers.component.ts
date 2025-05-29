@@ -46,6 +46,7 @@ onResize(event: any) {
 
    minDateTime: string ="";
 maxDateTime: string="";
+minDateTime2: string = "";
  updateHotelDataid =0;
 
 
@@ -517,7 +518,23 @@ formatDateTimeLocal(date: Date): string {
   }
   
  this.minDateTime = this.formatDateTimeLocal(new Date());
-  this.maxDateTime = this.formatDateTimeLocal(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
+
+
+const now = new Date();
+
+// Get tomorrow (1 day ahead of now)
+const tomorrow = new Date(now);
+tomorrow.setDate(now.getDate() + 1);
+
+// Get future date (20 days ahead of now)
+const futureDate = new Date(now);
+futureDate.setDate(now.getDate() + 20);
+
+// Format for input[type="datetime-local"]
+this.minDateTime2 = this.formatDateTimeLocal(tomorrow);
+this.maxDateTime = this.formatDateTimeLocal(futureDate);
+
+  
 
     if (this.stripe) {
       const elements = this.stripe.elements();
@@ -1841,7 +1858,11 @@ getUserProfile()
     }).then(result => {
       if (result.isConfirmed) {
         localStorage.removeItem('token');
-        this.router.navigate(['/adminAccess']);
+        this.router.navigate(['/adminAccess'],
+          {
+  queryParams: { key: 'owner' } }
+          
+        );
       }
     });
 

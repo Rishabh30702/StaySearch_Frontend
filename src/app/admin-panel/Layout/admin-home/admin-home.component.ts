@@ -132,8 +132,9 @@ pendingHoteliersCount: number = 0;
     this.fetchUsers();
     this.fetchComments();
     this.getAllOffers();
-    console.log("Content ID",this.contentUpdateid);
-     
+    // console.log("Content ID",this.contentUpdateid);
+    
+  
   }
 
   toggleGroup(group: string): void {
@@ -977,7 +978,10 @@ filterPendingOffers() {
       }).then(result => {
         if (result.isConfirmed) {
           localStorage.removeItem('token');
-          this.router.navigate(['/adminAccess']);
+          this.router.navigate(['/adminAccess'],
+             {
+  queryParams: { key: 'admin' } }
+          );
         }
       });
   
