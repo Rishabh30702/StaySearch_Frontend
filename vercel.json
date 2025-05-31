@@ -1,7 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ],
+  "version": 2,
   "builds": [
     {
       "src": "angular.json",
@@ -9,6 +7,12 @@
       "config": {
         "distDir": "dist/stay-search-frontend"
       }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
