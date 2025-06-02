@@ -450,6 +450,34 @@
   </div>
 </div>
 
+<!-- HDFC payment gateway -->
+<div *ngIf="showHdfcModal" class="modal-backdrop">
+  <div class="modal-content">
+    <h2>Pay with HDFC</h2>
+    <form #hdfcForm="ngForm">
+
+      <label>Order ID:</label>
+      <input type="text" name="orderId"   [(ngModel)]="hdfcPaymentData.orderId"
+  [disabled]="true" />
+
+      <label>Amount:</label>
+      <input type="number" name="amount" [(ngModel)]="hdfcPaymentData.amount" required />
+
+      <label>Name:</label>
+      <input type="text" name="customerName" [(ngModel)]="hdfcPaymentData.customerName" required />
+
+      <label>Email:</label>
+      <input type="email" name="customerEmail" [(ngModel)]="username" [disabled]="true" />
+
+      <label>Phone:</label>
+      <input type="tel" name="customerPhone" [(ngModel)]="phonenumber" [disabled]="true" />
+
+      <button type="submit" class="pay-button" [disabled]="hdfcForm.invalid" (click)="openHdfcPayment()">Pay Now</button>
+      <button type="button" class="close-button" (click)="showHdfcModal = false">Cancel</button>
+    </form>
+  </div>
+</div>
+
 
             <div *ngIf="!propertyNgForm.valid" class="text-red-500 text-sm mt-2">
               Please fill out all required fields.

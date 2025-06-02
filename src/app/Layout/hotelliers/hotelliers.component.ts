@@ -225,6 +225,15 @@ currentHotelName:string="";
 
   activeGateway: string = '';
 
+  //FOR HDFC
+  @ViewChild('formRef') hdfcFormElement: ElementRef<HTMLFormElement> | undefined;
+hdfcOrderId: string = '';
+  hdfcAmount: number = 0;
+  hdfcCustomerName: string = '';
+  hdfcCustomerEmail: string = '';
+  hdfcCustomerPhone: number = 0;
+  showHdfcModal = false;
+
 
   async ngAfterViewInit() {
     this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ');
@@ -377,13 +386,20 @@ openStripeModal() {
       }
     }, 0);
   });
-  }else {
-  Swal.fire('HDFC is the active gateway', 'You cannot use Stripe at this time.', 'info');
+
+  }else if (this.activeGateway === 'HDFC') {
+    this.showHdfcModal = true;
+
+    // Wait for modal to render then submit form automatically
+    setTimeout(() => {
+      if (this.hdfcFormElement) {
+        this.hdfcFormElement.nativeElement.submit();
+      }
+    }, 100); // small delay for rendering
+  } else {
+    Swal.fire('No active payment gateway', 'Please contact admin.', 'warning');
   }
-
- 
 }
-
 
   closeStripeModal() {
     this.showStripeModal = false;
@@ -502,6 +518,7 @@ formatDateTimeLocal(date: Date): string {
       console.error('Failed to fetch active gateway', err);
     }
   });
+   this.generateRandomOrderId();
 
 
      this.isSidebarCollapsed = window.innerWidth <= 768;
@@ -586,6 +603,25 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
 
   
   }
+
+  generateRandomOrderId() {
+  // Timestamp in YYYYMMDDHHMMSS format (14 chars)
+  const now = new Date();
+  const timestamp = now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, '0') +
+    String(now.getDate()).padStart(2, '0') +
+    String(now.getHours()).padStart(2, '0') +
+    String(now.getMinutes()).padStart(2, '0') +
+    String(now.getSeconds()).padStart(2, '0');
+
+  // Random alphanumeric string of length 5
+  const randomStr = Math.random().toString(36).substring(2, 7).toUpperCase();
+
+  this.hdfcPaymentData.orderId = `ORD${timestamp}${randomStr}`; // length ~ 3 + 14 + 5 = 22 chars
+
+  // If you want exactly 20, trim last 2 chars:
+  this.hdfcPaymentData.orderId = this.hdfcPaymentData.orderId.substring(0, 20);
+}
 
 
   destroy(){
@@ -1906,5 +1942,59 @@ fetchActivePagteway(){
   });
 }
 
+hdfcPaymentData = {
+  orderId: '',
+  amount: 0,
+  customerName: '',
+  customerEmail: this.username,
+  customerPhone: this.phonenumber
+};
+
+openHdfcModal() {
+  // Fill data here (example, replace with your real data)
+  this.hdfcPaymentData = {
+    orderId: this.hdfcOrderId,
+    amount: this.hdfcAmount,
+    customerName: this.hdfcCustomerName,
+    customerEmail: this.hdfcPaymentData.customerEmail,
+    customerPhone: this.hdfcPaymentData.customerPhone
+  };
+  
+  this.showHdfcModal = true;
+}
+
+closeHdfcModal() {
+  this.showHdfcModal = false;
+}
+
+
+openHdfcPayment() {
+  const paymentData = {
+    orderId: this.hdfcOrderId,
+    amount: this.hdfcAmount,
+    customerName: this.hdfcCustomerName,
+    customerEmail: this.hdfcCustomerEmail,
+    customerPhone: this.hdfcCustomerPhone
+  };
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+ form.action = 'https://staysearchbackend.onrender.com/api/hdfc/pay';
+  form.target = '_blank';
+
+  for (const key in paymentData) {
+    if (paymentData.hasOwnProperty(key)) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = paymentData[key as keyof typeof paymentData].toString();
+      form.appendChild(input);
+    }
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+}
   
 }
