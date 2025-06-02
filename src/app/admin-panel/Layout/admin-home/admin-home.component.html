@@ -723,7 +723,34 @@
 
 
     </div>
-    <div *ngIf="activeView === 'configuration'">Configuration Settings</div>
+    <div *ngIf="activeView === 'configuration'">
+<div *ngIf="activeView === 'configuration'">
+  Configuration Settings
+  <div class="payment-cards-container">
+    <div
+      class="payment-card stripe-card"
+      [ngClass]="{ 'selected': selectedGateway === 'STRIPE' }"
+    >
+      <i class="fab fa-stripe payment-icon"></i>
+      <h3>Pay with Stripe</h3>
+      <p>Fast, secure, and reliable online payments.</p>
+      <button class="pay-button" (click)="updateStripe()">Select Stripe</button>
+    </div>
+
+    <div
+      class="payment-card hdfc-card"
+      [ngClass]="{ 'selected': selectedGateway === 'HDFC' }"
+    >
+      <i class="fas fa-university payment-icon"></i>
+      <h3>Pay with HDFC</h3>
+      <p>Trusted Indian bank payment gateway.</p>
+      <button class="pay-button" (click)="updateHdfc()">Select HDFC</button>
+    </div>
+  </div>
+</div>
+
+
+    </div>
 
   </main>
 </div>

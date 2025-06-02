@@ -222,6 +222,10 @@ currentHotelName:string="";
   cardErrors: string = '';
   elements!: StripeElements;
 
+
+  activeGateway: string = '';
+
+
   async ngAfterViewInit() {
     this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ');
 
@@ -342,9 +346,9 @@ currentHotelName:string="";
   }
 
 openStripeModal() {
-  this.showStripeModal = true;
-
-  // Use requestAnimationFrame + setTimeout to wait for DOM to render
+  if(this.activeGateway == 'STRIPE') {
+    this.showStripeModal = true;
+   // Use requestAnimationFrame + setTimeout to wait for DOM to render
   requestAnimationFrame(() => {
     setTimeout(() => {
       if (!this.stripe) return;
@@ -373,6 +377,11 @@ openStripeModal() {
       }
     }, 0);
   });
+  }else {
+  Swal.fire('HDFC is the active gateway', 'You cannot use Stripe at this time.', 'info');
+  }
+
+ 
 }
 
 
@@ -483,6 +492,18 @@ formatDateTimeLocal(date: Date): string {
 }
 
    async ngOnInit() {
+
+    this.http.get<{ ACTIVEGATEWAY: string }>('https://staysearchbackend.onrender.com/api/payment-gateway/active')
+  .subscribe({
+    next: (res) => {
+      this.activeGateway = res.ACTIVEGATEWAY;
+    },
+    error: (err) => {
+      console.error('Failed to fetch active gateway', err);
+    }
+  });
+
+
      this.isSidebarCollapsed = window.innerWidth <= 768;
      this.stripe = await loadStripe('pk_test_51RRWZeQfs77aMeK5diOhKL5RasIkVCsWwYzCnA9cvCi06WTBO8ncCh6adeTAdlqst7XVrvCBm3CQ01tSTFrYBWLu00EkFB1owQ');
 
@@ -679,6 +700,7 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
       }
     
       if (menu === 'hotels') {
+       this.fetchActivePagteway();
         setTimeout(() => {
           const container = document.getElementById('map');
           if (container) {
@@ -1869,7 +1891,20 @@ getUserProfile()
    
   }
 
-
+fetchActivePagteway(){
+  this.isLoading = true;
+   this.http.get<{ ACTIVEGATEWAY: string }>('https://staysearchbackend.onrender.com/api/payment-gateway/active')
+  .subscribe({
+    next: (res) => {
+      this.activeGateway = res.ACTIVEGATEWAY;
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Failed to fetch active gateway', err);
+      this.isLoading = false;
+    }
+  });
+}
 
   
 }
