@@ -10,6 +10,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { HotelsService } from '../../../Layout/hotelliers/services/hotels.service';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -32,6 +33,7 @@ export class AdminHomeComponent implements OnInit {
   activeView: string = 'dashboard';
 
   users: any[] = [];
+  selectedGateway: string = '';
 
 
   // security and access controls
@@ -122,7 +124,8 @@ pendingHoteliersCount: number = 0;
     private adminService: AdminService,
     private feedbackService: FeedbackService,
     private HotelsService:HotelsService,
-    private router: Router
+    private router: Router,
+    private http:HttpClient
    
   ) {
     this.updateUnreadCount();
@@ -133,6 +136,8 @@ pendingHoteliersCount: number = 0;
     this.fetchComments();
     this.getAllOffers();
     // console.log("Content ID",this.contentUpdateid);
+
+    this.getSelectedGateway();
     
   
   }
@@ -323,6 +328,10 @@ pendingHoteliersCount: number = 0;
     else if (view === 'hotels') {
       this.getHotels();
     }
+    else if (view === 'configuration') {
+      this.isLoading = true;
+    this.getSelectedGateway();
+  }
   }
 
   fetchPendingHoteliers(): void {
@@ -988,6 +997,60 @@ filterPendingOffers() {
      
     }
 
+   updateStripe() {
+    this.isLoading = true;
+  this.http.put(
+    'https://staysearchbackend.onrender.com/api/payment-gateway/admin/update',
+    { activeGateway: "STRIPE" }
+  ).subscribe({
+    next: (res) => {
+      console.log('Stripe gateway activated', res);
+      // alert('Stripe selected successfully!');
+      // Optionally trigger Stripe payment or UI update
+      this.getSelectedGateway(); // Refresh selected gateway
+    },
+    error: (err) => {
+      console.error('Failed to select Stripe', err);
+      alert('Failed to select Stripe. Please try again.');
+      this.isLoading = false;
+    }
+  });
+}
 
+updateHdfc() {
+  this.isLoading = true;
+  this.http.put(
+    'https://staysearchbackend.onrender.com/api/payment-gateway/admin/update',
+    { activeGateway: "HDFC" }
+  ).subscribe({
+    next: (res) => {
+      console.log('HDFC gateway activated', res);
+      // alert('HDFC selected successfully!');
+      // Optionally trigger HDFC payment or UI update
+      this.getSelectedGateway(); // Refresh selected gateway
+    },
+    error: (err) => {
+      console.error('Failed to select HDFC', err);
+      alert('Failed to select HDFC. Please try again.');
+      this.isLoading = false;
+    }
+  });
+}
+
+getSelectedGateway() {
+  this.isLoading = true;
+  this.http.get<{ ACTIVEGATEWAY: string }>(
+    'https://staysearchbackend.onrender.com/api/payment-gateway/active'
+  ).subscribe({
+    next: (res) => {
+      this.selectedGateway = res.ACTIVEGATEWAY;;
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Failed to fetch active gateway', err);
+      this.isLoading = false;
+    }
+  });
+}
 
 }
