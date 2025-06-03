@@ -37,6 +37,7 @@ export class HotelliersComponent implements OnInit,OnDestroy {
 onResize(event: any) {
   this.isSidebarCollapsed = event.target.innerWidth <= 768;
 }
+ 
 
   latitude: number = 0;
   longitude: number = 0;
@@ -508,6 +509,11 @@ formatDateTimeLocal(date: Date): string {
 }
 
    async ngOnInit() {
+    history.pushState(null, '', location.href);
+    window.onpopstate = () => {
+    history.pushState(null, '', location.href);
+   };
+    
 
     this.http.get<{ ACTIVEGATEWAY: string }>('https://staysearchbackend.onrender.com/api/payment-gateway/active')
   .subscribe({
@@ -528,10 +534,8 @@ formatDateTimeLocal(date: Date): string {
     this.loadRooms();
     this.fetchFeedbacks();
 
-    history.pushState(null, '', location.href);
-    window.onpopstate = () => {
-      history.pushState(null, '', location.href);
-    };
+   
+  
 
 
     const token = localStorage.getItem('token');
@@ -625,7 +629,11 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
 
 
   destroy(){
-    Swal.fire({
+     if (localStorage.getItem('token')) {
+    localStorage.removeItem('token');}
+
+    // not required as on login click this is already being called
+   /* Swal.fire({
       title: 'You are about to sign out!',
       text: 'Do you want to clear your session?',
       icon: 'warning',
@@ -642,7 +650,7 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
       if (result.isConfirmed) {
         localStorage.removeItem('token');
       }
-    });
+    });*/
   }
 
  
@@ -1390,7 +1398,10 @@ onFileSelected(event: Event) {
         this.imageFiles = [];
         this.subImages = [];
         localStorage.removeItem("token");
-        this.router.navigate(['adminAccess']);
+        this.router.navigate(['adminAccess'],
+            {
+  queryParams: { key: 'owner' } }
+        );
         this.roomImagePreview = '';
         this.poolImagePreview = '';
         this.lobbyImagePreview = '';
