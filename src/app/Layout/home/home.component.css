@@ -1305,8 +1305,7 @@ margin-bottom: 30px;
 
 
   @media (max-width: 768px) {
-    
-  .carousel {
+   .carousel {
     height: 60vh; 
   }
 
@@ -1314,26 +1313,31 @@ margin-bottom: 30px;
     height: 60vh; 
   }
   
-
- .carousel-caption {
-    left: 0 !important;
-    right: 0 !important;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-    width: 90vw;
-    max-width: 90vw;
-    padding: 10px 5vw;
-    box-sizing: border-box;
-  
+  .carousel-caption {
+    font-size: 18px; 
+    text-align: center; 
+    padding-top: 10px;
+    position: absolute;
+    position: absolute;
+    top: 50%;   
+    left: 50%;   
+    transform: translate(-50%, -50%);
+    text-align: center; 
+    right: auto;
+    width: 100%;
+    margin: top;
   }
-  .text-container{
- font-size: 10px;
- line-height: 1; 
-  }
-    
 
-  
+  .heart {
+    display: block;
+    margin: 10px auto 0 auto; /* Center the heart icon below caption */
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+
+
+ 
 
   .profile-container {
     margin: 5px; /* Slightly reduced margin */
@@ -1577,11 +1581,10 @@ margin-bottom: 30px;
     padding: 6px 12px;
     margin-top: 5px;
     width: 100%; /* Optional: make buttons full-width */
+  
+
+
   }
-h5.heading {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
 
 
   }

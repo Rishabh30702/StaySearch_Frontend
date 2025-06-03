@@ -11,6 +11,8 @@ import { HotelliersComponent } from './Layout/hotelliers/hotelliers.component';
 import { ChairmanMessageComponent } from './Layout/chairman-message/chairman-message.component';
 import { MdMessageComponent } from './Layout/md-message/md-message.component';
 import { adminAccessGuard } from './Layout/admin-access/guards/admin-access.guard';
+import { authGuard } from './admin-panel/Layout/admin-home/auth.guard';
+import { hotelauthGuard } from './Layout/hotelliers/hotelauth.guard';
 
 
 export const routes: Routes = [
@@ -54,12 +56,14 @@ export const routes: Routes = [
     {
         path: 'adminAccess/adminPanel', 
         component: AdminHomeComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        canActivate: [authGuard],
     },
     {
         path: 'hotellier', 
         component: HotelliersComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        canActivate: [hotelauthGuard]
     },
     {
         path: 'chairman_message', 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../../Core/Services/AuthService/services/auth.service';
 import { SpinnerComponent } from "../../../Core/spinner/spinner.component";
@@ -131,7 +131,15 @@ pendingHoteliersCount: number = 0;
     this.updateUnreadCount();
    }
 
+
+    @HostListener('window:popstate', ['$event'])
+  onPopState(event: any) {
+    // Redirect or stay on adminpanel
+    this.router.navigateByUrl('adminAccess/adminPanel', { replaceUrl: true });
+  }
+
   ngOnInit(): void {
+      history.pushState(null, '', window.location.href);
     this.fetchUsers();
     this.fetchComments();
     this.getAllOffers();
