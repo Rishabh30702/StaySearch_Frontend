@@ -270,7 +270,7 @@
               <th>#</th>
               <th>ID</th>
               <th>Hash#</th>
-              <th>Address</th>
+              <!-- <th>Address</th> -->
               <th>Full Name</th>
               <th>Contact Number</th>
               <th>id</th>
@@ -287,12 +287,12 @@
                 <td>{{ row.Sno }}</td>
                 <td>{{ row.col1 }}</td>
                 <td>{{ row.col2 }}</td>
-                <td>{{ row.col3 }}</td>
+                <!-- <td>{{ row.col3 }}</td> -->
                 <td>{{ row.col4}}</td>
                 <td>{{ row.col5 }}</td>
                 <td>{{ row.id }}</td>
                 <td>{{ row.col7 }}</td>
-                <td><button (click)="showModal = true" class="edit-btn">
+                <td><button (click)="openEditModal(row)" class="edit-btn">
                   <i class="fas fa-edit"></i> Edit
                 </button>
                 <div *ngIf="showModal" class="modal">
@@ -300,14 +300,7 @@
                     <span class="close-btn" (click)="closeModal()">&times;</span>
                     <h2>Updation Form</h2>
                     <form #updateForm="ngForm" (ngSubmit)="onUpdate()">
-                      <label>Full Name</label>
-                      <input
-                        type="text"
-                        [(ngModel)]="updateData.fullName"
-                        #name="ngModel"
-                        name="fullName"
-                        required
-                      />
+                     
                     
                       <label>Phone Number</label>
                       <input
@@ -335,7 +328,6 @@
                     
                       <button
                         type="submit"
-                        [disabled]="updateForm.invalid"
                         class="submit-btn"
                       >
                         Update
@@ -351,7 +343,7 @@
                 </button></td>
                 <!-- user role change option -->
                       <td>
-                <select (change)="updateUserRole($event,row.id)">
+                <select (change)="updateUserRole($event,row.col1)">
                   <option value="" disabled selected>Select Role</option>
                   <option *ngFor="let row of filteredData()" [value]="row.col7">
                     {{ row.col7 }}
@@ -364,7 +356,7 @@
 
     </div>
 
-<!-- Audit Logs -->
+<!-- Audit Logs 
 <section class="logs-section">
   <h3>🧾 Audit Logs</h3>
   <table>
@@ -385,7 +377,7 @@
       </tr>
     </tbody>
   </table>
-</section>
+</section> -->
 
 
 

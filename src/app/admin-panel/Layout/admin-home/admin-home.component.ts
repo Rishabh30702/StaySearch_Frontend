@@ -353,12 +353,18 @@ pendingHoteliersCount: number = 0;
     newPassword: ''
   };
 
+
+  selectedRow: any = null;
+
+openEditModal(row: any) {
+  this.selectedRow = row;
+  this.showModal = true;
+}
+
   onUpdate() {
-    console.log('Updated data:', this.updateData);
+    // console.log('Updated data:', this.updateData);
     // perform update logic here
-     this.updateProfile();
-     this.updatePassword();
-    
+      this.updateProfile();
     this.showModal = false;
     this.updateData.fullName = '';
     this.updateData.phoneNumber = '';
@@ -369,12 +375,14 @@ pendingHoteliersCount: number = 0;
 
 updateProfile() {
   this.isLoading = true
+  if( this.updateData.newPassword && this.updateData.phoneNumber){
   const payload = {
-    fullname: this.updateData.fullName,
-    phonenumber: this.updateData.phoneNumber
-  };
-
-  this.authService.updateUserProfile(payload).subscribe({
+    username: this.selectedRow.col1,
+    newPassword: this.updateData.newPassword,
+    phone: this.updateData.phoneNumber
+  }; 
+       
+  this.adminService.updateUserProfile(payload).subscribe({
     next: (response) => {
       console.log('Profile updated successfully:', response);
       Swal.fire({
@@ -395,38 +403,15 @@ updateProfile() {
       });
       this.isLoading = false
     }
-  });
+  });}
+
+  else{
+    alert("Please enter password and phone number");
+    this.isLoading=false;
+  }
 }
   
-   updatePassword() {
-    this.isLoading = true;
-  
-    if (this.updateData.newPassword) {
-      
-      this.authService.updatePassword(this.oldPassword, this.updateData.newPassword).subscribe({
-        next: (res) => {
-          Swal.fire({ text: res.message, icon: 'success' });
-        
-          this.isLoading = false;
-        },
-        error: (err) => {
-          let errorMessage = 'Failed to update password.';
-  
-          if (typeof err.error === 'string') {
-            errorMessage = err.error;
-          } else if (err.error?.message) {
-            errorMessage = err.error.message;
-          }
-  
-          Swal.fire({ text: errorMessage, icon: 'error' });
-          this.isLoading = false;
-        }
-      });
-    } else {
-      Swal.fire({ text: 'Please fill in both password fields.', icon: 'warning' });
-      this.isLoading = false;
-    }
-  }
+   
 
 
 
@@ -546,10 +531,45 @@ review(){
 }
 
 //security and access controls
-updateUserRole(event: Event,currentUserid: number) {
+updateUserRole(event: Event,user: any) {
   const selectedValue = (event.target as HTMLSelectElement).value;
-  console.log(currentUserid);
- alert( selectedValue);
+  if(selectedValue){
+    this.isLoading =true;
+ const payload = {
+  username: user,
+  role: selectedValue
+ }
+
+ console.log(" Role : ", selectedValue);
+ console.log(" username: ",user);
+ 
+  this.adminService.updateUserProfile(payload).subscribe({
+    next: (response) => {
+      console.log('Profile updated successfully:', response);
+      Swal.fire({
+        title: 'Success',
+        text: 'Profile updated successfully',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+      this.fetchUsers();
+    
+    },
+    error: (error) => {
+      console.error('Error updating profile:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'Failed to update profile',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      this.isLoading = false
+    }
+  });
+
+}
+
+//  alert("");
   // Call API here to persist the change
   // this.adminService.updateRole(user.id, user.role).subscribe(...)
 }
@@ -663,7 +683,7 @@ onDelete(id: number) {
 // content updates
 
 content = {
-  type: '',
+  type: 'banner',
   title: '',
   body: '',
   image: null

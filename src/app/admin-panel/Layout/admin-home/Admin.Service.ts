@@ -71,8 +71,9 @@ export class AdminService {
   }  
 
 
-updateUserPassword(password: String): Observable<any>{
-      return this.http.post(`${this.baseUrl}/me/password`, password);
-}
 
+updateUserProfile(data: any):Observable<any>{
+ return this.http.put(`${this.baseUrl}/admin/user/update`,data)
+}
+ 
 }
