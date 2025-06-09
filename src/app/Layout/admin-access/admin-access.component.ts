@@ -232,6 +232,8 @@ phoneNumber = "";
                   username: this.signupUsername,
                   password: this.signupPassword,
                   phonenumber: this.signupContact,
+                  newUser: true
+
                 }
             });
 }

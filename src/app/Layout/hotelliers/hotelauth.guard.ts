@@ -5,8 +5,9 @@ export const hotelauthGuard: CanActivateFn = (route, state) => {
 
   const router = inject(Router);
   const token = localStorage.getItem('token'); // or sessionStorage
+   const isNew = route.queryParamMap.get('newUser');
 
-  if (token) {
+  if (token || isNew) {
     return true;
   } else {
     router.navigate(['adminAccess'], {
