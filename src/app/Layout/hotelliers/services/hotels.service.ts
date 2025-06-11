@@ -40,6 +40,9 @@ export class HotelsService {
   updateHotel(hotelId: string, hotelData: any) {
     return this.http.patch(`https://staysearchbackend.onrender.com/v1/updateHotel/${hotelId}`, hotelData);
   }
+   deleteHotel(hotelId: string) {
+    return this.http.delete(`https://staysearchbackend.onrender.com/v1/deleteHotel/${hotelId}`, { responseType: 'text' });
+  }
 
     createOffer(data: any): Observable<any> {
     return this.http.post(this.base2+"api/offers", data);
