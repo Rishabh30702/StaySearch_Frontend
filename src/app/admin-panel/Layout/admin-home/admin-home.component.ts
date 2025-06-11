@@ -125,7 +125,8 @@ pendingHoteliersCount: number = 0;
     private feedbackService: FeedbackService,
     private HotelsService:HotelsService,
     private router: Router,
-    private http:HttpClient
+    private http:HttpClient,
+     private hotelsService: HotelsService
    
   ) {
     this.updateUnreadCount();
@@ -145,7 +146,7 @@ pendingHoteliersCount: number = 0;
     this.getAllOffers();
     // console.log("Content ID",this.contentUpdateid);
 
-    this.getSelectedGateway();
+    this.getSelectedGateway(true);
     
   
   }
@@ -250,7 +251,7 @@ pendingHoteliersCount: number = 0;
         // Sort by createdAt (latest first)
         this.users = res.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-        console.log('All users (sorted):', this.users);
+        // console.log('All users (sorted):', this.users);
 
         // Filter users after sorting
         this.filterHotelierGroups();
@@ -338,7 +339,7 @@ pendingHoteliersCount: number = 0;
     }
     else if (view === 'configuration') {
       this.isLoading = true;
-    this.getSelectedGateway();
+    this.getSelectedGateway(false);
   }
   }
 
@@ -443,6 +444,7 @@ updateDataFromUsers(): void {
 
 
 searchTerm = '';
+searchkey = '';
 
 data = [
   {
@@ -504,11 +506,9 @@ else{
 reviewData = {
   propertyName: 'The Royal Grand Palace',
   address: '123 Palace Road, Heritage Town, Jaipur, Rajasthan',
-  ownerName: 'Mr. Rajiv Sharma',
-  phoneNumber: '9876543210',
-  email: 'royalgrand@gmail.com',
-  photo1: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/18/07/50/holiday-inn-agra-facade.jpg?w=1200&h=-1&s=1',
-  photo2: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/18/07/50/holiday-inn-agra-facade.jpg?w=1200&h=-1&s=1'
+  accType: '',
+  id:'',
+ 
 };
 
 
@@ -519,14 +519,78 @@ closerejectModal()
 }
 
 
-approveHotel(){
-  console.log("hotel aaproved");
+deleteHotel(id: any){
+  console.log("hotel deleted: ",id);
+ 
+  
+  if(id){
+    this.isLoading=true;
+   this.hotelsService.deleteHotel(id).subscribe({
+      next: response => {
+          Swal.fire({
+  icon: 'success',
+  title: 'Hotel Deleted',
+  text: `Hotel deleted successfully: ${id}`,
+  confirmButtonColor: '#3085d6'
+});
+           this.isLoading = false;
+         this.getHotels();
+      },
+      error: err => {
+        console.error('Error deleting hotel:', err);
+         alert("Error while deleting hotel");
+        this.isLoading = false;
+      }
+    });}
 
 }
 
 //review 
 review(){
   console.log("review success");
+
+if(this.reviewData.propertyName && this.reviewData.address && this.reviewData.accType){
+      this.isLoading = true;
+  const updateHotelData =
+  {
+    name: this.reviewData.propertyName, // updated name for now
+    address:  this.reviewData.address,
+    accommodationType: this.reviewData.accType,
+   
+  }
+
+
+  console.log("Data ready to send",updateHotelData);
+   
+    this.hotelsService.updateHotel(this.reviewData.id, updateHotelData).subscribe({
+      next: response => {
+        // console.log('Hotel updated:', response);
+       this.closeModal();
+         alert("Hotel details Updated Successfully");
+         this.getHotels();
+      },
+      error: err => {
+        console.error('Error updating hotel:', err);
+         alert("Error while updating hotel");
+        this.isLoading = false;
+       this.closeModal();
+      }
+    });
+  
+
+}
+
+else{
+  alert("Please provide all values");
+  this.closeModal();
+}
+
+
+
+
+
+
+
 
 }
 
@@ -898,13 +962,15 @@ getHotels(){
         console.log('No hotels data found');
         this.isLoading = false;
       } else {
-        console.log("data found");
-        console.log(data);
+        // console.log("data found");
+        // console.log(data);
         this.hotels = data.map((hotel: any,index: number) => ({
           Sno: index+ 1,
           address: hotel.address || 'Unknown Location',
           id: hotel.hotelId || 0,
-          h_name:hotel.name
+          h_name:hotel.name,
+          col4: hotel.accommodationType
+          
         }))
        
         this.isLoading = false;
@@ -923,7 +989,7 @@ getAllOffers(){
   this.HotelsService.getAllOffers().subscribe({
       next: (res) => {
        this.offers = res.map((offer: any) => ({ ...offer }));
-      console.log("Offers data", this.offers)
+      // console.log("Offers data", this.offers)
       this.filterPendingOffers();
        
       },
@@ -1035,7 +1101,7 @@ filterPendingOffers() {
       console.log('Stripe gateway activated', res);
       // alert('Stripe selected successfully!');
       // Optionally trigger Stripe payment or UI update
-      this.getSelectedGateway(); // Refresh selected gateway
+      this.getSelectedGateway(false); // Refresh selected gateway
     },
     error: (err) => {
       console.error('Failed to select Stripe', err);
@@ -1055,7 +1121,7 @@ updateHdfc() {
       console.log('HDFC gateway activated', res);
       // alert('HDFC selected successfully!');
       // Optionally trigger HDFC payment or UI update
-      this.getSelectedGateway(); // Refresh selected gateway
+      this.getSelectedGateway(false); // Refresh selected gateway
     },
     error: (err) => {
       console.error('Failed to select HDFC', err);
@@ -1064,15 +1130,18 @@ updateHdfc() {
     }
   });
 }
-
-getSelectedGateway() {
+//included initial as param so that incase of fresh login the loader shouldn't stop
+// without getting all the data.
+getSelectedGateway(initial: Boolean) {
   this.isLoading = true;
   this.http.get<{ ACTIVEGATEWAY: string }>(
     'https://staysearchbackend.onrender.com/api/payment-gateway/active'
   ).subscribe({
     next: (res) => {
       this.selectedGateway = res.ACTIVEGATEWAY;;
-      this.isLoading = false;
+      if(!initial){
+          this.isLoading = false;
+      }  
     },
     error: (err) => {
       console.error('Failed to fetch active gateway', err);
@@ -1080,5 +1149,22 @@ getSelectedGateway() {
     }
   });
 }
+
+
+editHotels(row: any)
+{
+  this.reviewData.propertyName = row.h_name;
+  this.reviewData.address = row.address;
+  this.reviewData.accType = row.col4;
+  this.reviewData.id = row.id;
+this.showModal = true;
+}
+
+
+ get filteredHotels() {
+    return this.hotels.filter(hotel =>
+      hotel.h_name.toLowerCase().includes(this.searchkey.toLowerCase())
+    );
+  }
 
 }
