@@ -417,23 +417,47 @@ openStripeModal() {
 async payWithCard() {
   // ✅ Step 1: Validate your form before proceeding
   if (!this.atLeastOneAmenitySelected) {
-    alert('Please select at least one amenity.');
+     Swal.fire({
+       icon: 'warning',
+       title: 'No Amenities Selected',
+        text: 'Please select at least one amenity.',
+        confirmButtonColor: '#f0ad4e'
+          });
+
     return;
   }
 
   if (!this.atLeastOnePropertyType) {
-    alert('Please select the type of property.');
+       Swal.fire({
+             icon: 'info',
+             title: 'Property Type Required',
+             text: 'Please select the type of property.',
+             confirmButtonColor: '#3085d6'
+               });
+
     return;
   }
 
   const form = this.propertyNgForm;
   if (!form.valid) {
-    alert('Please fill all required fields correctly.');
+      Swal.fire({
+        icon: 'warning',
+       title: 'Incomplete Form',
+       text: 'Please fill all required fields correctly.',
+       confirmButtonColor: '#f0ad4e'
+           });
+
     return;
   }
 
   if (this.imageFiles.length === 0) {
-    alert('Please upload at least one image.');
+       Swal.fire({
+  icon: 'info',
+  title: 'Image Required',
+  text: 'Please upload at least one image.',
+  confirmButtonColor: '#3085d6'
+});
+
     return;
   }
 
@@ -458,7 +482,13 @@ async payWithCard() {
       this.cardErrors = result.error.message || 'Payment failed.';
       this.isLoading = false;
     } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
-      alert('Payment successful!');
+         Swal.fire({
+  icon: 'success',
+  title: 'Payment Successful!',
+  text: 'Your payment was processed successfully.',
+  confirmButtonColor: '#28a745'
+});
+
       this.closeStripeModal();
 
       // ✅ Payment succeeded, now run the main hotel registration logic
@@ -466,7 +496,13 @@ async payWithCard() {
     }
   } catch (error) {
     console.error(error);
-    alert('Payment process failed. Please try again.');
+       Swal.fire({
+  icon: 'error',
+  title: 'Payment Failed',
+  text: 'Payment process failed. Please try again.',
+  confirmButtonColor: '#d33'
+});
+
   }
 
   this.isLoading = false;
@@ -805,16 +841,34 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
             this.newDeal = { name: '', price: 0, total: 0, available: 0, deal: true, description: '', imageUrl: '' };
             this.showDealForm = false;
             this.selectedFile = undefined!;
-            alert('Deal added successfully!');
+              Swal.fire({
+  icon: 'success',
+  title: 'Success!',
+  text: 'Deal added successfully!',
+  confirmButtonColor: '#28a745'
+});
+
             this.updateStats();
           },
           error: (err) => {
             console.error(err);
-            alert('Failed to add deal room with image.');
+              Swal.fire({
+  icon: 'error',
+  title: 'Add Deal Room Failed',
+  text: 'Failed to add deal room with image.',
+  confirmButtonColor: '#d33'
+});
+
           }
         });
     } else {
-      alert('Please fill all required fields and upload an image!');
+        Swal.fire({
+  icon: 'warning',
+  title: 'Incomplete Submission',
+  text: 'Please fill all required fields and upload an image!',
+  confirmButtonColor: '#f0ad4e'
+});
+
     }
   }
 
@@ -838,9 +892,21 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
     if (this.updatedPrice > 0) {
       this.rooms[index].price = this.updatedPrice;
       this.cancelEdit();
-      alert('Rate updated successfully!');
+       Swal.fire({
+  icon: 'success',
+  title: 'Success!',
+  text: 'Rate updated successfully!',
+  confirmButtonColor: '#28a745'
+});
+
     } else {
-      alert('Please enter a valid price!');
+          Swal.fire({
+  icon: 'warning',
+  title: 'Invalid Price',
+  text: 'Please enter a valid price!',
+  confirmButtonColor: '#f0ad4e'
+});
+
     }
   }
 
@@ -924,7 +990,13 @@ onFileSelected(event: Event) {
           this.showAddRoomForm = false;
           console.log(this.newRoom.deal);
           this.isLoading = false;
-          alert('Room added successfully!');
+         Swal.fire({
+  icon: 'success',
+  title: 'Success!',
+  text: 'Room added successfully!',
+  confirmButtonColor: '#28a745'
+});
+
           this.loadRoomsByHotel(this.currentHotelId);
           
           this.updateStats();
@@ -932,11 +1004,23 @@ onFileSelected(event: Event) {
         error: (err: any) => {
           this.isLoading = false;
           console.error(err);
-          alert('Failed to add room.');
+          Swal.fire({
+  icon: 'error',
+  title: 'Add Room Failed',
+  text: 'Failed to add room.',
+  confirmButtonColor: '#d33'
+});
+
         }
       });
     } else {
-      alert('Please fill all fields and select an image!');
+         Swal.fire({
+  icon: 'warning',
+  title: 'Incomplete Form',
+  text: 'Please fill all fields and select an image!',
+  confirmButtonColor: '#f0ad4e'
+});
+
     }
   }
 
@@ -1059,7 +1143,13 @@ onFileSelected(event: Event) {
         },
          });
         } else {
-         alert('Please fill all fields!');
+           Swal.fire({
+  icon: 'warning',
+  title: 'Missing Information',
+  text: 'Please fill all fields!',
+  confirmButtonColor: '#f0ad4e'
+});
+
         }
 
   
@@ -1099,7 +1189,13 @@ onFileSelected(event: Event) {
            this.discountInfo.image="",
            this.discountInfo.validFrom="",
            this.discountInfo.validTill=""
-           alert("Offer creation successfull awaiting approval")
+            Swal.fire({
+  icon: 'success',
+  title: 'Offer Created',
+  text: 'Offer creation successful. Awaiting approval.',
+  confirmButtonColor: '#28a745'
+});
+
 
           },
          error: err => {
@@ -1112,7 +1208,13 @@ onFileSelected(event: Event) {
       }
 
        else{
-     alert("Please Fill offer details(Date,Time and discount ) correctly to create offer ")
+         Swal.fire({
+  icon: 'warning',
+  title: 'Incomplete Offer Details',
+  text: 'Please fill offer details (Date, Time, and Discount) correctly to create the offer.',
+  confirmButtonColor: '#f0ad4e'
+});
+
       }
 
       }
@@ -1282,24 +1384,48 @@ onFileSelected(event: Event) {
 
   log() {
     if (!this.atLeastOneAmenitySelected) {
-      alert('Please select at least one amenity.');
+         Swal.fire({
+  icon: 'info',
+  title: 'Amenity Required',
+  text: 'Please select at least one amenity.',
+  confirmButtonColor: '#3085d6'
+});
+
       return;
     }
   
     if (!this.atLeastOnePropertyType) {
-      alert('Please select the type of property.');
+         Swal.fire({
+  icon: 'info',
+  title: 'Property Type Required',
+  text: 'Please select the type of property.',
+  confirmButtonColor: '#3085d6'
+});
+
       return;
     }
   
     const form = this.propertyNgForm;
   
     if (!form.valid) {
-      alert('Please fill all required fields correctly.');
+        Swal.fire({
+  icon: 'warning',
+  title: 'Incomplete Form',
+  text: 'Please fill all required fields correctly.',
+  confirmButtonColor: '#f0ad4e'
+});
+
       return;
     }
   
     if (this.imageFiles.length === 0) {
-      alert('Please upload at least one image.');
+        Swal.fire({
+  icon: 'info',
+  title: 'Image Required',
+  text: 'Please upload at least one image.',
+  confirmButtonColor: '#3085d6'
+});
+
       return;
     }
   
@@ -1381,7 +1507,13 @@ onFileSelected(event: Event) {
         },
         error: (err: any) => {
           this.isLoading = false;
-          alert('User registration failed.');
+             Swal.fire({
+  icon: 'error',
+  title: 'Registration Failed',
+  text: 'User registration failed.',
+  confirmButtonColor: '#d33'
+});
+
           console.error(err);
         }
       });
@@ -1392,7 +1524,13 @@ onFileSelected(event: Event) {
     this.isLoading = true;
     this.hotelierService.registerHotel(formData).subscribe({
       next: () => {
-        alert("Registration successful. Awaiting for admin approval");
+          Swal.fire({
+  icon: 'success',
+  title: 'Registration Successful',
+  text: 'Awaiting admin approval.',
+  confirmButtonColor: '#28a745'
+});
+
         this.selectedMenu = 'rooms';
         this.imagePreviews = [];
         this.imageFiles = [];
@@ -1409,7 +1547,13 @@ onFileSelected(event: Event) {
       },
       error: (err: any) => {
         this.isLoading = false;
-        alert('Hotel registration failed.');
+      Swal.fire({
+  icon: 'error',
+  title: 'Registration Failed',
+  text: 'Hotel registration failed.',
+  confirmButtonColor: '#d33'
+});
+
         console.error(err);
       }
     });
@@ -1419,7 +1563,13 @@ onFileSelected(event: Event) {
     this.isLoading = true;
     this.hotelierService.registerHotel(formData).subscribe({
       next: () => {
-        alert("Registration successful.");
+        Swal.fire({
+  icon: 'success',
+  title: 'Registration Successful',
+  text: 'You have been registered successfully.',
+  confirmButtonColor: '#28a745'
+});
+
         this.selectedMenu = 'rooms';
         this.imagePreviews = [];
         this.imageFiles = [];
@@ -1433,7 +1583,13 @@ onFileSelected(event: Event) {
       },
       error: (err: any) => {
         this.isLoading = false;
-        alert('Hotel registration failed.');
+      Swal.fire({
+  icon: 'error',
+  title: 'Registration Failed',
+  text: 'Hotel registration failed.',
+  confirmButtonColor: '#d33'
+});
+
         console.error(err);
       }
     });
@@ -1579,11 +1735,23 @@ saveHotel() {
         console.log('Hotel updated:', response);
         this.isLoading = false;
         this.isEditModalOpen = false;
-         alert("Hotel details Updated Successfully");
+          Swal.fire({
+  icon: 'success',
+  title: 'Update Successful',
+  text: 'Hotel details updated successfully.',
+  confirmButtonColor: '#28a745'
+});
+
       },
       error: err => {
         console.error('Error updating hotel:', err);
-         alert("Error while updating hotel");
+        Swal.fire({
+  icon: 'error',
+  title: 'Update Failed',
+  text: 'Error while updating hotel.',
+  confirmButtonColor: '#d33'
+});
+
         this.isLoading = false;
         this.isEditModalOpen = false;
       }
@@ -1593,7 +1761,13 @@ saveHotel() {
 }
 
 else{
-  alert("Please provide all values");
+    Swal.fire({
+  icon: 'warning',
+  title: 'Missing Information',
+  text: 'Please provide all values.',
+  confirmButtonColor: '#f0ad4e'
+});
+
   this.closeEditModal();
 }
 
@@ -1652,7 +1826,7 @@ checkHotelsData() {
   }
 
   // If token is found, show the full menu
-  this.showmenu = true;
+  // this.showmenu = true;
 
   // Now call the service to fetch hotels
   this.hotelsService.getHotels().subscribe({
@@ -1663,7 +1837,8 @@ checkHotelsData() {
         this.isLoading = false;
         
       } else {
-        console.log(data);
+        this.showmenu = true;
+        // console.log(data);
         this.hotels = data.map((hotel: any) => ({
           name: hotel.name || 'Unnamed Hotel',
           location: hotel.address || 'Unknown Location',
@@ -1736,7 +1911,13 @@ fetchHotelById(hotelId: number) {
       this.selectedHotel = response;
       console.log(this.selectedHotel);
       this.isLoading = false; // Hide loading spinner or indicator
-      alert("You are Viewing/Making changes to: "+this.selectedHotel.name);
+    Swal.fire({
+  icon: 'info',
+  title: 'Hotel Selected',
+  text: `You are viewing/making changes to: ${this.selectedHotel.name}`,
+  confirmButtonColor: '#3085d6'
+});
+
       this.currentHotelName = this.selectedHotel.name;
     },
     (error) => {
@@ -1831,7 +2012,13 @@ updatePassword() {
 
   onSubmit() {
     console.log('Updating password with:', this.userprofile);
-    alert('Password updated successfully!');
+    Swal.fire({
+  icon: 'success',
+  title: 'Success!',
+  text: 'Password updated successfully!',
+  confirmButtonColor: '#28a745'
+});
+
   }
 
 
