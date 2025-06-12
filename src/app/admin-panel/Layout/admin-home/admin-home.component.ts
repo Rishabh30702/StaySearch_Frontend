@@ -407,7 +407,12 @@ updateProfile() {
   });}
 
   else{
-    alert("Please enter password and phone number");
+   Swal.fire({
+  icon: 'warning',
+  title: 'Missing Fields',
+  text: 'Please enter password and phone number',
+});
+
     this.isLoading=false;
   }
 }
@@ -492,7 +497,12 @@ if(this.newUser.password && this.newUser.username){
 this.createNewUser();
 }
 else{
-  alert("Please fill email and password fields correctly");
+  Swal.fire({
+  icon: 'error',
+  title: 'Invalid Input',
+  text: 'Please fill email and password fields correctly',
+});
+
 }
 
 
@@ -520,28 +530,50 @@ closerejectModal()
 
 
 deleteHotel(id: any){
-  console.log("hotel deleted: ",id);
+  // console.log("hotel deleted: ",id);
  
   
   if(id){
-    this.isLoading=true;
-   this.hotelsService.deleteHotel(id).subscribe({
+   
+Swal.fire({
+  title: 'Are you sure?',
+  text: `Do you really want to delete hotel with ID: ${id}?`,
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#d33',
+  cancelButtonColor: '#3085d6',
+  confirmButtonText: 'Yes, delete it!',
+  cancelButtonText: 'Cancel'
+}).then((result) => {
+  if (result.isConfirmed) {
+    this.isLoading = true;
+    this.hotelsService.deleteHotel(id).subscribe({
       next: response => {
-          Swal.fire({
-  icon: 'success',
-  title: 'Hotel Deleted',
-  text: `Hotel deleted successfully: ${id}`,
-  confirmButtonColor: '#3085d6'
-});
-           this.isLoading = false;
-         this.getHotels();
+        Swal.fire({
+          icon: 'success',
+          title: 'Hotel Deleted',
+          text: `Hotel deleted successfully: ${id}`,
+          confirmButtonColor: '#3085d6'
+        });
+        this.isLoading = false;
+        this.getHotels();
       },
       error: err => {
-        console.error('Error deleting hotel:', err);
-         alert("Error while deleting hotel");
+        Swal.fire({
+          icon: 'error',
+          title: 'Delete Failed',
+          text: 'Error while deleting hotel',
+          confirmButtonColor: '#d33'
+        });
         this.isLoading = false;
       }
-    });}
+    });
+  }
+});
+
+
+
+ }
 
 }
 
@@ -566,12 +598,24 @@ if(this.reviewData.propertyName && this.reviewData.address && this.reviewData.ac
       next: response => {
         // console.log('Hotel updated:', response);
        this.closeModal();
-         alert("Hotel details Updated Successfully");
+          Swal.fire({
+             icon: 'success',
+              title: 'Update Successful',
+                text: 'Hotel details updated successfully',
+              confirmButtonColor: '#3085d6'
+                 });
+
          this.getHotels();
       },
       error: err => {
         console.error('Error updating hotel:', err);
-         alert("Error while updating hotel");
+       Swal.fire({
+              icon: 'error',
+            title: 'Update Failed',
+                 text: 'Error while updating hotel',
+                 confirmButtonColor: '#d33'
+                });
+
         this.isLoading = false;
        this.closeModal();
       }
@@ -581,7 +625,13 @@ if(this.reviewData.propertyName && this.reviewData.address && this.reviewData.ac
 }
 
 else{
-  alert("Please provide all values");
+  Swal.fire({
+  icon: 'warning',
+  title: 'Missing Information',
+  text: 'Please provide all values',
+  confirmButtonColor: '#f0ad4e'
+});
+
   this.closeModal();
 }
 
@@ -768,12 +818,24 @@ submitContentUpdate() {
   console.log('Submitting content update:', this.content);
   if(this.content.type == "banner"){
      if(!this.content.image){
-      alert("please select an image first");
+      Swal.fire({
+            icon: 'info',
+             title: 'No Image Selected',
+             text: 'Please select an image first',
+             confirmButtonColor: '#3085d6'
+           });
+
       return ;
      }
      if(this.content.title.length <1)
      {
-      alert("Please Enter a Title");
+     Swal.fire({
+               icon: 'warning',
+               title: 'Missing Title',
+               text: 'Please enter a title',
+               confirmButtonColor: '#f0ad4e'
+                     });
+
       return;
      }
       this.isLoading = true;
@@ -794,18 +856,33 @@ submitContentUpdate() {
 
    else if(this.content.type == 'info'){
           if(!this.content.image){
-            alert("please select an image first");
+             Swal.fire({
+            icon: 'info',
+             title: 'No Image Selected',
+             text: 'Please select an image first',
+             confirmButtonColor: '#3085d6'
+           });
                return ;
             }
              if(this.content.title.length <1)
                 {
-                 alert("Please Enter a Title");
+                 Swal.fire({
+               icon: 'warning',
+               title: 'Missing Title',
+               text: 'Please enter a title',
+               confirmButtonColor: '#f0ad4e'
+                     });
                  return;
                    }
                    
                  if(this.content.body.length <1)
                 {
-                 alert("Please Enter the text for content");
+                Swal.fire({
+               icon: 'warning',
+               title: 'Missing Content',
+               text: 'Please enter Content',
+               confirmButtonColor: '#f0ad4e'
+                     });
                  return;
                    }
                    this.isLoading=true;
@@ -824,7 +901,13 @@ submitContentUpdate() {
    }
 
    else{
-    alert("Please select type of content to update");
+    Swal.fire({
+             icon: 'info',
+             title: 'Content Type Required',
+             text: 'Please select the type of content to update',
+            confirmButtonColor: '#3085d6'
+         });
+
    }
 
 
@@ -1105,7 +1188,13 @@ filterPendingOffers() {
     },
     error: (err) => {
       console.error('Failed to select Stripe', err);
-      alert('Failed to select Stripe. Please try again.');
+      Swal.fire({
+             icon: 'error',
+             title: 'Stripe Selection Failed',
+           text: 'Failed to select Stripe. Please try again.',
+            confirmButtonColor: '#d33'
+                  });
+
       this.isLoading = false;
     }
   });
@@ -1125,7 +1214,13 @@ updateHdfc() {
     },
     error: (err) => {
       console.error('Failed to select HDFC', err);
-      alert('Failed to select HDFC. Please try again.');
+      Swal.fire({
+           icon: 'error',
+         title: 'HDFC Selection Failed',
+           text: 'Failed to select HDFC. Please try again.',
+         confirmButtonColor: '#d33'
+          });
+
       this.isLoading = false;
     }
   });
