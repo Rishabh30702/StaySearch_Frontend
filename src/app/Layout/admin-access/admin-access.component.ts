@@ -213,7 +213,12 @@ phoneNumber = "";
 
   registerHotelier() {
     if (this.signupPassword !== this.signupRepeatPassword) {
-        alert("Passwords do not match.");
+        Swal.fire({
+  icon: 'error',
+  title: 'Error',
+  text: 'Passwords do not match.'
+});
+
         return;
     }
     
