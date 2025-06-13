@@ -417,6 +417,7 @@ openStripeModal() {
 async payWithCard() {
   // ✅ Step 1: Validate your form before proceeding
   if (!this.atLeastOneAmenitySelected) {
+    this.closeStripeModal(); // needed as stripe modal overlaps swal and makes it invisible
      Swal.fire({
        icon: 'warning',
        title: 'No Amenities Selected',
@@ -428,6 +429,7 @@ async payWithCard() {
   }
 
   if (!this.atLeastOnePropertyType) {
+      this.closeStripeModal(); // needed as stripe modal overlaps swal and makes it invisible
        Swal.fire({
              icon: 'info',
              title: 'Property Type Required',
@@ -439,7 +441,9 @@ async payWithCard() {
   }
 
   const form = this.propertyNgForm;
+    // needed as stripe modal overlaps swal and makes it invisible
   if (!form.valid) {
+     this.closeStripeModal();
       Swal.fire({
         icon: 'warning',
        title: 'Incomplete Form',
@@ -451,6 +455,7 @@ async payWithCard() {
   }
 
   if (this.imageFiles.length === 0) {
+      this.closeStripeModal(); // needed as stripe modal overlaps swal and makes it invisible
        Swal.fire({
   icon: 'info',
   title: 'Image Required',
@@ -462,16 +467,18 @@ async payWithCard() {
   }
 
   this.isLoading = true;
+  
+  
 
   try {
     const { clientSecret } = await this.createPaymentIntentOnBackend();
-
+     
     if (!this.stripe || !this.card) {
       alert('Stripe.js has not loaded properly.');
       this.isLoading = false;
       return;
     }
-
+    
     const result = await this.stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: this.card,
@@ -489,10 +496,11 @@ async payWithCard() {
   confirmButtonColor: '#28a745'
 });
 
-      this.closeStripeModal();
 
       // ✅ Payment succeeded, now run the main hotel registration logic
       this.log();
+      
+      this.closeStripeModal();
     }
   } catch (error) {
     console.error(error);
@@ -1076,7 +1084,8 @@ onFileSelected(event: Event) {
 
  updateRoom() {
        if (this.newRoom.id === undefined) return;
-  
+      //  updateRoom will not be initiated incase of addig offer
+  if( !this.discountInfo.validFrom && !this.discountInfo.validTill){
         if (
        this.newRoom.name &&
         this.newRoom.available >= 0 &&
@@ -1152,9 +1161,12 @@ onFileSelected(event: Event) {
 
         }
 
+      } 
+
   
      // add offer section
    if(this.isDeal){
+    this.isLoading=true;
       if(this.discountInfo.description >0 && this.discountInfo.validFrom && this.discountInfo.validTill)
       {
  
@@ -1189,6 +1201,7 @@ onFileSelected(event: Event) {
            this.discountInfo.image="",
            this.discountInfo.validFrom="",
            this.discountInfo.validTill=""
+            this.isLoading = false;
             Swal.fire({
   icon: 'success',
   title: 'Offer Created',
@@ -1199,6 +1212,7 @@ onFileSelected(event: Event) {
 
           },
          error: err => {
+           this.isLoading = false;
         console.error('Error creating offer:', err);
           }
          });
@@ -1208,6 +1222,7 @@ onFileSelected(event: Event) {
       }
 
        else{
+        this.isLoading = false;
          Swal.fire({
   icon: 'warning',
   title: 'Incomplete Offer Details',

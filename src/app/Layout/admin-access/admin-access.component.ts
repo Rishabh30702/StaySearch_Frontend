@@ -17,7 +17,8 @@ import { AuthService } from "../../Core/Services/AuthService/services/auth.servi
   styleUrl: './admin-access.component.css'
 })
 export class AdminAccessComponent implements OnInit {
-  constructor(private router: Router, private hotelierService: AuthPortalService,private route: ActivatedRoute
+  constructor(private router: Router, private hotelierService: AuthPortalService,private route: ActivatedRoute,
+  private authService: AuthService
   ) {}
   accessKey: string | null = null;
   ngOnInit(): void {
@@ -46,6 +47,7 @@ export class AdminAccessComponent implements OnInit {
   selectedRole: string = '';
 
   isLoading: boolean = false;
+  idExist: boolean = true;
 
 userEmail = "";
 phoneNumber = "";
@@ -213,7 +215,12 @@ phoneNumber = "";
 
   registerHotelier() {
     if (this.signupPassword !== this.signupRepeatPassword) {
-        alert("Passwords do not match.");
+        Swal.fire({
+  icon: 'error',
+  title: 'Error',
+  text: 'Passwords do not match.'
+});
+
         return;
     }
     
@@ -225,18 +232,9 @@ phoneNumber = "";
         // gstin: this.signupGstin
     };
 
-   
-            this.router.navigate(['hotellier'], {
-                queryParams: {
-                  fullname: this.signupEmail,
-                  username: this.signupUsername,
-                  password: this.signupPassword,
-                  phonenumber: this.signupContact,
-                  newUser: true
-
-                }
-            });
-}
+   this.checkExisting(this.signupUsername);
+ 
+  }
 
   resetPassword() {
     if (!this.resetEmail) {
@@ -258,6 +256,49 @@ phoneNumber = "";
     this.showPassword = !this.showPassword;
   }
 
+checkExisting(username: any){
+  this.isLoading=true;
+   this.authService.getAllUsers().subscribe({
+      next: (res) => {
+      const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/gi, '');
 
+this.idExist = res.some((user: any) =>
+  normalize(user.username) === normalize(username)
+);
+         this.isLoading=false;
+           if(!this.idExist){
+            this.router.navigate(['hotellier'], {
+                queryParams: {
+                  fullname: this.signupEmail,
+                  username: this.signupUsername,
+                  password: this.signupPassword,
+                  phonenumber: this.signupContact,
+                  newUser: true
+
+                }
+            });
+}
+else {
+  this.isLoading=false;
+        Swal.fire({
+          icon: 'warning',
+          title: 'Username Already Exists',
+          text: 'The chosen username is already taken. Please choose a different one.',
+        });
+      }
+    
+      },
+      error: (err) => {
+        this.isLoading=false;
+        console.error('Error fetching users', err);
+         Swal.fire({
+        icon: 'error',
+        title: 'Failed ',
+        text: 'An error occurred, Please try again later.',
+      });
+        
+      }
+    });
+}
    
 }
