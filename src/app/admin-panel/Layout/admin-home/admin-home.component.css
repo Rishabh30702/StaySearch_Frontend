@@ -937,3 +937,86 @@ input, textarea {
   z-index: 1;
 }
 
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.custom-dropdown select {
+  width: 100%;
+  padding: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: white url('data:image/svg+xml;utf8,<svg fill="black" height="14" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+  background-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+.edit-btn {
+  background-color: #4CAF50; /* Green background */
+  color: white;              /* White text */
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.edit-btn:hover {
+  background-color: #45a049; /* Darker green on hover */
+  transform: scale(1.03);
+}
+
+.edit-btn i {
+  font-size: 16px;
+}
+
+
+.delete-btn {
+  background-color: #e74c3c; /* Red background */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.delete-btn:hover {
+  background-color: #c0392b; /* Darker red on hover */
+  transform: scale(1.03);
+}
+
+.delete-btn i {
+  font-size: 16px;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  color: #333;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.logout-btn:hover {
+  color: #e74c3c; /* Red on hover */
+  transform: scale(1.1);
+}
