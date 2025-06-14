@@ -72,8 +72,8 @@
         
       
         <!-- Profile Icon -->
-        <button (click)="logout()" class="btn btn-light">
-          <i class="fas fa-user-circle fs-5"></i>
+        <button (click)="logout()" class="logout-btn" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
         </button>
       </div>
       
@@ -451,14 +451,14 @@
                   class="form-control"
                 />
               
-                <label>Accomodation Type</label>
-                <input
-                  type="text"
-                 [(ngModel)]="reviewData.accType"
-                  
-                  class="form-control"
-                />
-              
+               <label>Accommodation Type</label>
+               <div class="custom-dropdown">
+<select [(ngModel)]="reviewData.accType" class="form-control">
+  <option value="" disabled selected>Select type</option>
+  <option value="Private">Private</option>
+  <option value="Government">Government</option>
+</select>
+              </div>
                
                 <!-- Action Button -->
                 <button 
@@ -473,7 +473,7 @@
 
           </td>
           <td>
-            <button (click)="deleteHotel(row.id)" class="approve-btn">
+            <button (click)="deleteHotel(row.id)" class="delete-btn">
               <i class="fas fa-trash"></i> Delete
             </button>
           </td>
@@ -695,7 +695,7 @@
     </div>
     <div *ngIf="activeView === 'configuration'">
 <div *ngIf="activeView === 'configuration'">
-  Configuration Settings
+
   <div class="payment-cards-container">
     <div
       class="payment-card stripe-card"

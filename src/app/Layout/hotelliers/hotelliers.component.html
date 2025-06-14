@@ -23,22 +23,21 @@
     <div class="main-content">
       <div class="top-bar">
         <span>{{ todayDate }}</span>
-        <div class="profile" (click)="toggleProfileDropdown()">
-          <img src="https://i.pravatar.cc/40" alt="Profile" />
-          <div *ngIf="showDropdown" class="dropdown">
-            <button (click)="logout()">Logout</button>
-          </div>
-        </div>
+    
+      
+            <button (click)="logout()" class="logout-btn">
+            
+              <i class="fas fa-sign-out-alt"></i>
+                Log Out
+            </button>
+        
+        
       </div>
 
       <!-- Dashboard -->
       <div *ngIf="selectedMenu === 'dashboard'" class="dashboard-container fade-in">
 
-        <!-- 📅 Date and Profile Title -->
-        <div class="top-bar">
-          <div class="date">{{ todayDate | date: 'EEE MMM dd y' }}</div>
-          <h2 class="profile-title">Profile</h2>
-        </div>
+     
 
         <!-- 📊 Stats Cards -->
         <div class="stats-section">
@@ -253,6 +252,10 @@
                 <label for="propertyPhotos">Upload Photos:</label>
                 <input type="file" id="propertyPhotos" name="subImages" #fileInput (change)="previewImages($event)"
                   multiple accept=".jpg, .jpeg, .png" required />
+                   <!-- Preview Section -->
+<div *ngIf="subImages.length > 0">
+  <img [src]="subImages[0]" alt="Preview" style="max-width: 200px; margin: 10px;">
+</div>
 
 
               </div>
@@ -602,7 +605,7 @@
 
       </div>
 
-      <!-- Rates -->
+      <!-- Rates 
       <div *ngIf="selectedMenu === 'rate'" class="fade-in">
         <h2 class="section-title">Rates</h2>
         <div class="rooms">
@@ -621,7 +624,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
 
       <!-- Feedbacks and reviews -->

@@ -115,7 +115,7 @@ currentHotelName:string="";
     { key: 'hotels', label: 'Hotels', icon: 'fas fa-hotel' },
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
     { key: 'deal', label: 'Deal', icon: 'fas fa-tags' },
-    { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
+    // { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
     { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' },
     { key: 'profile', label: 'My profile', icon: 'fas fa-user' }
   ];
