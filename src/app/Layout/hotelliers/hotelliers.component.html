@@ -1,4 +1,8 @@
 <app-spinner [isLoading]="isLoading"></app-spinner>
+<!-- Full-page overlay loader -->
+<div *ngIf="isLoad" class="overlay-loader">
+  <div class="spinner"></div>
+</div>
 <div class="full-page-layout">
   <div class="container">
     <!-- Sidebar -->

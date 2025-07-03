@@ -1,0 +1,19 @@
+<div class="payment-container failure">
+  <div class="icon-circle">&#10008;</div> <!-- Cross Icon -->
+  <h2>Payment Failed</h2>
+
+  <div class="transaction-details">
+    <!-- <p><strong>Transaction ID:</strong> TXN123456789</p> -->
+    <p><strong>Amount:</strong> ₹ 945.00</p>
+    <p><strong>Date:</strong> {{ now | date:'medium' }}</p>
+   
+ <p *ngIf="showLoader">
+    Redirecting...
+    <span class="loader"></span>
+  </p>
+
+
+  </div>
+
+ 
+</div>

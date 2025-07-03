@@ -1,0 +1,17 @@
+<div class="payment-container success">
+  <div class="icon-circle">&#10004;</div> <!-- Tick Icon -->
+  <h2>Payment Successful</h2>
+
+  <div class="transaction-details">
+    <p><strong>Transaction ID:</strong> TXN123456789</p>
+    <p><strong>Amount:</strong> ₹ 945.00</p>
+  <p><strong>Date:</strong> {{ now | date:'medium' }}</p>
+   
+ <p *ngIf="showLoader">
+    Registering Hotel...
+    <span class="loader"></span>
+  </p>
+  </div>
+
+  <!-- <button class="home-btn" routerLink="/">Back to Home</button> -->
+</div>

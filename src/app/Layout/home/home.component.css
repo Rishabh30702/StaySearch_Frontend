@@ -146,6 +146,7 @@ h4.Find-Stay {
   overflow: hidden;
   display: flex;
   align-items: center;
+  
 }
 
 /* Offers Grid: two rows, scroll horizontally */
@@ -166,6 +167,14 @@ h4.Find-Stay {
 .offers-grid::-webkit-scrollbar {
   display: none;
 }
+
+.no-offers-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #888;
+}
+
 
 /* Offer Card */
 .offer-card {

@@ -31,7 +31,7 @@ export class AppComponent {
         console.log('Navigated to:', currentUrl);
 
         // Match routes for admin or hotellier
-        this.isAdminPanel = currentUrl.startsWith('/adminAccess/adminPanel') || currentUrl.startsWith('/hotellier') || currentUrl.startsWith('/adminAccess');
+        this.isAdminPanel = currentUrl.startsWith('/adminAccess/adminPanel') || currentUrl.startsWith('/hotellier') || currentUrl.startsWith('/adminAccess') ||  currentUrl.startsWith('/p_success') || currentUrl.startsWith('/p_fail');
 
         // Home page check
         this.isHomePage = currentUrl === '/' || currentUrl === '/home';
