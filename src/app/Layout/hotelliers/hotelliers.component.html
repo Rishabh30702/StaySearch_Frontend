@@ -441,7 +441,14 @@
   [disabled]="isLoading"
   class="pay-button animate-field mx-auto block text-white font-semibold py-3 rounded-lg transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed max-w-xs w-full"
 >
-  <span>Pay Now</span>
+   <ng-container *ngIf="!isLoading; else loadingTemplate">
+    <span>Pay Now</span>
+  </ng-container>
+  <ng-template #loadingTemplate>
+    <span class="flex items-center justify-center">
+      Please wait<span class="dot-anim ml-1"></span>
+    </span>
+  </ng-template>
 </button>
       </div>
 
@@ -479,7 +486,16 @@
       <label>Phone:</label>
       <input type="tel" name="customerPhone" [(ngModel)]="phonenumber" [disabled]="true" />
 
-      <button type="submit" class="pay-button" [disabled]="hdfcForm.invalid" (click)="openHdfcPayment()">Pay Now</button>
+      <button type="submit" class="pay-button" [disabled]="hdfcForm.invalid" (click)="openHdfcPayment()">
+         <ng-container *ngIf="!isLoading; else loadingTemplate">
+    Pay Now
+  </ng-container>
+  <ng-template #loadingTemplate>
+    <span class="flex items-center justify-center">
+      Please wait<span class="dot-anim ml-1"></span>
+    </span>
+  </ng-template>
+        </button>
       <button type="button" class="close-button" (click)="showHdfcModal = false">Cancel</button>
     </form>
   </div>
