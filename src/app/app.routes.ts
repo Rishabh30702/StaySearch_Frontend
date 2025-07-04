@@ -13,6 +13,8 @@ import { MdMessageComponent } from './Layout/md-message/md-message.component';
 import { adminAccessGuard } from './Layout/admin-access/guards/admin-access.guard';
 import { authGuard } from './admin-panel/Layout/admin-home/auth.guard';
 import { hotelauthGuard } from './Layout/hotelliers/hotelauth.guard';
+import { PaymentSuccessComponent } from './Layout/payment-success/payment-success.component';
+import { PaymentFailComponent } from './Layout/payment-fail/payment-fail.component';
 
 
 export const routes: Routes = [
@@ -73,6 +75,16 @@ export const routes: Routes = [
     {
         path: 'md_message', 
         component: MdMessageComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'p_success', 
+        component: PaymentSuccessComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'p_fail', 
+        component: PaymentFailComponent,
         pathMatch: 'full'
     }
 

@@ -279,6 +279,8 @@
 <!--Offers Section-->
 <div class="offers-section">
   <!-- Centered Heading -->
+
+   <div *ngIf="offers && offers.length > 0; else noOffers">
   <h2 class="offers-heading">Offers</h2>
 
   <!-- Scrollable Offers Area -->
@@ -286,6 +288,7 @@
     <button class="scroll-btn left" (click)="scrollLeft()">&#8249;</button>
 
     <div class="offers-grid" #offersContainer>
+     
       <div *ngFor="let offer of offers" class="offer-card">
         <span *ngIf="offer.badge" class="badge">{{ offer.badge }}</span>
         <img class="offer-image" [src]="offer.image"  alt="offers"> 
@@ -298,10 +301,17 @@
           
         </div>
       </div>
+     
     </div>
 
     <button class="scroll-btn right" (click)="scrollRight()">&#8250;</button>
   </div>
+   </div>
+   <ng-template #noOffers>
+  <div class="no-offers-message">
+    No offers available currently
+  </div>
+</ng-template>
 </div>
 
 

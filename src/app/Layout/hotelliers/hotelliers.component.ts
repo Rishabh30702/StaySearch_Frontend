@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 import { loadStripe, Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { StripeService } from './services/stripe.service';
+import { FormDataService } from './services/form-data.service';
 
 
 @Component({
@@ -44,6 +45,8 @@ onResize(event: any) {
   mapInitialized = false;
   showmenu: boolean = true;
   today: Date = new Date();
+
+  isLoad = false;
 
    minDateTime: string ="";
 maxDateTime: string="";
@@ -283,7 +286,8 @@ hdfcOrderId: string = '';
     private Aroute: ActivatedRoute,
     private authService:AuthService,
     private elementRef: ElementRef,
-    private stripeService:StripeService
+    private stripeService:StripeService,
+    private formDataService: FormDataService
   ) {
 
     this.Aroute.queryParams.subscribe(params => {
@@ -315,7 +319,7 @@ hdfcOrderId: string = '';
 
   ngOnDestroy(): void {
     this.mapService.destroyMap();
-    this.destroy();
+    //  this.destroy();
     this.destroyStripeElements();
       if (this.card) {
       this.card.destroy();
@@ -489,20 +493,14 @@ async payWithCard() {
       this.cardErrors = result.error.message || 'Payment failed.';
       this.isLoading = false;
     } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
-         Swal.fire({
-  icon: 'success',
-  title: 'Payment Successful!',
-  text: 'Your payment was processed successfully.',
-  confirmButtonColor: '#28a745'
-});
-
-
+               
       // ✅ Payment succeeded, now run the main hotel registration logic
-      this.log();
+       this.log();
       
-      this.closeStripeModal();
+      // this.closeStripeModal();
     }
   } catch (error) {
+    this.router.navigate(['/p_fail']);
     console.error(error);
        Swal.fire({
   icon: 'error',
@@ -512,8 +510,8 @@ async payWithCard() {
 });
 
   }
-
-  this.isLoading = false;
+this.isLoading = false;
+  
 }
 
   // Dummy method, replace with your real backend call
@@ -557,6 +555,8 @@ formatDateTimeLocal(date: Date): string {
     window.onpopstate = () => {
     history.pushState(null, '', location.href);
    };
+    
+  
     
 
     this.http.get<{ ACTIVEGATEWAY: string }>('https://staysearchbackend.onrender.com/api/payment-gateway/active')
@@ -1474,10 +1474,27 @@ onFileSelected(event: Event) {
   
     if (token) {
       // ✅ User already logged in → directly register hotel
-      this.registerHotelafterLogin(formData);
+      this.formDataService.setFormData(formData);
+       this.router.navigate(['/p_success'] );
+
+
+
+        this.selectedMenu = 'rooms';
+        this.imagePreviews = [];
+        this.imageFiles = [];
+        this.subImages = [];
+        this.roomImagePreview = '';
+        this.poolImagePreview = '';
+        this.lobbyImagePreview = '';
+        this.isLoading = false;
+         this.checkHotelsData();
+         this.selectedMenu = 'dashboard';
+
+
+      // this.registerHotelafterLogin(formData);
     } else {
       // 🔐 No token → register user → login → then register hotel
-      this.isLoading = true;
+    
   
       const userData = {
         fullname: this.UserFullname,
@@ -1485,8 +1502,26 @@ onFileSelected(event: Event) {
         password: this.password,
         phonenumber: this.phonenumber
       };
-  this.isLoading = true;
-      this.hotelierService.registerHotelier(userData).subscribe({
+  this.formDataService.setFormData(formData);
+this.router.navigate(['/p_success'],
+  {
+    queryParams: {
+       userData: JSON.stringify(userData)
+    }
+  }
+ );
+
+ this.selectedMenu = 'rooms';
+          this.imagePreviews = [];
+          this.imageFiles = [];
+          this.subImages = [];
+           this.roomImagePreview = '';
+          this.poolImagePreview = '';
+          this.lobbyImagePreview = '';
+          this.isLoading = false;
+
+/*
+     this.hotelierService.registerHotelier(userData).subscribe({
         next: () => {
           const loginPayload = {
             username: this.username,
@@ -1531,11 +1566,11 @@ onFileSelected(event: Event) {
 
           console.error(err);
         }
-      });
+      });*/
     }
   }
 
-  registerHotel(formData: FormData) {
+ /* registerHotel(formData: FormData) {
     this.isLoading = true;
     this.hotelierService.registerHotel(formData).subscribe({
       next: () => {
@@ -1609,7 +1644,7 @@ onFileSelected(event: Event) {
       }
     });
   }
-  
+  */
 
 
   
