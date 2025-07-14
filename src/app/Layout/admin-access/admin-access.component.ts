@@ -102,7 +102,9 @@ phoneNumber = "";
         if (res.token) {
           localStorage.setItem('token', res.token);
           this.isLoading = false;
-          this.router.navigate(['adminAccess/adminPanel']);
+         this.router.navigate(['adminAccess/adminPanel'], {
+  queryParams: { value: "admin" }
+});
         } else {
           this.isLoading = false;
           Swal.fire({
@@ -131,7 +133,9 @@ phoneNumber = "";
           // Approved hotelier, store token and route
           localStorage.setItem('token', res.token);
           this.isLoading =false;
-          this.router.navigate(['hotellier']);
+          this.router.navigate(['hotellier'], {
+  queryParams: { value: "hotellier" }
+});
         } else if (res.message && res.message.includes('pending')) {
           // Pending approval case
           this.isLoading =false;

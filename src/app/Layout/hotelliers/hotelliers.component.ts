@@ -579,7 +579,7 @@ formatDateTimeLocal(date: Date): string {
     this.fetchFeedbacks();
 
    
-  
+  sessionStorage.setItem('lastVisitedRoute', 'hotellier');
 
 
     const token = localStorage.getItem('token');
@@ -1882,6 +1882,7 @@ checkHotelsData() {
   this.hotelsService.getHotels().subscribe({
     next: (data) => {
       if (!data || data.length === 0) {
+        this.showmenu = false;
         console.log('No hotels found');
         this.addNewProperty(); // Call your method to add a new property if needed
         this.isLoading = false;

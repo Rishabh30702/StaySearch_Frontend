@@ -5,8 +5,9 @@ export const authGuard: CanActivateFn = (route, state) => {
  
    const router = inject(Router);
   const token = localStorage.getItem('token'); // or sessionStorage
-
-  if (token) {
+  const role = route.queryParamMap.get('value');
+  // console.log(role);
+  if (role === "admin" && token) {
     return true;
   } else {
     router.navigate(['/adminAccess'],
