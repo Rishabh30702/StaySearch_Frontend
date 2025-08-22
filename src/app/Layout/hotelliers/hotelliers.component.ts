@@ -18,6 +18,10 @@ import { AuthService } from '../../Core/Services/AuthService/services/auth.servi
 import { loadStripe, Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 import { StripeService } from './services/stripe.service';
 import { FormDataService } from './services/form-data.service';
+import { RazorpayserviceService } from './services/RazorpayService/razorpayservice.service';
+
+// Add this declaration so TypeScript knows about Razorpay
+declare var Razorpay: any;
 
 
 @Component({
@@ -287,7 +291,8 @@ hdfcOrderId: string = '';
     private authService:AuthService,
     private elementRef: ElementRef,
     private stripeService:StripeService,
-    private formDataService: FormDataService
+    private formDataService: FormDataService,
+    private RazorpayService: RazorpayserviceService
   ) {
 
     this.Aroute.queryParams.subscribe(params => {
@@ -393,14 +398,50 @@ openStripeModal() {
   });
 
   }else if (this.activeGateway === 'HDFC') {
-    this.showHdfcModal = true;
+    // this.showHdfcModal = true;
 
-    // Wait for modal to render then submit form automatically
-    setTimeout(() => {
-      if (this.hdfcFormElement) {
-        this.hdfcFormElement.nativeElement.submit();
-      }
-    }, 100); // small delay for rendering
+    // // Wait for modal to render then submit form automatically
+    // setTimeout(() => {
+    //   if (this.hdfcFormElement) {
+    //     this.hdfcFormElement.nativeElement.submit();
+    //   }
+    // }, 100); // small delay for rendering
+
+    // Form Validation
+
+     this.RazorpayService.createOrder(50000).subscribe(order => { 
+      const options: any = {
+        key: order.key,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'StaySearch',
+        description: 'Hotel Booking',
+        order_id: order.orderId,
+        handler: (response: any) => {
+          console.log('Payment Success:', response);
+
+          // Step 1: Verify with backend
+          this.RazorpayService.verifyPayment(response).subscribe(res => {
+            if (res.verified) {
+              console.log('Backend verification success:', res);
+
+              // ✅ Step 2: Trigger booking/invoice/email logic
+              // this.autoBookHotel(response);
+              // SuccessPayment
+            } else {
+              console.error('Payment verification failed:', res);
+              // Failed Payment
+              
+            }
+          });
+        },
+        theme: { color: '#3399cc' }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    });
+
   } else {
     Swal.fire('No active payment gateway', 'Please contact admin.', 'warning');
   }
