@@ -52,6 +52,8 @@ onResize(event: any) {
 
   isLoad = false;
 
+  isSubmit = false;
+
    minDateTime: string ="";
 maxDateTime: string="";
 minDateTime2: string = "";
@@ -398,6 +400,7 @@ openStripeModal() {
   });
 
   }else if (this.activeGateway === 'HDFC') {
+    this.isSubmit = true;
     // this.showHdfcModal = true;
 
     // // Wait for modal to render then submit form automatically
@@ -409,7 +412,71 @@ openStripeModal() {
 
     // Form Validation
 
+    if (!this.atLeastOneAmenitySelected) {
+    this.closeStripeModal(); // needed as stripe modal overlaps swal and makes it invisible
+     Swal.fire({
+       icon: 'warning',
+       title: 'No Amenities Selected',
+        text: 'Please select at least one amenity.',
+        confirmButtonColor: '#f0ad4e'
+          });
+           this.isSubmit = false;
+    return;
+  }
+
+  if (!this.atLeastOnePropertyType) {
+      this.closeStripeModal(); // needed as stripe modal overlaps swal and makes it invisible
+       Swal.fire({
+             icon: 'info',
+             title: 'Property Type Required',
+             text: 'Please select the type of property.',
+             confirmButtonColor: '#3085d6'
+               });
+this.isSubmit = false;
+    return;
+  }
+
+  const form = this.propertyNgForm;
+    // needed as stripe modal overlaps swal and makes it invisible
+  if (!form.valid) {
+     this.closeStripeModal();
+      Swal.fire({
+        icon: 'warning',
+       title: 'Incomplete Form',
+       text: 'Please fill all required fields correctly.',
+       confirmButtonColor: '#f0ad4e'
+           });
+this.isSubmit = false;
+    return;
+  }
+
+  if (this.imageFiles.length === 0) {
+      this.closeStripeModal(); // needed as stripe modal overlaps swal and makes it invisible
+       Swal.fire({
+  icon: 'info',
+  title: 'Image Required',
+  text: 'Please upload at least one image.',
+  confirmButtonColor: '#3085d6'
+});
+this.isSubmit = false;
+    return;
+  }
+
+
+  if (!this.searchQuery || this.searchQuery.trim() === '') {
+    this.closeStripeModal();
+    Swal.fire({
+      icon: 'info',
+      title: 'Empty Search',
+      text: 'Please Type your location on searchbar and select on Map.'
+    });
+  this.isSubmit = false;
+    return;
+  }
+
+
      this.RazorpayService.createOrder(50000).subscribe(order => { 
+      var paymentSuccess = false;
       const options: any = {
         key: order.key,
         amount: order.amount,
@@ -424,21 +491,44 @@ openStripeModal() {
           this.RazorpayService.verifyPayment(response).subscribe(res => {
             if (res.verified) {
               console.log('Backend verification success:', res);
-
+              paymentSuccess = true;
+             this.registerhdfc();
+             
+              // this.isSubmit = false;
               // ✅ Step 2: Trigger booking/invoice/email logic
               // this.autoBookHotel(response);
               // SuccessPayment
             } else {
               console.error('Payment verification failed:', res);
               // Failed Payment
+              this.isSubmit = false;
               
             }
           });
         },
+
+        
+
+ modal: {
+  ondismiss: () => {
+    console.log("Checkout form closed by the user");
+     if (!paymentSuccess) {
+      this.isSubmit = false; // ✅ Only reset if not successful
+    }
+  }
+},
+
+  
+
         theme: { color: '#3399cc' }
       };
 
       const rzp = new Razorpay(options);
+rzp.on('payment.failed', (response: any) => {
+    console.error('Payment Failed:', response.error);
+    
+  });
+
       rzp.open();
     });
 
@@ -448,6 +538,7 @@ openStripeModal() {
 }
 
   closeStripeModal() {
+    
     this.showStripeModal = false;
     this.cardErrors = '';
 
@@ -620,7 +711,7 @@ formatDateTimeLocal(date: Date): string {
     this.fetchFeedbacks();
 
    
-  
+  sessionStorage.setItem('lastVisitedRoute', 'hotellier');
 
 
     const token = localStorage.getItem('token');
@@ -1687,7 +1778,150 @@ this.router.navigate(['/p_success'],
   }
   */
 
+registerhdfc(){
+const form = this.propertyNgForm;
 
+  const propertyData = {
+      name: form.value.propertyName,
+      address: form.value.propertyAddress,
+      destination: this.selectedDistrict,
+      description: form.value.longDescription,
+      amenities: this.selectedAmenities,
+      lat: this.latitude,
+      lng: this.longitude,
+      accommodationType: this.selectedProperty,
+      rating: 4.8,
+      price: form.value.propertyPrice,
+      reviews: "",
+      liked: false,
+      checkIn: form.value.checkIn,
+      checkOut: form.value.checkOut,
+      guests: form.value.guests,
+      rooms: form.value.rooms
+    };
+  
+    const formData = new FormData();
+    formData.append("hotel", new Blob([JSON.stringify(propertyData)], { type: "application/json" }));
+    formData.append("imageUrl", this.imageFiles[0]);
+    for (let i = 1; i < this.imageFiles.length; i++) {
+      formData.append("subImages", this.imageFiles[i]);
+    }
+  
+    const token = localStorage.getItem('token');
+  
+    if (token) {
+      // ✅ User already logged in → directly register hotel
+     this.hotelierService.registerHotel(formData).subscribe({
+           next: () => {
+             Swal.fire({
+       icon: 'success',
+       title: 'Registration Successful',
+       text: 'Hotel registered successfully.',
+       confirmButtonColor: '#28a745'
+     });
+      
+     this.router.navigate(['/hotellier'])
+           },
+           error: (err: any) => {
+           
+  
+           Swal.fire({
+       icon: 'error',
+       title: 'Registration Failed',
+       text: 'Hotel registration failed.',
+       confirmButtonColor: '#d33'
+     });
+     
+             console.error(err);
+           }
+         });
+     
+
+
+           this.isSubmit = false;
+        this.selectedMenu = 'rooms';
+        this.imagePreviews = [];
+        this.imageFiles = [];
+        this.subImages = [];
+        this.roomImagePreview = '';
+        this.poolImagePreview = '';
+        this.lobbyImagePreview = '';
+        this.isLoading = false;
+         this.checkHotelsData();
+         this.selectedMenu = 'dashboard';
+
+
+      
+    }
+
+
+    else{
+      
+      const userData = {
+        fullname: this.UserFullname,
+        username: this.username,
+        password: this.password,
+        phonenumber: this.phonenumber
+      };
+  this.hotelierService.registerHotelier(userData).subscribe({
+             next: () => {
+               const loginPayload = {
+                 username: userData.username,
+                 password: userData.password
+               };
+       
+               this.authService.loginHot(loginPayload).subscribe({
+                 next: (res: any) => {
+                   
+                   if (res.token) {
+                     localStorage.setItem('token', res.token);
+                     this.registerHotel(formData);
+                   } else {
+                     this.isSubmit = false;
+                     Swal.fire({
+                       icon: 'error',
+                       title: 'Login Failed',
+                       text: 'Login failed. Please try again.'
+                     });
+                     
+                   }
+                 },
+                 error: (err: any) => {
+                   this.isSubmit = false;
+                   Swal.fire({
+                     icon: 'error',
+                     title: 'Login Failed',
+                     text: err?.error?.message || 'Invalid credentials.'
+                   });
+                   console.error('Login error:', err);
+                 }
+               });
+             },
+             error: (err: any) => {
+               this.isSubmit = false;
+                  Swal.fire({
+       icon: 'error',
+       title: 'Registration Failed',
+       text: 'User registration failed.',
+       confirmButtonColor: '#d33'
+     });
+     
+               console.error(err);
+             }
+           });
+
+          // this.selectedMenu = 'rooms';
+          this.imagePreviews = [];
+          this.imageFiles = [];
+          this.subImages = [];
+           this.roomImagePreview = '';
+          this.poolImagePreview = '';
+          this.lobbyImagePreview = '';
+          this.isLoading = false;
+
+    }
+  
+}
   
 previewImages(event: Event) {
   const target = event.target as HTMLInputElement;
@@ -1923,6 +2157,7 @@ checkHotelsData() {
   this.hotelsService.getHotels().subscribe({
     next: (data) => {
       if (!data || data.length === 0) {
+        this.showmenu = false;
         console.log('No hotels found');
         this.addNewProperty(); // Call your method to add a new property if needed
         this.isLoading = false;
@@ -2285,5 +2520,57 @@ openHdfcPayment() {
   form.submit();
   document.body.removeChild(form);
 }
+
+
+registerHotel(formData: FormData) {
+      this.hotelierService.registerHotel(formData).subscribe({
+        next: () => {
+            Swal.fire({
+    icon: 'success',
+    title: 'Registration Successful',
+    text: 'Awaiting admin approval.',
+    confirmButtonColor: '#28a745'
+  });
+ 
+  
+          
+          localStorage.removeItem("token");
+          this.router.navigate(['adminAccess'],
+            
+              {
+    queryParams: { key: 'owner' } }
+          );
+         this.isSubmit = false;
+        },
+        error: (err: any) => {
+          this.isSubmit = false;
+        Swal.fire({
+    icon: 'error',
+    title: 'Registration Failed',
+    text: 'Hotel registration failed.',
+    confirmButtonColor: '#d33'
+  });
+  
+          console.error(err);
+        }
+      });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 }
+
+
+
+

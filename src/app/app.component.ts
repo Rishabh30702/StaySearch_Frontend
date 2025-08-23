@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router,NavigationEnd, RouterOutlet} from '@angular/router';
 import { NavbarComponent } from "./Layout/navbar/navbar.component";
 import { FooterComponent } from "./Layout/footer/footer.component";
@@ -16,7 +16,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   isHomePage = false;
   isAdminPanel = false;
   title = 'StaySearchFrontend';
@@ -59,4 +59,26 @@ export class AppComponent {
   scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+
+  
+  ngOnInit(): void {
+    const lastVisited = sessionStorage.getItem('lastVisitedRoute');
+    const currentPath = window.location.pathname;
+
+    // Check if user was previously on /adminAccess/adminPanel
+    // and is now directly navigating to another page
+    if (
+      (lastVisited === 'adminAccess/adminPanel' && currentPath !== '/adminAccess/adminPanel') ||
+  (lastVisited === 'hotellier' && currentPath !== '/hotellier')
+    ) {
+      localStorage.removeItem('token');
+      console.log('Token removed because user left admin panel via URL');
+    }
+
+    // Clear lastVisitedRoute for safety
+    sessionStorage.removeItem('lastVisitedRoute');
+  }
+
+
 }

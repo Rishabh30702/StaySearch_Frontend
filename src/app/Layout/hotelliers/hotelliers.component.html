@@ -378,8 +378,24 @@
               </div>
             </fieldset>
 
-          <button type="button" class="submit" (click)="openStripeModal()">
-  Submit and Proceed
+          <button type="button" class="submit" (click)="openStripeModal()"
+           [disabled]="isSubmit"     
+          > 
+
+  <ng-container *ngIf="!isSubmit; else loadingTemplate">
+    <span class="flex items-center justify-center h-6 leading-none">
+      Submit and Proceed
+    </span>
+  </ng-container>
+
+  <ng-template #loadingTemplate>
+    <span class="flex items-center justify-center h-6 leading-none ">
+       <span>Please wait   </span>
+
+      <span class="spinner"></span>
+     
+    </span>
+  </ng-template>
 </button>
 
 <!-- Modal -->

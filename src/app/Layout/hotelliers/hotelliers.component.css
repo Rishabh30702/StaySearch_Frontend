@@ -2095,3 +2095,22 @@ color: #761461;
     transform: rotate(360deg);
   }
 }
+
+
+
+
+/* keeps spinner tiny and prevents vertical jump */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;         /* visible arc */
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;          /* no extra line gap */
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
