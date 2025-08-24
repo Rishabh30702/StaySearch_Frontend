@@ -46,7 +46,7 @@ statusFilter: string = 'pending';
   
 
   status: string = 'pending';
-
+   amount = 0.00;
 
   hotels = [
     {
@@ -343,6 +343,7 @@ pendingHoteliersCount: number = 0;
     }
     else if (view === 'configuration') {
       this.isLoading = true;
+      this.fetchAmount();
     this.getSelectedGateway(false);
   }
   }
@@ -1191,6 +1192,7 @@ filterPendingOffers() {
       console.log('Stripe gateway activated', res);
       // alert('Stripe selected successfully!');
       // Optionally trigger Stripe payment or UI update
+      this.setAmount();
       this.getSelectedGateway(false); // Refresh selected gateway
     },
     error: (err) => {
@@ -1217,6 +1219,7 @@ updateHdfc() {
       console.log('HDFC gateway activated', res);
       // alert('HDFC selected successfully!');
       // Optionally trigger HDFC payment or UI update
+      this.setAmount();
       this.getSelectedGateway(false); // Refresh selected gateway
     },
     error: (err) => {
@@ -1268,5 +1271,39 @@ this.showModal = true;
       hotel.h_name.toLowerCase().includes(this.searchkey.toLowerCase())
     );
   }
+
+
+fetchAmount() {
+  this.adminService.getAmountpage().subscribe({
+    next: (res: any) => {
+      // assuming API returns { amount: 5000 }
+      this.amount = res;
+      console.log("Amount set to:", this.amount);
+    },
+    error: (err) => {
+      console.error("Error fetching amount:", err);
+    }
+  });
+}
+
+
+setAmount() {
+
+  if(this.amount==0){
+    Swal.fire('Error!', 'Please Enter Amount!', 'error');
+    return;
+  }
+  const payload =  parseFloat(Number(this.amount).toFixed(2))  ;   // build request body
+
+  this.adminService.updateAmount(payload).subscribe({
+    next: (res) => {
+      console.log("Amount updated successfully:", res);
+    },
+    error: (err) => {
+      console.error("Error updating amount:", err);
+    }
+  });
+}
+
 
 }

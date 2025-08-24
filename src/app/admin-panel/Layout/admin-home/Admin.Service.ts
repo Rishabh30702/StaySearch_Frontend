@@ -75,5 +75,19 @@ export class AdminService {
 updateUserProfile(data: any):Observable<any>{
  return this.http.put(`${this.baseUrl}/admin/user/update`,data)
 }
+
  
+
+ getAmountpage(): Observable<any> {
+    return this.http.get('https://staysearchbackend.onrender.com/api/payment-gateway/amount ');
+  }
+
+
+  
+    updateAmount(Data: any): Observable<any> {
+     
+   return this.http.put(`https://staysearchbackend.onrender.com/api/payment-gateway/admin/update-amount`, Data);
+
+  }  
+
 }

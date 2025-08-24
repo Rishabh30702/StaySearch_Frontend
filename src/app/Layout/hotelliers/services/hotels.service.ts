@@ -63,4 +63,9 @@ export class HotelsService {
     return this.http.put(url, data);
   }
 
+
+    createInvoice(data: any): Observable<any> {
+    return this.http.post(`https://staysearchbackend.onrender.com/api/payments/invoice`, data);
+  }
+
 }

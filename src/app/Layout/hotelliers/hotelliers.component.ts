@@ -19,6 +19,7 @@ import { loadStripe, Stripe, StripeCardElement, StripeElements } from '@stripe/s
 import { StripeService } from './services/stripe.service';
 import { FormDataService } from './services/form-data.service';
 import { RazorpayserviceService } from './services/RazorpayService/razorpayservice.service';
+import { AdminService } from '../../admin-panel/Layout/admin-home/Admin.Service';
 
 // Add this declaration so TypeScript knows about Razorpay
 declare var Razorpay: any;
@@ -58,7 +59,7 @@ onResize(event: any) {
 maxDateTime: string="";
 minDateTime2: string = "";
  updateHotelDataid =0;
-
+amount: number= 0.00;
 
 isLoading: boolean = false;
 isDeal = false;
@@ -294,7 +295,8 @@ hdfcOrderId: string = '';
     private elementRef: ElementRef,
     private stripeService:StripeService,
     private formDataService: FormDataService,
-    private RazorpayService: RazorpayserviceService
+    private RazorpayService: RazorpayserviceService,
+     private adminService: AdminService,
   ) {
 
     this.Aroute.queryParams.subscribe(params => {
@@ -474,8 +476,9 @@ this.isSubmit = false;
     return;
   }
 
+   const amountInPaise = Math.round(Number(this.amount) * 100);
 
-     this.RazorpayService.createOrder(50000).subscribe(order => { 
+     this.RazorpayService.createOrder(amountInPaise).subscribe(order => { 
       var paymentSuccess = false;
       const options: any = {
         key: order.key,
@@ -498,6 +501,8 @@ this.isSubmit = false;
               // ✅ Step 2: Trigger booking/invoice/email logic
               // this.autoBookHotel(response);
               // SuccessPayment
+              this.createInvoice(response,amountInPaise);
+
             } else {
               console.error('Payment verification failed:', res);
               // Failed Payment
@@ -520,7 +525,12 @@ this.isSubmit = false;
 
   
 
-        theme: { color: '#3399cc' }
+        theme: { color: '#761461' },
+          prefill: {
+    name: "",
+    email: this.username,
+    contact: this.phonenumber
+  },
       };
 
       const rzp = new Razorpay(options);
@@ -688,7 +698,8 @@ formatDateTimeLocal(date: Date): string {
     history.pushState(null, '', location.href);
    };
     
-  
+   this.fetchAmount();
+   
     
 
     this.http.get<{ ACTIVEGATEWAY: string }>('https://staysearchbackend.onrender.com/api/payment-gateway/active')
@@ -1819,8 +1830,8 @@ const form = this.propertyNgForm;
        text: 'Hotel registered successfully.',
        confirmButtonColor: '#28a745'
      });
-      
-     this.router.navigate(['/hotellier'])
+      this.selectedMenu = 'rooms';
+    //  this.router.navigate(['/hotellier'])
            },
            error: (err: any) => {
            
@@ -1839,7 +1850,7 @@ const form = this.propertyNgForm;
 
 
            this.isSubmit = false;
-        this.selectedMenu = 'rooms';
+        // 
         this.imagePreviews = [];
         this.imageFiles = [];
         this.subImages = [];
@@ -1848,7 +1859,7 @@ const form = this.propertyNgForm;
         this.lobbyImagePreview = '';
         this.isLoading = false;
          this.checkHotelsData();
-         this.selectedMenu = 'dashboard';
+        
 
 
       
@@ -2564,7 +2575,42 @@ registerHotel(formData: FormData) {
 
 
 
+fetchAmount() {
+  this.adminService.getAmountpage().subscribe({
+    next: (res: any) => {
+      // assuming API returns { amount: 5000 }
+      this.amount = res;
+      console.log("Amount set to:", this.amount);
+    },
+    error: (err) => {
+      console.error("Error fetching amount:", err);
+    }
+  });
+}
 
+
+  createInvoice(res: any, amount: any) {
+    const form = this.propertyNgForm;
+    const invoiceData = {
+      orderId: res.razorpay_order_id,
+      paymentId: res.razorpay_payment_id,
+      customerEmail:this.username,
+      customerPhone: this.phonenumber,
+      amountInPaise: amount,
+      hotelName: form.value.propertyName
+    };
+
+     console.log("Invoice:", invoiceData);
+
+    this.hotelsService.createInvoice(invoiceData).subscribe({
+      next: (res) => {
+        console.log('Invoice created:', res);
+      },
+      error: (err) => {
+        console.error('Error creating invoice:', err);
+      }
+    });
+  }
 
 
 
