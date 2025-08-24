@@ -227,6 +227,16 @@ phoneNumber = "";
 
         return;
     }
+
+
+    if (!/^\d{10}$/.test(this.signupContact)) {
+  Swal.fire({
+    icon: 'error',
+    title: 'Invalid Contact Number',
+    text: 'Please Provide a valid contact number.'
+  });
+  return;
+}
     
     const data = {
         fullname: this.signupEmail,
