@@ -1047,3 +1047,35 @@ input, textarea {
   color: #555;
   pointer-events: none;
 }
+
+.search-box {
+  margin-bottom: 12px;
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #4f46e5; /* indigo */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.download-btn:hover {
+  background-color: #4338ca;
+}
+
+.download-btn .arrow {
+  font-size: 12px;
+}
