@@ -1002,9 +1002,9 @@ select:required:invalid:focus {
   transition: transform 0.3s ease;
 }
 
-.stat-card:hover {
-  transform: translateY(-5px);
-}
+/* .stat-card:hover { */
+  /* transform: translateY(-5px); */
+/* } */
 
 .stat-card h3 {
   margin: 0;
@@ -2113,4 +2113,72 @@ color: #761461;
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+
+
+
+.dropdown {
+  position: relative;
+  top: 10%;
+  width: 300px;
+  font-family: Arial, sans-serif;
+}
+
+.dropdown-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-btn span.rotate {
+  transform: rotate(180deg);
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background: #fff;
+  margin-top: 4px;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.receipt-row {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.receipt-row:last-child {
+  border-bottom: none;
+}
+
+.download-btn {
+  margin-right: 10px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.receipt-info div {
+  font-weight: bold;
+}
+
+.receipt-info small {
+  color: #666;
+  font-size: 11px;
 }

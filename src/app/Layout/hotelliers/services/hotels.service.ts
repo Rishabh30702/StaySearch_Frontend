@@ -68,4 +68,15 @@ export class HotelsService {
     return this.http.post(`https://staysearchbackend.onrender.com/api/payments/invoice`, data);
   }
 
+
+  getInvoices(email: any) {
+  return this.http.get<any[]>(`https://staysearchbackend.onrender.com/api/payments/invoice/customer/${email} `);
+}
+downloadInvoice(orderId: string): Observable<Blob> {
+    return this.http.get(`https://staysearchbackend.onrender.com/api/payments/invoice/order/${orderId}/download`, {
+      responseType: 'blob'  // important to get file blob
+    });
+  }
+
+
 }

@@ -28,6 +28,28 @@
       <div class="top-bar">
         <span>{{ todayDate }}</span>
     
+
+<div class="dropdown" #dropdownRef>
+  <button class="dropdown-btn" (click)="toggleDrop()">
+    Payment Receipts
+    <span [class.rotate]="isOpen">&#9660;</span>
+  </button>
+
+  <div class="dropdown-content" *ngIf="isOpen">
+    <div *ngFor="let receipt of receipts" class="receipt-row">
+      <button class="download-btn" (click)="downloadReceipt(receipt, $event)">
+       <i class="fa-solid fa-download"></i>
+ Download
+      </button>
+      <div class="receipt-info">
+        <div>Payment ID:  {{ receipt.paymentId }} - Amount Paid ₹{{ (receipt.amountInPaise / 100) | number:'1.2-2' }}</div>
+        <small>{{ receipt.createdAt }} </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+        
       
             <button (click)="logout()" class="logout-btn">
             
@@ -41,7 +63,7 @@
       <!-- Dashboard -->
       <div *ngIf="selectedMenu === 'dashboard'" class="dashboard-container fade-in">
 
-     
+     <br>
 
         <!-- 📊 Stats Cards -->
         <div class="stats-section">

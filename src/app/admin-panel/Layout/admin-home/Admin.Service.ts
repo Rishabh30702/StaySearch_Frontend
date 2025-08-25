@@ -88,6 +88,15 @@ updateUserProfile(data: any):Observable<any>{
      
    return this.http.put(`https://staysearchbackend.onrender.com/api/payment-gateway/admin/update-amount`, Data);
 
-  }  
+  } 
+   
+  getAllInvoices() {
+  return this.http.get<any[]>(`https://staysearchbackend.onrender.com/api/payments/invoice`);
+}
+downloadInvoice(orderId: string): Observable<Blob> {
+    return this.http.get(`https://staysearchbackend.onrender.com/api/payments/invoice/order/${orderId}/download`, {
+      responseType: 'blob'  // important to get file blob
+    });
+  }
 
 }

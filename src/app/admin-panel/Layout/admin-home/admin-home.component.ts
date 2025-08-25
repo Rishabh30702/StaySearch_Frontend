@@ -58,6 +58,9 @@ statusFilter: string = 'pending';
     // Structure of hotels data table
   ];
 
+ invoices: any[] = [];
+ filteredInvoices: any[] = [];
+  searchInv: string = '';
 
   rejectModal: boolean =false;
   secBanner = false;
@@ -145,7 +148,7 @@ pendingHoteliersCount: number = 0;
     this.fetchComments();
     this.getAllOffers();
     // console.log("Content ID",this.contentUpdateid);
-
+ this.loadInvoices();
     this.getSelectedGateway(true);
     
     sessionStorage.setItem('lastVisitedRoute', 'adminAccess/adminPanel');
@@ -1305,5 +1308,53 @@ setAmount() {
   });
 }
 
+ loadInvoices() {
+    this.adminService.getAllInvoices().subscribe({
+      next: (res) => {
+        this.invoices = this.filteredInvoices=res; // Assuming backend returns an array of invoices
+      },
+      error: (err) => {
+        console.error('Error fetching invoices:', err);
+      }
+    });
+  }
+
+
+ filterInvoices() {
+    const text = this.searchInv.toLowerCase();
+    this.filteredInvoices = this.invoices.filter(invoice =>
+      invoice.paymentId?.toLowerCase().includes(text) ||
+      invoice.orderId?.toLowerCase().includes(text) ||
+      invoice.customerEmail?.toLowerCase().includes(text) ||
+      invoice.customerPhone?.toLowerCase().includes(text) ||
+      invoice.hotelName?.toLowerCase().includes(text)
+    );
+  }
+
+
+downloadInv(orderId: string) {
+  this.isLoading = true;
+  console.log("Downloading invoice for:", orderId);
+
+   this.adminService.downloadInvoice(orderId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${orderId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        this.isLoading = false;
+      },
+      error: (err) => {
+         this.isLoading = false;
+        console.error('Invoice download failed', err);
+      }
+    });
+
+ 
+}
 
 }

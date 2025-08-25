@@ -43,7 +43,7 @@ export class HotelliersComponent implements OnInit,OnDestroy {
 onResize(event: any) {
   this.isSidebarCollapsed = event.target.innerWidth <= 768;
 }
- 
+  @ViewChild('dropdownRef') dropdownRef!: ElementRef;
 
   latitude: number = 0;
   longitude: number = 0;
@@ -117,6 +117,14 @@ hotels = [
      
   },
 ];
+
+
+
+
+isOpen = false;
+
+  receipts: any = [];
+   
 
 currentHotelName:string="";
 
@@ -720,6 +728,8 @@ formatDateTimeLocal(date: Date): string {
     this.checkHotelsData();
     this.loadRooms();
     this.fetchFeedbacks();
+    this.getUserProfile();
+   
 
    
   sessionStorage.setItem('lastVisitedRoute', 'hotellier');
@@ -2384,7 +2394,8 @@ updatePassword() {
     const target = event.target as HTMLElement;
     const dropdownPanel = document.querySelector('.dropdown-panel');
     const triggerBox = document.querySelector('.dropdown-trigger');
-    
+    if (this.isOpen && !this.dropdownRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;}
     // Close dropdown if the click is outside of the dropdown and the trigger
     if (dropdownPanel && !dropdownPanel.contains(target) && !triggerBox?.contains(target)) {
       this.dropdownOpen = false;
@@ -2429,6 +2440,7 @@ getUserProfile()
       this.userprofile.email=this.username = data.email;
          this.userprofile.contact= this.phonenumber = data.phoneNumber;
          this.userprofile.fullName = data.fullName;
+          this.loadInvoices();
          },
         error: (err) => {
          console.error('Error fetching users:', err);
@@ -2613,6 +2625,43 @@ fetchAmount() {
   }
 
 
+   toggleDrop() {
+    this.isOpen = !this.isOpen;
+  }
+
+  downloadReceipt(receipt: any, event: Event) {
+    this.isLoading = true;
+    event.stopPropagation(); // prevent dropdown toggle
+   this.hotelsService.downloadInvoice(receipt.orderId).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${receipt.orderId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        this.isLoading = false;
+      },
+      error: (err) => {
+         this.isLoading = false;
+        console.error('Invoice download failed', err);
+      }
+    });
+  
+  }
+
+ loadInvoices() {
+    this.hotelsService.getInvoices(this.username).subscribe({
+      next: (data) => {
+        this.receipts = data;
+      },
+      error: (err) => {
+        console.error('Failed to fetch invoices:', err);
+      }
+    });
+  }
 
   
 }
