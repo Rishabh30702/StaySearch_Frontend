@@ -690,7 +690,9 @@
         <h2 class="section-title">🌟 Feedback & Reviews</h2>
 
         <div class="feedbacks">
+          <div *ngIf="feedbacks && feedbacks.length > 0; else noFeedbacks">
           <div class="feedback-card animate-card" *ngFor="let feedback of feedbacks">
+            
             <div class="header">
               <h3>{{ feedback.hotelName }}</h3>
 
@@ -725,15 +727,23 @@
             <p class="timestamp">🕒 {{ feedback.createdAt | date: 'medium' }}</p>
 
 
-            <button class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)">
-              <i class="fas fa-reply"></i> Reply
-            </button>
+            <!-- <button class="btn btn-outline-primary mt-2 ms-3" (click)="openReplyModal(feedback)"> -->
+              <!-- <i class="fas fa-reply"></i> Reply -->
+            <!-- </button> -->
 
 
 
 
           </div>
+ 
         </div>
+                 <ng-template #noFeedbacks>
+  <div class="no-feedback">
+    No feedback available for your hotels
+  </div>
+</ng-template>
+        </div>
+        
       </div>
 
       <div *ngIf="selectedMenu === 'profile'" class="fade-in">

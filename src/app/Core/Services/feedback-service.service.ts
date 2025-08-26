@@ -21,6 +21,6 @@ export class FeedbackServiceService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.post(this.baseAPI+"/feedbacks", feedbackData, { headers });
+    return this.http.post(this.baseAPI+"/save", feedbackData, { headers });
   }
 }

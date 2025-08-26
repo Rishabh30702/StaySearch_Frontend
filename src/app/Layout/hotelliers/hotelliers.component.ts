@@ -732,7 +732,8 @@ formatDateTimeLocal(date: Date): string {
    
 
    
-  sessionStorage.setItem('lastVisitedRoute', 'hotellier');
+  localStorage.setItem('lastVisitedRoute', 'hotellier');
+  console.log(localStorage.getItem('lastVisitedRoute'));
 
 
     const token = localStorage.getItem('token');
@@ -852,7 +853,7 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
 
  
   fetchFeedbacks(): void {
-    this.feedbackService.getFeedback().subscribe({
+    this.feedbackService.getMyFeedbacks().subscribe({
       next: (data) => {
         this.feedbacks = data;
       },

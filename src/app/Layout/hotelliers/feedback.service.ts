@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Feedback } from './feedback.modal';
 @Injectable({
@@ -14,6 +14,16 @@ export class FeedbackService {
   getAllFeedbacks(): Observable<Feedback[]> {
     return this.http.get<Feedback[]>(this.baseAPI+"/getAllFeedbacks");
   }
+
+getMyFeedbacks(): Observable<any> {
+  const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get(`${this.baseAPI}/hotelier/my-feedbacks`, { headers });
+  }
+  
 
   getFeedback(): Observable<any[]> {
     return this.http.get<any[]>('https://staysearchbackend.onrender.com/api/feedbacks/feedbacks/public');
