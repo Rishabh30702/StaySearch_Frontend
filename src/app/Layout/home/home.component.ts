@@ -270,7 +270,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
 
-    const hasLoggedOut = sessionStorage.getItem('hasLoggedOut');
+   /* const hasLoggedOut = sessionStorage.getItem('hasLoggedOut');
 
     // If the user has not logged out yet, check if there's a token
     if (!hasLoggedOut) {
@@ -280,7 +280,7 @@ export class HomeComponent implements OnInit {
         this.authService.logout();  // Log out the user
         sessionStorage.setItem('hasLoggedOut', 'true');  // Mark that user has been logged out
       }
-    }
+    }*/
 
     this.currentLanguage = localStorage.getItem('language') || 'en';
     this.translate.use(this.currentLanguage);

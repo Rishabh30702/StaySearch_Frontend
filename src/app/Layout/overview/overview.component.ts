@@ -238,6 +238,7 @@ private _submit(): void {
   // Prepare the feedback data
   const selectedAmenities = this.amenities.filter(a => a.selected).map(a => a.name);
   const feedbackData = {
+    hotelId: this.hotelId,
     hotelName: this.hotel.name,
     likedAmenities: selectedAmenities,
     rating: this.hotelRating,

@@ -63,7 +63,8 @@ export class AppComponent implements OnInit {
 
   
   ngOnInit(): void {
-    const lastVisited = sessionStorage.getItem('lastVisitedRoute');
+    const lastVisited = localStorage.getItem('lastVisitedRoute');
+    console.log(lastVisited);
     const currentPath = window.location.pathname;
 
     // Check if user was previously on /adminAccess/adminPanel
@@ -73,11 +74,11 @@ export class AppComponent implements OnInit {
   (lastVisited === 'hotellier' && currentPath !== '/hotellier')
     ) {
       localStorage.removeItem('token');
+      localStorage.setItem('lastVisitedRoute', 'home');
       console.log('Token removed because user left admin panel via URL');
     }
 
-    // Clear lastVisitedRoute for safety
-    sessionStorage.removeItem('lastVisitedRoute');
+   
   }
 
 

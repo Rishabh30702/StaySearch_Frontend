@@ -151,7 +151,7 @@ pendingHoteliersCount: number = 0;
  this.loadInvoices();
     this.getSelectedGateway(true);
     
-    sessionStorage.setItem('lastVisitedRoute', 'adminAccess/adminPanel');
+    localStorage.setItem('lastVisitedRoute', 'adminAccess/adminPanel');
     
   
   }

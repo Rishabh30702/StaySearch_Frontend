@@ -2182,3 +2182,16 @@ color: #761461;
   color: #666;
   font-size: 11px;
 }
+
+
+
+.no-feedback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;   /* or 100vh if full screen */
+  font-size: 18px;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+}
