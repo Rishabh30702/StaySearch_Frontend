@@ -129,7 +129,7 @@ phoneNumber = "";
       next: (res: any) => {
        
         if (res.token) {
-         
+        
           // Approved hotelier, store token and route
           localStorage.setItem('token', res.token);
           this.isLoading =false;
@@ -138,12 +138,14 @@ phoneNumber = "";
 });
         } else if (res.message && res.message.includes('pending')) {
           // Pending approval case
+          
           this.isLoading =false;
-          Swal.fire({
+           Swal.fire({
             icon: 'info',
             title: 'Pending Approval',
             text: res.message
           });
+
         } else {
           this.isLoading =false;
           // Other unexpected responses
@@ -155,19 +157,50 @@ phoneNumber = "";
         }
       },
       error: (err: any) => {
+        
         this.isLoading =false;
-        Swal.fire({
+
+        
+  if (err?.error?.message?.includes('pending')) {
+     
+    Swal.fire({
+      icon: 'info',
+      title: 'Pending Approval',
+      text: err.error.message
+    });
+
+      this.router.navigate(['hotellier'], {
+                queryParams: {
+                  username: this.loginUsername,
+                  newUser: true,
+                  status: 'pending'
+                  
+
+                }
+            });
+
+  }
+else{
+
+   Swal.fire({
           icon: 'error',
           title: 'Login Failed',
           text: err?.error?.message || 'Invalid credentials. Please try again.'
         });
         console.error('Login error:', err);
       }
+  
+}
+
+     
         
     });
 
+  
+  
   }
-  }
+
+}
   
 
 
