@@ -663,26 +663,63 @@
 
       </div>
 
-      <!-- Rates 
-      <div *ngIf="selectedMenu === 'rate'" class="fade-in">
-        <h2 class="section-title">Rates</h2>
-        <div class="rooms">
-          <div class="room" *ngFor="let room of rooms; let i = index">
-            <h4>{{ room.name }}</h4>
+       
+      <div *ngIf="selectedMenu === 'status'" class="fade-in">
+  <h2 class="section-title">Registration Status</h2>
+<div class="status-card">
+  <!-- Payment ID (dynamic) -->
+  <div class="status-item">
+    <i class="fas fa-receipt status-icon"></i>
+    <div *ngIf="receipts?.length > 0; else fetching">
+    <div *ngFor="let receipt of receipts">
+      <p class="label">Payment ID</p>
+      <p class="value" > {{ receipt.paymentId }}</p>
+    </div>
+    </div>
 
-            <div *ngIf="editMode && selectedRoomIndex === i">
-              <input type="number" [(ngModel)]="updatedPrice" min="0" placeholder="Enter new price" />
-              <button (click)="saveRate(i)">Save</button>
-              <button (click)="cancelEdit()">Cancel</button>
-            </div>
+    <ng-template #fetching>
+  <p class="value">Fetching...</p>
+</ng-template>
+  </div>
 
-            <div *ngIf="!(editMode && selectedRoomIndex === i)">
-              <p>Current Price: ₹{{ room.price }}/day</p>
-              <button (click)="enableEdit(i, room.price)">Edit</button>
-            </div>
-          </div>
-        </div>
-      </div> -->
+  <!-- Payment Status (hardcoded) -->
+  <div class="status-item">
+    <i class="fas fa-credit-card status-icon"></i>
+    <div >
+      <p class="label">Payment Status</p>
+      <p style="color: green; font-weight: bold;">Successful</p>
+    </div>
+  </div>
+
+  <!-- Registration Status (hardcoded) -->
+  <div class="status-item">
+    <i class="fas fa-id-card status-icon"></i>
+    <div>
+      <p class="label">Registration</p>
+      <p style="color: orange; font-weight: bold;">Awaiting Admin Approval</p>
+    </div>
+  </div>
+</div>
+
+<!-- Info Message (static) -->
+<div class="status-message" style="margin-top: 1.5rem; padding: 1rem; background: #e8f4ff; border: 1px solid #b3daff; border-radius: 8px; font-size: 0.95rem;">
+  <p>
+    🎉 Your registration and payment are successful!  
+    It’s <b>awaiting admin approval</b>.  
+    Please wait for some time.
+  </p>
+  <p>
+    You can <b>logout</b> and <b>login again</b> anytime to check your registration status.  
+    Once approved, you’ll also receive an email confirmation.
+  </p>
+</div>
+
+
+</div>
+
+      
+      
+      <!-- status ends-->
 
 
       <!-- Feedbacks and reviews -->

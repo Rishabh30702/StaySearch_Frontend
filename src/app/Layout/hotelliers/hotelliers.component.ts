@@ -53,6 +53,8 @@ onResize(event: any) {
 
   isLoad = false;
 
+  status = '';
+
   isSubmit = false;
 
    minDateTime: string ="";
@@ -66,6 +68,9 @@ isDeal = false;
 updateHotel = { name: '', address: '', Description: '' };
 
 isEditModalOpen =false;
+
+
+showStatusMenu = false;
 
   isSidebarCollapsed = false;
   selectedMenu: string = 'dashboard';
@@ -109,8 +114,8 @@ isEditModalOpen =false;
   // Example array of hotels
 hotels = [
  {
-    name: 'The Oberoi Amarvilas',
-    location: 'Agra, Uttar Pradesh',
+    name: 'fetching...',
+    location: 'fetching...',
     rating: 4.8,
     amenities: ['Wi-Fi', 'Pool', 'AC'],
     id:0,
@@ -133,7 +138,7 @@ currentHotelName:string="";
     { key: 'hotels', label: 'Hotels', icon: 'fas fa-hotel' },
     { key: 'rooms', label: 'Rooms', icon: 'fas fa-bed' },
     { key: 'deal', label: 'Deal', icon: 'fas fa-tags' },
-    // { key: 'rate', label: 'Rate', icon: 'fas fa-rupee-sign' },
+    { key: 'status', label: 'Registration Status', icon: 'fas fa-id-card' },
     { key: 'feedbacks', label: 'Review & Feedbacks', icon: 'fas fa-comments' },
     { key: 'profile', label: 'My profile', icon: 'fas fa-user' }
   ];
@@ -312,11 +317,14 @@ hdfcOrderId: string = '';
       this.UserFullname = params['fullname'];
       this.password = params['password'];
       this.phonenumber = params['phonenumber'];
+      this.status = params['status'];
+      
 
       console.log('Username:', this.username);
       console.log('Full name:', this.UserFullname);
       console.log('Password:', this.password);
       console.log('Phone:', this.phonenumber);
+
 
     
   });
@@ -705,8 +713,62 @@ formatDateTimeLocal(date: Date): string {
     window.onpopstate = () => {
     history.pushState(null, '', location.href);
    };
+
     
    this.fetchAmount();
+
+   
+   
+
+  //  after succesfull payment shows registration status
+
+  if(this.status == 'pending'){
+    this.showStatusMenu = true;
+
+  }
+  else{
+
+   
+    const payload ={
+    username: this.username,
+    password: this.password
+  }
+
+  this.hotelierService.loginHotelier(payload).subscribe({
+  error: (err: any) => {
+    this.isLoading = false;
+    if (err?.error?.message?.includes('pending')) {
+      this.showStatusMenu = true;
+      this.showmenu = false;
+      this.selectedMenu = 'status';
+      this.loadInvoices();
+     
+    }
+    else{
+      this.showStatusMenu = false;
+
+    }
+    console.error('Login error:', err);
+  }
+});
+
+
+
+
+  }
+  
+
+
+     
+         
+    
+    if(this.showStatusMenu){
+      this.showmenu = false;
+      this.selectedMenu = 'status';
+      this.loadInvoices();
+    }
+
+  //  console.log(this.showStatusMenu, " :Show Status");
    
     
 
@@ -728,7 +790,8 @@ formatDateTimeLocal(date: Date): string {
     this.checkHotelsData();
     this.loadRooms();
     this.fetchFeedbacks();
-    this.getUserProfile();
+
+    !this.username ?this.getUserProfile():'';
    
 
    
@@ -972,6 +1035,10 @@ this.maxDateTime = this.formatDateTimeLocal(futureDate);
             this.getUserProfile();
            }
 
+    }
+
+    if(menu =='status'){
+      this.loadInvoices();
     }
 
 
@@ -2161,7 +2228,9 @@ checkHotelsData() {
   // Check if token exists in localStorage
   const token = localStorage.getItem('token'); // or sessionStorage, depending on where you store it
 
-  if (!token) {
+   
+
+  if (!token && !this.showStatusMenu) {
     // If no token found, hide all sections except the hotel section
     this.showmenu = false; // Hide other sections
     this.isLoading = false;
@@ -2171,6 +2240,7 @@ checkHotelsData() {
     // You can also display a message or redirect the user if needed
     return; // Do not proceed with fetching hotels
   }
+
 
   // If token is found, show the full menu
   // this.showmenu = true;
@@ -2185,7 +2255,13 @@ checkHotelsData() {
         this.isLoading = false;
         
       } else {
-        this.showmenu = true;
+  
+
+        //  console.log(this.showStatusMenu, " :Show Status");
+           if
+           (!this.showStatusMenu){
+            
+              this.showmenu = true;
         // console.log(data);
         this.hotels = data.map((hotel: any) => ({
           name: hotel.name || 'Unnamed Hotel',
@@ -2199,6 +2275,10 @@ checkHotelsData() {
         this.currentHotelId = this.hotels[0].id;
         this.isLoading = false;
         this.currentHotelName =this.hotels[0].name;
+
+           }
+            this.isLoading = false;
+      
       }
     },
     error: (err) => {
@@ -2276,10 +2356,25 @@ fetchHotelById(hotelId: number) {
 }
 
 getFilteredMenuItems() {
+let items = this.menuItems;
+
+  // Case 1: when showmenu is false → only show 'hotels'
+
   if (!this.showmenu) {
-    return this.menuItems.filter(item => item.key === 'hotels');
+    // When showmenu is false, show either status or hotels
+    if (this.showStatusMenu) {
+      items = items.filter(item => item.key === 'status');
+    } else {
+      items = items.filter(item => item.key === 'hotels');
+    }
+  } else {
+    // showmenu is true, show all, but hide status if showStatusMenu is false
+    if (!this.showStatusMenu) {
+      items = items.filter(item => item.key !== 'status');
+    }
   }
-  return this.menuItems;
+
+  return items;
 }
 
 
@@ -2444,7 +2539,7 @@ getUserProfile()
           this.loadInvoices();
          },
         error: (err) => {
-         console.error('Error fetching users:', err);
+         console.error('Error fetching user Profile:', err);
              }
             });
 
@@ -2452,7 +2547,8 @@ getUserProfile()
 
 
  logout() {
-  
+
+
     Swal.fire({
       title: 'You are about to sign out!',
       text: 'Do you want to clear your session?',
@@ -2555,15 +2651,20 @@ registerHotel(formData: FormData) {
     text: 'Awaiting admin approval.',
     confirmButtonColor: '#28a745'
   });
+
  
-  
-          
-          localStorage.removeItem("token");
-          this.router.navigate(['adminAccess'],
+ 
+            this.showStatusMenu = true;
+            this.selectedMenu = 'status';
+            this.loadInvoices();
+     
+           
+          // localStorage.removeItem("token");
+          /* this.router.navigate(['adminAccess'],
             
               {
     queryParams: { key: 'owner' } }
-          );
+          );*/
          this.isSubmit = false;
         },
         error: (err: any) => {
