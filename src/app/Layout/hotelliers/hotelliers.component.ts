@@ -54,6 +54,7 @@ onResize(event: any) {
   isLoad = false;
 
   status = '';
+  remark='';
 
   isSubmit = false;
 
@@ -238,6 +239,26 @@ currentHotelName:string="";
     'Sitapur', 'Sonbhadra', 'Sultanpur', 'Unnao', 'Varanasi'
   ];
     sortedDistricts: string[] = [...this.allDistricts];
+
+
+
+
+
+// Registration instruction information (for Hotels page info box)
+  showRegistrationInfo: boolean = false;
+
+  registrationInstructions: string[] = [
+    "Fill all the necessary details in the form below.",
+    "Upload clear images for your property.",
+    "Submit the form and proceed to complete the payment securely.",
+    "Upon successful payment, your property ID will be created.",
+    "Your registration will await admin approval before listing.",
+  ];
+
+
+
+
+
  
   showStripeModal = false;
 
@@ -715,52 +736,18 @@ formatDateTimeLocal(date: Date): string {
    };
 
     
-   this.fetchAmount();
+   
 
    
    
 
   //  after succesfull payment shows registration status
 
-  if(this.status == 'pending'){
-    this.showStatusMenu = true;
+ localStorage.getItem('token')?this.checkStatus():"";
 
-  }
-  else{
-
-   
-    const payload ={
-    username: this.username,
-    password: this.password
-  }
-
-  this.hotelierService.loginHotelier(payload).subscribe({
-  error: (err: any) => {
-    this.isLoading = false;
-    if (err?.error?.message?.includes('pending')) {
-      this.showStatusMenu = true;
-      this.showmenu = false;
-      this.selectedMenu = 'status';
-      this.loadInvoices();
-     
-    }
-    else{
-      this.showStatusMenu = false;
-
-    }
-    console.error('Login error:', err);
-  }
-});
+ this.fetchAmount();
 
 
-
-
-  }
-  
-
-
-     
-         
     
     if(this.showStatusMenu){
       this.showmenu = false;
@@ -791,7 +778,7 @@ formatDateTimeLocal(date: Date): string {
     this.loadRooms();
     this.fetchFeedbacks();
 
-    !this.username ?this.getUserProfile():'';
+  this.getUserProfile();
    
 
    
@@ -2083,6 +2070,7 @@ previewImages(event: Event) {
 
   // add proprty button on dashboard
   addNewProperty(){
+    this.showRegistrationInfo = true;
     this.selectMenu('hotels');
     this.selectedMenu = 'hotels'
   }
@@ -2653,7 +2641,7 @@ registerHotel(formData: FormData) {
   });
 
  
- 
+           this.showRegistrationInfo = false;
             this.showStatusMenu = true;
             this.selectedMenu = 'status';
             this.loadInvoices();
@@ -2763,6 +2751,51 @@ fetchAmount() {
         console.error('Failed to fetch invoices:', err);
       }
     });
+  }
+
+
+  checkStatus(){
+   this.isLoading = true;
+    this.authService.getStatus().subscribe({
+  next: (res) => {
+    this.isLoading = false;
+    if (res.status == 'PENDING' || res.status == 'REJECTED') {
+      res.status == 'REJECTED'? this.status = 'rejected':'';
+      res.status == 'REJECTED'? this.remark = res.remark:'';
+      this.showStatusMenu = true;
+      this.showmenu = false;
+      this.selectedMenu = 'status';
+      this.loadInvoices();
+      this.isLoading = false;
+     
+    }
+
+    else{
+      this.showStatusMenu = false;
+       this.isLoading = false;
+
+    }
+    
+  },
+   error: (err) => {
+     this.isLoading = false;
+    console.error("Error fetching status:", err);
+
+    Swal.fire({
+  icon: 'error',
+  title: 'Unexpected Error',
+  text: 'An unexpected error occurred. Please reattempt login.',
+  confirmButtonText: 'OK'
+});
+
+
+    this.router.navigate(['adminAccess'], {
+  queryParams: { key: 'owner' } });
+  }
+
+
+});
+
   }
 
   

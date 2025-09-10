@@ -16,8 +16,8 @@ export class AdminService {
     return this.http.put(`${this.baseUrl}/approve/hotelier/${hotelierId}`, {});
   }
 
-  rejectHotelier(id: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/reject/${id}`, {}); // POST with empty body
+  rejectHotelier(id: number,remark: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reject/${id}`, {remark}); // POST with empty body
   }
   
   makeHotelierPending(id: number): Observable<any> {

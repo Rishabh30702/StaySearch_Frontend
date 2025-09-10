@@ -124,7 +124,7 @@ phoneNumber = "";
       },
     });
   } else if (this.selectedRole === 'owner') {
-     this.hotelierService.loginHotelier(payload).subscribe({
+     this.authService.loginHot(payload).subscribe({
       
       next: (res: any) => {
        
@@ -136,16 +136,6 @@ phoneNumber = "";
           this.router.navigate(['hotellier'], {
   queryParams: { value: "hotellier" }
 });
-        } else if (res.message && res.message.includes('pending')) {
-          // Pending approval case
-          
-          this.isLoading =false;
-           Swal.fire({
-            icon: 'info',
-            title: 'Pending Approval',
-            text: res.message
-          });
-
         } else {
           this.isLoading =false;
           // Other unexpected responses
@@ -161,7 +151,7 @@ phoneNumber = "";
         this.isLoading =false;
 
         
-  if (err?.error?.message?.includes('pending')) {
+ /* if (err?.error?.message?.includes('pending')) {
      
     Swal.fire({
       icon: 'info',
@@ -180,7 +170,7 @@ phoneNumber = "";
             });
 
   }
-else{
+*/
 
    Swal.fire({
           icon: 'error',
@@ -190,7 +180,7 @@ else{
         console.error('Login error:', err);
       }
   
-}
+
 
      
         
@@ -251,6 +241,7 @@ else{
   // }
 
   registerHotelier() {
+    
     if (this.signupPassword !== this.signupRepeatPassword) {
         Swal.fire({
   icon: 'error',
@@ -270,6 +261,8 @@ else{
   });
   return;
 }
+
+localStorage.removeItem('token');
     
     const data = {
         fullname: this.signupEmail,

@@ -2200,3 +2200,33 @@ color: #761461;
 
 
 
+
+.registration-info-box {
+  background-color: #faeffd;           /* very light lavender background */
+  border-left: 6px solid #6f2c91;      /* deep purple left border */
+  padding: 28px 36px;
+  margin: 30px 0;
+  border-radius: 12px;
+  box-shadow: 0 8px 14px rgba(109, 48, 145, 0.27);
+  max-width: 750px;
+  color: #4b2179;                      /* rich purple text */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.registration-info-box h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #7e3faf;                      /* slightly lighter purple heading */
+}
+
+.registration-info-box ul {
+  margin-left: 22px;
+  padding-left: 0;
+}
+
+.registration-info-box ul li {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
