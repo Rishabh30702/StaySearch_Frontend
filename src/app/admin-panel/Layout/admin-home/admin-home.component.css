@@ -1079,3 +1079,53 @@ input, textarea {
 .download-btn .arrow {
   font-size: 12px;
 }
+
+
+
+.transaction-cards-container {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.transaction-card {
+  width: 300px; 
+  height: 150px;
+  padding: 20px;
+  border-radius: 15px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.transaction-card:hover {
+  transform: translateY(-5px);
+}
+
+.total-transactions {
+  background-color: #00bcd4; /* A shade of blue/cyan */
+}
+
+.successful-transactions {
+  background-color: #607d8b; /* A shade of gray */
+}
+
+.transaction-card-content {
+  text-align: center;
+}
+
+.transaction-card-content h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.transaction-card-content p {
+  margin: 10px 0 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+}

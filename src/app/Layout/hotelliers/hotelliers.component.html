@@ -156,6 +156,13 @@
       <!-- Hotel registration -->
       <!-- ------------ -->
       <div *ngIf="selectedMenu === 'hotels'" class="fade-in">
+         <div *ngIf="showRegistrationInfo" class="registration-info-box">
+          <h3>Registration Process for New Users</h3>
+          <ul>
+            <li *ngFor="let step of registrationInstructions">{{ step }}</li>
+          </ul>
+          
+        </div>
         <div class="form-container">
           <h1>List a New Property</h1>
 
@@ -406,7 +413,7 @@
 
   <ng-container *ngIf="!isSubmit; else loadingTemplate">
     <span class="flex items-center justify-center h-6 leading-none">
-      Submit and Proceed
+      Submit and Pay
     </span>
   </ng-container>
 
@@ -673,7 +680,7 @@
     <div *ngIf="receipts?.length > 0; else fetching">
     <div *ngFor="let receipt of receipts">
       <p class="label">Payment ID</p>
-      <p class="value" > {{ receipt.paymentId }}</p>
+      <p  style="color: blue; font-weight: bold;" class="value" > {{ receipt.paymentId }}</p>
     </div>
     </div>
 
@@ -695,14 +702,15 @@
   <div class="status-item">
     <i class="fas fa-id-card status-icon"></i>
     <div>
-      <p class="label">Registration</p>
-      <p style="color: orange; font-weight: bold;">Awaiting Admin Approval</p>
+      <p class="label">Registration Status</p>
+      <p *ngIf="status != 'rejected'" style="color: orange; font-weight: bold;">Awaiting Admin Approval</p>
+      <p *ngIf="status === 'rejected'" style="color: red; font-weight: bold;">Rejected</p>
     </div>
   </div>
 </div>
 
 <!-- Info Message (static) -->
-<div class="status-message" style="margin-top: 1.5rem; padding: 1rem; background: #e8f4ff; border: 1px solid #b3daff; border-radius: 8px; font-size: 0.95rem;">
+<div *ngIf="status !='rejected'" class="status-message" style="margin-top: 1.5rem; padding: 1rem; background: #e8f4ff; border: 1px solid #b3daff; border-radius: 8px; font-size: 0.95rem;">
   <p>
     🎉 Your registration and payment are successful!  
     It’s <b>awaiting admin approval</b>.  
@@ -713,6 +721,14 @@
     Once approved, you’ll also receive an email confirmation.
   </p>
 </div>
+
+<div *ngIf="status === 'rejected'" class="alert alert-danger p-3 rounded">
+  Your request has been rejected.<br>
+ <p style="color: red;">Reason: {{ remark }} </p> 
+  Please contact 
+  <a href="mailto:admin@valliento.tech">admin&#64;valliento.tech</a>
+</div>
+
 
 
 </div>

@@ -35,6 +35,9 @@ export class AdminHomeComponent implements OnInit {
   users: any[] = [];
   selectedGateway: string = '';
 
+    totalTransaction: number = 0;
+  successfullTransactions: number = 0
+
 
   // security and access controls
 statusFilter: string = 'pending'; 
@@ -225,30 +228,40 @@ pendingHoteliersCount: number = 0;
     this.unreadNotificationsCount = this.notifications.filter(notification => !notification.read).length;
   }
 
-  rejectHotelier(id: number): void {
-    Swal.fire({
-      title: 'Reject Hotelier?',
-      text: 'Are you sure you want to reject this hotelier?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, reject'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.isLoading = true;
-        this.adminService.rejectHotelier(id).subscribe({
-          next: () => {
-            Swal.fire('Rejected!', 'Hotelier has been rejected.', 'success');
-            this.fetchUsers();  // Refresh cards
-            this.isLoading = false;
-          },
-          error: () => {
-            Swal.fire('Error!', 'Something went wrong!', 'error');
-            this.isLoading = false;
-          }
-        });
+ rejectHotelier(id: number): void {
+  Swal.fire({
+    title: 'Reject Hotelier?',
+    text: 'Please provide a reason for rejection:',
+    icon: 'warning',
+    input: 'textarea',
+    inputPlaceholder: 'Enter rejection reason...',
+    inputValidator: (value) => {
+      if (!value || value.trim().length === 0) {
+        return 'Rejection comment is required!';
       }
-    });
-  }
+      return null;
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Yes, reject'
+  }).then((result) => {
+    if (result.isConfirmed && result.value) {
+      this.isLoading = true;
+    
+      this.adminService.rejectHotelier(id,result.value).subscribe({   // pass comment too
+        next: () => {
+          Swal.fire('Rejected!', 'Hotelier has been rejected.', 'success');
+          this.fetchUsers();  // Refresh cards
+          this.isLoading = false;
+        },
+        error: () => {
+          Swal.fire('Error!', 'Something went wrong!', 'error');
+          this.isLoading = false;
+        }
+      });
+    }
+  });
+}
+
 
   // Fetch all users and group by status
   fetchUsers(): void {
@@ -1311,7 +1324,8 @@ setAmount() {
  loadInvoices() {
     this.adminService.getAllInvoices().subscribe({
       next: (res) => {
-        this.invoices = this.filteredInvoices=res; // Assuming backend returns an array of invoices
+        this.invoices = this.filteredInvoices=res;
+        this.getTransactionsSummary(); // Assuming backend returns an array of invoices
       },
       error: (err) => {
         console.error('Error fetching invoices:', err);
@@ -1356,5 +1370,21 @@ downloadInv(orderId: string) {
 
  
 }
+
+
+getTransactionsSummary(): void {
+  if (this.invoices && this.invoices.length > 0) {
+    // Calculate the total amount from all invoices
+   this.totalTransaction = this.invoices.reduce((sum, inv) => sum + inv.amountInPaise, 0) / 100;
+
+
+    // Update the successful transactions count
+    this.successfullTransactions = this.invoices.length;
+  }
+
+  }
+
+
+
 
 }

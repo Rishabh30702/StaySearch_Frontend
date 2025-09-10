@@ -128,4 +128,17 @@ export class AuthService {
   deleteUser(userId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/auth/delete/${userId}`);
   }
+
+
+
+ getStatus() {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<any>(`${this.baseUrl}/auth/me/status`, { headers });
+  }
+
+
 }

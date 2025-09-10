@@ -157,6 +157,9 @@
           <h5 class="card-title text-success fw-bold">{{ user.fullname }}</h5>
           <p><strong>Email:</strong> {{ user.username }}</p>
           <span class="badge bg-success mb-3">Approved</span>
+          <button class="btn btn-outline-danger w-100 mb-2" (click)="rejectHotelier(user.id)">Reject</button>
+          
+           <button class="btn btn-outline-warning w-100" (click)="makePending(user.id)">Make Pending</button>
         </div>
       </div>
     </div>
@@ -735,9 +738,26 @@
 
 
     <div *ngIf="activeView === 'Transactions'">
+      <div class="transaction-cards-container">
+  <div class="transaction-card total-transactions">
+    <div class="transaction-card-content">
+      <h4>Total Transactions Amount</h4>
+      <p>₹{{ totalTransaction | number:'1.2-2' }}</p>
+    </div>
+  </div>
+  <div class="transaction-card successful-transactions">
+    <div class="transaction-card-content">
+      <h4>Total Successfull Transactions</h4>
+      <p>{{ successfullTransactions }}</p>
+    </div>
+  </div>
+</div>
 
  <br>
  <h2 class="text-xl font-semibold mb-4">All Invoices</h2>
+
+
+
  <!-- Search input -->
   <input 
     type="text" 
