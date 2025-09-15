@@ -63,6 +63,7 @@ maxDateTime: string="";
 minDateTime2: string = "";
  updateHotelDataid =0;
 amount: number= 0.00;
+userData: any = {};
 
 isLoading: boolean = false;
 isDeal = false;
@@ -109,8 +110,7 @@ showStatusMenu = false;
 
   selectedProperty: string = ''; 
   atLeastOnePropertyType: boolean = false; 
-  propertyTypeTouched: boolean = false;
-  
+  propertyTypeTouched: boolean = false;  
 
   // Example array of hotels
 hotels = [
@@ -512,72 +512,84 @@ this.isSubmit = false;
   this.isSubmit = false;
     return;
   }
-
-   const amountInPaise = Math.round(Number(this.amount) * 100);
-
-     this.RazorpayService.createOrder(amountInPaise).subscribe(order => { 
-      var paymentSuccess = false;
-      const options: any = {
-        key: order.key,
-        amount: order.amount,
-        currency: order.currency,
-        name: 'StaySearch',
-        description: 'Hotel Booking',
-        order_id: order.orderId,
-        handler: (response: any) => {
-          console.log('Payment Success:', response);
-
-          // Step 1: Verify with backend
-          this.RazorpayService.verifyPayment(response).subscribe(res => {
-            if (res.verified) {
-              console.log('Backend verification success:', res);
-              paymentSuccess = true;
-             this.registerhdfc();
-             
-              // this.isSubmit = false;
-              // ✅ Step 2: Trigger booking/invoice/email logic
-              // this.autoBookHotel(response);
-              // SuccessPayment
-              this.createInvoice(response,amountInPaise);
-
-            } else {
-              console.error('Payment verification failed:', res);
-              // Failed Payment
-              this.isSubmit = false;
-              
-            }
-          });
-        },
-
-        
-
- modal: {
-  ondismiss: () => {
-    console.log("Checkout form closed by the user");
-     if (!paymentSuccess) {
-      this.isSubmit = false; // ✅ Only reset if not successful
-    }
-  }
-},
-
   
+// Build property data from form
+const propertyData = {
+  name: form.value.propertyName,
+  address: form.value.propertyAddress,
+  destination: this.selectedDistrict,
+  description: form.value.longDescription,
+  amenities: this.selectedAmenities,
+  lat: this.latitude,
+  lng: this.longitude,
+  accommodationType: this.selectedProperty,
+  rating: 4.8,
+  price: form.value.propertyPrice,
+  reviews: "",
+  liked: false,
+  checkIn: form.value.checkIn,
+  checkOut: form.value.checkOut,
+  guests: form.value.guests,
+  rooms: form.value.rooms
+};
 
-        theme: { color: '#761461' },
-          prefill: {
-    name: "",
-    email: this.username,
-    contact: this.phonenumber
-  },
-      };
+// Store property data locally
+const formData = new FormData();
+formData.append(
+  "hotel",
+  new Blob([JSON.stringify(propertyData)], { type: "application/json" })
+);
 
-      const rzp = new Razorpay(options);
-rzp.on('payment.failed', (response: any) => {
-    console.error('Payment Failed:', response.error);
-    
-  });
+const token = localStorage.getItem('token');
+let combinedData: any;
 
-      rzp.open();
-    });
+if (token) {
+  // Logged-in user → only propertyData
+  combinedData = { propertyData };
+} else {
+  // New user → send registration + propertyData
+  const userData = {
+    fullname: this.UserFullname,
+    username: this.username,
+    password: this.password,
+    phonenumber: this.phonenumber
+  };
+  combinedData = { ...userData, propertyData };
+}
+
+// Store for success page
+this.formDataService.setFormData(formData);
+this.formDataService.setUserData(combinedData);
+
+// Razorpay order
+const amountInPaise = Math.round(Number(this.amount) * 100);
+const backendOrigin = window.location.hostname.includes('localhost')
+  ? 'http://localhost:8080'
+  : 'https://staysearchbackend.onrender.com';
+const backendCallback = `${backendOrigin}/api/payments/callback`;
+
+this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'https://api.razorpay.com/v1/checkout/embedded';
+
+  form.innerHTML = `
+    <input type="hidden" name="key_id" value="${order.key}" />
+    <input type="hidden" name="order_id" value="${order.orderId}" />
+    <input type="hidden" name="amount" value="${order.amount}" />
+    <input type="hidden" name="currency" value="${order.currency}" />
+    <input type="hidden" name="callback_url" value="${backendCallback}" />
+    <input type="hidden" name="name" value="StaySearch" />
+    <input type="hidden" name="description" value="Hotel Booking" />
+    <input type="hidden" name="prefill[email]" value="${this.username}" />
+    <input type="hidden" name="prefill[contact]" value="${this.phonenumber}" />
+  `;
+
+  document.body.appendChild(form);
+  form.submit();
+});
+
+
 
   } else {
     Swal.fire('No active payment gateway', 'Please contact admin.', 'warning');

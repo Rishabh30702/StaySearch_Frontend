@@ -1,0 +1,24 @@
+<div class="razorpay-success-container">
+  <!-- Loader -->
+  <div *ngIf="showLoader" class="loader-wrapper">
+    <div class="loader"></div>
+    <p>Processing your payment and registration...</p>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="!showLoader && formData">
+    <h2>🎉 Registration Complete!</h2>
+    <p>Your property <strong>{{ formData.name }}</strong> has been registered successfully.</p>
+    <p *ngIf="userData && userData.username">
+      Welcome, {{ userData.fullname || userData.username }}! You are now logged in.
+    </p>
+    <button (click)="goToDashboard()" class="btn btn-success">Go to Dashboard</button>
+  </div>
+
+  <!-- Error / Fallback -->
+  <div *ngIf="!showLoader && !formData">
+    <h2>⚠️ Something went wrong</h2>
+    <p>Unable to process your registration. Please try again or contact support.</p>
+    <button (click)="goToHome()" class="btn btn-primary">Go to Home</button>
+  </div>
+</div>
