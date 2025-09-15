@@ -60,7 +60,8 @@ verifyPaymentLink(payload: { orderId: string; paymentId: string }) {
 }
 
 checkPaymentStatus(orderId: string) {
-  return this.http.get("http://localhost:8080/api/payments/check-payment-status/"+orderId);
+  // return this.http.get("http://localhost:8080/api/payments/check-payment-status/"+orderId);
+  return this.http.get("hhttps://staysearchbackend.onrender.com/api/payments/payments/check-payment-status/"+orderId);
 }
 
 
