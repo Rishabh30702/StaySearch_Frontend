@@ -15,6 +15,7 @@ import { authGuard } from './admin-panel/Layout/admin-home/auth.guard';
 import { hotelauthGuard } from './Layout/hotelliers/hotelauth.guard';
 import { PaymentSuccessComponent } from './Layout/payment-success/payment-success.component';
 import { PaymentFailComponent } from './Layout/payment-fail/payment-fail.component';
+import { RazorpaySuccessComponent } from './Layout/hotelliers/services/RazorpayService/razorpay-success/razorpay-success.component';
 
 
 export const routes: Routes = [
@@ -77,16 +78,22 @@ export const routes: Routes = [
         component: MdMessageComponent,
         pathMatch: 'full'
     },
-    {
-        path: 'p_success', 
-        component: PaymentSuccessComponent,
-        pathMatch: 'full'
-    },
-    {
-        path: 'p_fail', 
-        component: PaymentFailComponent,
-        pathMatch: 'full'
-    }
+{
+  path: 'p-success', 
+  component: PaymentSuccessComponent,
+  pathMatch: 'full'
+},
+{
+  path: 'payment-success', 
+  component: RazorpaySuccessComponent,
+  pathMatch: 'full'
+},
+{
+  path: 'payment-fail', 
+  component: PaymentFailComponent,
+  pathMatch: 'full'
+}
+
 
 
   
