@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RazorpayserviceService {
-  private API = 'https://staysearchbackend.onrender.com/api/payments';
+ private API = 'https://staysearchbackend.onrender.com/api/payments';
 
-//   private API = 'http://localhost:8080/api/payments';
+//  private API = 'http://localhost:8080/api/payments';
 
   
 
@@ -58,5 +58,10 @@ export class RazorpayserviceService {
 verifyPaymentLink(payload: { orderId: string; paymentId: string }) {
   return this.http.post(this.API+'/verify-payment-link', payload);
 }
+
+checkPaymentStatus(orderId: string) {
+  return this.http.get("http://localhost:8080/api/payments/check-payment-status/"+orderId);
+}
+
 
 }

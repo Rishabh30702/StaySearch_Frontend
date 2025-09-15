@@ -5,6 +5,7 @@ import { FormDataService } from '../../form-data.service';
 import { AuthPortalService } from '../../../../admin-access/AuthPortal.service';
 import { AuthService } from '../../../../../Core/Services/AuthService/services/auth.service';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-razorpay-success',
@@ -16,14 +17,14 @@ export class RazorpaySuccessComponent implements OnInit {
   showLoader = false;
   formData: any;
   userData: any;
-
-  now = new Date();
+  paymentId: string | null = null;
 
   constructor(
     private router: Router,
     private hotelierService: AuthPortalService,
     private formDataService: FormDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -31,18 +32,67 @@ export class RazorpaySuccessComponent implements OnInit {
     this.formData = this.formDataService.getFormData();
     this.userData = this.formDataService.getUserData();
 
-    if (!this.formData) {
-      Swal.fire('⚠️ Something went wrong', 'Unable to process registration.');
-      return;
+    // ✅ Extract paymentId from URL or localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    this.paymentId = urlParams.get('razorpay_payment_id');
+
+    if (this.paymentId) {
+      // Save to localStorage so refresh doesn't break flow
+      localStorage.setItem('lastPaymentId', this.paymentId);
+    } else {
+      this.paymentId = localStorage.getItem('lastPaymentId');
     }
 
-    if (this.userData?.username) {
-      // New user → register user + hotel
-      this.registerHotellier();
+    if (this.paymentId) {
+      this.verifyPayment(this.paymentId);
     } else {
-      // Logged-in user → register hotel
-      this.registerHotelafterLogin(this.formData);
+      Swal.fire('⚠️ Missing Payment ID', 'Unable to verify payment — no paymentId found.', 'warning');
     }
+  }
+
+  verifyPayment(paymentId: string) {
+    this.showLoader = true;
+
+    this.http.get(`https://staysearchbackend.onrender.com/api/payments/check-payment-status/${paymentId}`, {
+    responseType: 'json'
+  }).subscribe({
+      next: (res: any) => {
+        this.showLoader = false;
+        console.log('🔎 Payment Verification Response:', res);
+
+        if (!res || typeof res !== 'object') {
+          Swal.fire('❌ Error', 'Invalid response from server.', 'error');
+          return;
+        }
+
+        const status = (res.status || '').toLowerCase();
+        const isVerified = res.verified === true || status === 'paid' || status === 'captured';
+
+        if (isVerified) {
+          Swal.fire('✅ Payment Verified', 'Your payment was successful.', 'success');
+
+          // Proceed with user/hotel registration flow
+          if (this.userData?.username) {
+            this.registerHotellier();
+          } else {
+            this.registerHotelafterLogin(this.formData);
+          }
+        } else {
+          Swal.fire('⚠️ Payment Pending', `Current status: ${status || 'unknown'}`, 'warning');
+        }
+      },
+      error: (err) => {
+        this.showLoader = false;
+        console.error('❌ Verify API Error:', err);
+
+        let message = 'Failed to verify payment.';
+        if (err?.error?.details) {
+          message += `\nDetails: ${err.error.details}`;
+        }
+
+        Swal.fire('❌ Verification Failed', message, 'error');
+      }
+    });
   }
 
   registerHotelafterLogin(formData: any) {
@@ -82,7 +132,7 @@ export class RazorpaySuccessComponent implements OnInit {
           }
         });
       },
-      error: (err) => {
+      error: () => {
         Swal.fire('❌ Registration Failed', 'User registration failed.', 'error');
       }
     });
@@ -103,11 +153,10 @@ export class RazorpaySuccessComponent implements OnInit {
   }
 
   goToDashboard() {
-  this.router.navigate(['/hotellier']);
-}
+    this.router.navigate(['/hotellier']);
+  }
 
-goToHome() {
-  this.router.navigate(['/']);
-}
-
+  goToHome() {
+    this.router.navigate(['/']);
+  }
 }
