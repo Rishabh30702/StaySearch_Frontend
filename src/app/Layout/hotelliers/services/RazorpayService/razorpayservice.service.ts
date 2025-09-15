@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RazorpayserviceService {
- private API = 'https://staysearchbackend.onrender.com/api/payments';
+  private API = 'https://staysearchbackend.onrender.com/api/payments';
 
-  // private API = 'http://localhost:8080/api/payments';
+//   private API = 'http://localhost:8080/api/payments';
 
   
 

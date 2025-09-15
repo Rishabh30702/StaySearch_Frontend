@@ -566,7 +566,7 @@ const amountInPaise = Math.round(Number(this.amount) * 100);
 const backendOrigin = window.location.hostname.includes('localhost')
   ? 'http://localhost:8080'
   : 'https://staysearchbackend.onrender.com';
-const backendCallback = `${backendOrigin}/api/payments/callback`;
+const backendCallback = "https://staysearchbackend.onrender.com/api/payments/callback";
 
 this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
   const form = document.createElement('form');
