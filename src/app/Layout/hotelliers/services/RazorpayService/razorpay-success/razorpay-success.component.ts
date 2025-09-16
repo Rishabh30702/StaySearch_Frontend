@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { FormDataService } from '../../form-data.service';
@@ -13,11 +13,12 @@ import { HttpClient } from '@angular/common/http';
   imports: [CommonModule],
   styleUrls: ['./razorpay-success.component.css']
 })
-export class RazorpaySuccessComponent implements OnInit {
+export class RazorpaySuccessComponent implements OnInit, OnDestroy {
   showLoader = false;
   formData: any;
   userData: any;
-  paymentId: string | null = null;
+  orderId: string | null = null;
+  pollingInterval: any;
 
   constructor(
     private router: Router,
@@ -28,71 +29,70 @@ export class RazorpaySuccessComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get stored data from FormDataService
+    // ✅ Retrieve stored form data and user data
     this.formData = this.formDataService.getFormData();
     this.userData = this.formDataService.getUserData();
 
-    // ✅ Extract paymentId from URL or localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    this.paymentId = urlParams.get('razorpay_payment_id');
+    // ✅ We no longer need paymentId — we only need orderId to verify
+    this.orderId = localStorage.getItem('lastOrderId');
 
-    if (this.paymentId) {
-      // Save to localStorage so refresh doesn't break flow
-      localStorage.setItem('lastPaymentId', this.paymentId);
+    if (this.orderId) {
+      this.startPaymentPolling(this.orderId);
     } else {
-      this.paymentId = localStorage.getItem('lastPaymentId');
-    }
-
-    if (this.paymentId) {
-      this.verifyPayment(this.paymentId);
-    } else {
-      Swal.fire('⚠️ Missing Payment ID', 'Unable to verify payment — no paymentId found.', 'warning');
+      Swal.fire('⚠️ Missing Details', 'No order found to verify payment.', 'warning');
     }
   }
 
-  verifyPayment(paymentId: string) {
+  startPaymentPolling(orderId: string) {
     this.showLoader = true;
+    let attempts = 0;
+    const maxAttempts = 15; // ~45 seconds at 3s interval
 
-    this.http.get(`https://staysearchbackend.onrender.com/api/payments/check-payment-status/${paymentId}`, {
-    responseType: 'json'
-  }).subscribe({
-      next: (res: any) => {
-        this.showLoader = false;
-        console.log('🔎 Payment Verification Response:', res);
+    this.pollingInterval = setInterval(() => {
+      attempts++;
+      console.log(`🔄 Polling attempt #${attempts}`);
 
-        if (!res || typeof res !== 'object') {
-          Swal.fire('❌ Error', 'Invalid response from server.', 'error');
-          return;
-        }
+      this.http.post('https://staysearchbackend.onrender.com/api/payments/verify-payment-link', {
+        orderId
+      }).subscribe({
+        next: (res: any) => {
+          console.log('🔎 Poll Response:', res);
+          const status = (res.status || '').toLowerCase();
 
-        const status = (res.status || '').toLowerCase();
-        const isVerified = res.verified === true || status === 'paid' || status === 'captured';
+          if (res.verified === true || status === 'paid' || status === 'captured') {
+            clearInterval(this.pollingInterval);
+            this.showLoader = false;
+            Swal.fire('✅ Payment Verified', 'Your payment was successful.', 'success');
 
-        if (isVerified) {
-          Swal.fire('✅ Payment Verified', 'Your payment was successful.', 'success');
-
-          // Proceed with user/hotel registration flow
-          if (this.userData?.username) {
-            this.registerHotellier();
+            // Proceed with hotelier/ hotel registration
+            if (this.userData?.username) {
+              this.registerHotellier();
+            } else {
+              this.registerHotelafterLogin(this.formData);
+            }
           } else {
-            this.registerHotelafterLogin(this.formData);
+            console.log(`⏳ Payment not yet captured. Status: ${status}`);
+            if (attempts >= maxAttempts) {
+              clearInterval(this.pollingInterval);
+              this.showLoader = false;
+              Swal.fire('⚠️ Payment Pending', 'Could not verify payment in time. Please try later.', 'warning');
+            }
           }
-        } else {
-          Swal.fire('⚠️ Payment Pending', `Current status: ${status || 'unknown'}`, 'warning');
+        },
+        error: (err) => {
+          console.error('❌ Verify API Error:', err);
+          if (attempts >= maxAttempts) {
+            clearInterval(this.pollingInterval);
+            this.showLoader = false;
+            Swal.fire('❌ Verification Failed', 'Unable to verify payment. Please try again.', 'error');
+          }
         }
-      },
-      error: (err) => {
-        this.showLoader = false;
-        console.error('❌ Verify API Error:', err);
+      });
+    }, 3000);
+  }
 
-        let message = 'Failed to verify payment.';
-        if (err?.error?.details) {
-          message += `\nDetails: ${err.error.details}`;
-        }
-
-        Swal.fire('❌ Verification Failed', message, 'error');
-      }
-    });
+  ngOnDestroy() {
+    if (this.pollingInterval) clearInterval(this.pollingInterval);
   }
 
   registerHotelafterLogin(formData: any) {
@@ -152,11 +152,6 @@ export class RazorpaySuccessComponent implements OnInit {
     });
   }
 
-  goToDashboard() {
-    this.router.navigate(['/hotellier']);
-  }
-
-  goToHome() {
-    this.router.navigate(['/']);
-  }
+  goToDashboard() {}
+  goToHome() {}
 }

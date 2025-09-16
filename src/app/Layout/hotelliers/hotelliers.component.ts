@@ -539,6 +539,10 @@ formData.append(
   "hotel",
   new Blob([JSON.stringify(propertyData)], { type: "application/json" })
 );
+  formData.append("imageUrl", this.imageFiles[0]);
+    for (let i = 1; i < this.imageFiles.length; i++) {
+      formData.append("subImages", this.imageFiles[i]);
+    }
 
 const token = localStorage.getItem('token');
 let combinedData: any;
@@ -561,18 +565,20 @@ if (token) {
 this.formDataService.setFormData(formData);
 this.formDataService.setUserData(combinedData);
 
+
 // Razorpay order
 const amountInPaise = Math.round(Number(this.amount) * 100);
-const backendOrigin = window.location.hostname.includes('localhost')
-  ? 'http://localhost:8080'
-  : 'https://staysearchbackend.onrender.com';
+const backendOrigin = 
+   'https://staysearchbackend.onrender.com';
 const backendCallback = "https://staysearchbackend.onrender.com/api/payments/callback";
 
 this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
+  console.log("✅ Razorpay Order Created:", order)
+  localStorage.setItem('lastOrderId', order.orderId);
   const form = document.createElement('form');
   form.method = 'POST';
   form.action = 'https://api.razorpay.com/v1/checkout/embedded';
-
+  form.target = '_blank';
   form.innerHTML = `
     <input type="hidden" name="key_id" value="${order.key}" />
     <input type="hidden" name="order_id" value="${order.orderId}" />
@@ -587,7 +593,10 @@ this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
 
   document.body.appendChild(form);
   form.submit();
+
+  this.router.navigate(['/payment-success']);
 });
+
 
 
 
