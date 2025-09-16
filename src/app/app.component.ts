@@ -71,11 +71,21 @@ export class AppComponent implements OnInit {
     // and is now directly navigating to another page
     if (
       (lastVisited === 'adminAccess/adminPanel' && currentPath !== '/adminAccess/adminPanel') ||
-  (lastVisited === 'hotellier' && currentPath !== '/hotellier')
-    ) {
-      localStorage.removeItem('token');
+  (lastVisited === 'hotellier' && currentPath !== '/hotellier') 
+    )
+     {
+
+      if(currentPath.includes('payment-success')){
+        console.log("Payment And Register Success");
+      }
+      else
+      {
+         localStorage.removeItem('token');
       localStorage.setItem('lastVisitedRoute', 'home');
       console.log('Token removed because user left admin panel via URL');
+
+      }
+     
     }
 
    
