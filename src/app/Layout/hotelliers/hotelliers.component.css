@@ -147,7 +147,7 @@
     border-radius: 50%;
   }
   
-  .dropdown {
+  .dropdown {  
     position: absolute;
     top: 45px;
     right: 0;
@@ -1108,6 +1108,7 @@ select:required:invalid:focus {
   position: relative;
   width: 300px;
   margin-bottom: 1rem;
+  z-index: 1050
 }
 
 .search-input {
@@ -1340,7 +1341,7 @@ color: #761461;
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1080;
   background: #fff;
   border: 1px solid #ccc;
   margin-top: 2px;

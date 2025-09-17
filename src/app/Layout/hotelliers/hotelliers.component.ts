@@ -58,6 +58,8 @@ onResize(event: any) {
 
   isSubmit = false;
 
+  hotelname: string=''; //for sending hotel name to payment page for invoice
+
    minDateTime: string ="";
 maxDateTime: string="";
 minDateTime2: string = "";
@@ -476,6 +478,7 @@ this.isSubmit = false;
   }
 
   const form = this.propertyNgForm;
+  this.hotelname = form.value.propertyName;
     // needed as stripe modal overlaps swal and makes it invisible
   if (!form.valid) {
      this.closeStripeModal();
@@ -558,7 +561,7 @@ if (token) {
     password: this.password,
     phonenumber: this.phonenumber
   };
-  combinedData = { ...userData, propertyData };
+  combinedData = { ...userData};
 }
 
 // Store for success page
@@ -594,7 +597,8 @@ this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
   document.body.appendChild(form);
   form.submit();
 
-  this.router.navigate(['/payment-success']);
+ 
+  this.router.navigate(['/payment-success'],{queryParams: {email: this.username, phone: this.phonenumber, amount: amountInPaise,hotelname: this.hotelname }});
 });
 
 
@@ -1875,154 +1879,14 @@ this.router.navigate(['/p_success'],
   }
   */
 
-registerhdfc(){
-const form = this.propertyNgForm;
 
-  const propertyData = {
-      name: form.value.propertyName,
-      address: form.value.propertyAddress,
-      destination: this.selectedDistrict,
-      description: form.value.longDescription,
-      amenities: this.selectedAmenities,
-      lat: this.latitude,
-      lng: this.longitude,
-      accommodationType: this.selectedProperty,
-      rating: 4.8,
-      price: form.value.propertyPrice,
-      reviews: "",
-      liked: false,
-      checkIn: form.value.checkIn,
-      checkOut: form.value.checkOut,
-      guests: form.value.guests,
-      rooms: form.value.rooms
-    };
   
-    const formData = new FormData();
-    formData.append("hotel", new Blob([JSON.stringify(propertyData)], { type: "application/json" }));
-    formData.append("imageUrl", this.imageFiles[0]);
-    for (let i = 1; i < this.imageFiles.length; i++) {
-      formData.append("subImages", this.imageFiles[i]);
-    }
-  
-    const token = localStorage.getItem('token');
-  
-    if (token) {
-      // ✅ User already logged in → directly register hotel
-     this.hotelierService.registerHotel(formData).subscribe({
-           next: () => {
-             Swal.fire({
-       icon: 'success',
-       title: 'Registration Successful',
-       text: 'Hotel registered successfully.',
-       confirmButtonColor: '#28a745'
-     });
-      this.selectedMenu = 'rooms';
-    //  this.router.navigate(['/hotellier'])
-           },
-           error: (err: any) => {
-           
-  
-           Swal.fire({
-       icon: 'error',
-       title: 'Registration Failed',
-       text: 'Hotel registration failed.',
-       confirmButtonColor: '#d33'
-     });
-     
-             console.error(err);
-           }
-         });
-     
 
-
-           this.isSubmit = false;
-        // 
-        this.imagePreviews = [];
-        this.imageFiles = [];
-        this.subImages = [];
-        this.roomImagePreview = '';
-        this.poolImagePreview = '';
-        this.lobbyImagePreview = '';
-        this.isLoading = false;
-         this.checkHotelsData();
-        
-
-
-      
-    }
-
-
-    else{
-      
-      const userData = {
-        fullname: this.UserFullname,
-        username: this.username,
-        password: this.password,
-        phonenumber: this.phonenumber
-      };
-  this.hotelierService.registerHotelier(userData).subscribe({
-             next: () => {
-               const loginPayload = {
-                 username: userData.username,
-                 password: userData.password
-               };
-       
-               this.authService.loginHot(loginPayload).subscribe({
-                 next: (res: any) => {
-                   
-                   if (res.token) {
-                     localStorage.setItem('token', res.token);
-                     this.registerHotel(formData);
-                   } else {
-                     this.isSubmit = false;
-                     Swal.fire({
-                       icon: 'error',
-                       title: 'Login Failed',
-                       text: 'Login failed. Please try again.'
-                     });
-                     
-                   }
-                 },
-                 error: (err: any) => {
-                   this.isSubmit = false;
-                   Swal.fire({
-                     icon: 'error',
-                     title: 'Login Failed',
-                     text: err?.error?.message || 'Invalid credentials.'
-                   });
-                   console.error('Login error:', err);
-                 }
-               });
-             },
-             error: (err: any) => {
-               this.isSubmit = false;
-                  Swal.fire({
-       icon: 'error',
-       title: 'Registration Failed',
-       text: 'User registration failed.',
-       confirmButtonColor: '#d33'
-     });
-     
-               console.error(err);
-             }
-           });
-
-          // this.selectedMenu = 'rooms';
-          this.imagePreviews = [];
-          this.imageFiles = [];
-          this.subImages = [];
-           this.roomImagePreview = '';
-          this.poolImagePreview = '';
-          this.lobbyImagePreview = '';
-          this.isLoading = false;
-
-    }
-  
-}
   
 previewImages(event: Event) {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files.length > 0) {
+    this.subImages = [];
     const files = Array.from(target.files);
     files.forEach((file, i) => {
       this.imageFiles.push(file); // Add all files
