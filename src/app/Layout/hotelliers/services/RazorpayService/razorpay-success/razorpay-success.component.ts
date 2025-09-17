@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { FormDataService } from '../../form-data.service';
 import { AuthPortalService } from '../../../../admin-access/AuthPortal.service';
 import { AuthService } from '../../../../../Core/Services/AuthService/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { HotelsService } from '../../hotels.service';
 
 @Component({
   selector: 'app-razorpay-success',
@@ -19,14 +20,35 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
   userData: any;
   orderId: string | null = null;
   pollingInterval: any;
+  fail:boolean = false;
+  username: string ='';
+  phone: string = '';
+  amount: any ;
+  hotelname: string = '';
+
 
   constructor(
     private router: Router,
     private hotelierService: AuthPortalService,
     private formDataService: FormDataService,
+     private hotelsService: HotelsService,
     private authService: AuthService,
+     private Aroute: ActivatedRoute,
     private http: HttpClient
-  ) {}
+  ) {
+this.Aroute.queryParams.subscribe(params => {
+      this.username = params['email'];
+      
+      this.phone = params['phone'];
+      this.amount = params['amount'];
+      this.hotelname = params['hotelname']
+    
+      
+    
+  });
+
+
+  }
 
   ngOnInit(): void {
     // ✅ Retrieve stored form data and user data
@@ -60,8 +82,10 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
           const status = (res.status || '').toLowerCase();
 
           if (res.verified === true || status === 'paid' || status === 'captured') {
+            
             clearInterval(this.pollingInterval);
             this.showLoader = false;
+            this.createInvoice(res.paymentId)
             Swal.fire('✅ Payment Verified', 'Your payment was successful.', 'success');
 
             // Proceed with hotelier/ hotel registration
@@ -84,6 +108,7 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
           if (attempts >= maxAttempts) {
             clearInterval(this.pollingInterval);
             this.showLoader = false;
+            this.fail= true;
             Swal.fire('❌ Verification Failed', 'Unable to verify payment. Please try again.', 'error');
           }
         }
@@ -101,7 +126,9 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
       next: () => {
         this.formDataService.clear();
         Swal.fire('✅ Registration Successful', 'Hotel registered successfully.', 'success');
-        this.router.navigate(['/hotellier']);
+        this.router.navigate(['hotellier'], {
+  queryParams: { value: "hotellier" }
+});
       },
       error: (err) => {
         this.formDataService.clear();
@@ -112,7 +139,7 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
   }
 
   registerHotellier() {
-    const payload = { ...this.userData, propertyData: this.formData };
+    const payload = { ...this.userData};
     this.showLoader = true;
 
     this.hotelierService.registerHotelier(payload).subscribe({
@@ -142,8 +169,9 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
     this.hotelierService.registerHotel(formData).subscribe({
       next: () => {
         Swal.fire('✅ Registration Successful', 'Awaiting admin approval.', 'success');
-        localStorage.removeItem('token');
-        this.router.navigate(['adminAccess'], { queryParams: { key: 'owner' } });
+       this.router.navigate(['hotellier'], {
+  queryParams: { value: "hotellier" }
+});
       },
       error: (err) => {
         Swal.fire('❌ Registration Failed', 'Hotel registration failed.', 'error');
@@ -154,4 +182,31 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
 
   goToDashboard() {}
   goToHome() {}
+
+
+
+createInvoice(res: any) {
+    
+    const invoiceData = {
+      orderId: this.orderId,
+      paymentId: res,
+      customerEmail:this.username,
+      customerPhone: this.phone,
+      amountInPaise: this.amount,
+      hotelName: this.hotelname
+    };
+
+     console.log("Invoice:", invoiceData);
+
+    this.hotelsService.createInvoice(invoiceData).subscribe({
+      next: (res) => {
+        console.log('Invoice created:', res);
+      },
+      error: (err) => {
+        console.error('Error creating invoice:', err);
+      }
+    });
+  }
+
+  
 }

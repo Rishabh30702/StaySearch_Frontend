@@ -6,7 +6,7 @@
   </div>
 
   <!-- Success Message -->
-  <div *ngIf="!showLoader && formData">
+  <div *ngIf="!showLoader && formData && !fail">
     <h2>🎉 Registration Complete!</h2>
     <p>Your property <strong>{{ formData.name }}</strong> has been registered successfully.</p>
     <p *ngIf="userData && userData.username">
@@ -16,7 +16,7 @@
   </div>
 
   <!-- Error / Fallback -->
-  <div *ngIf="!showLoader && !formData">
+  <div *ngIf="!showLoader && !formData || fail">
     <h2>⚠️ Something went wrong</h2>
     <p>Unable to process your registration. Please try again or contact support.</p>
     <button (click)="goToHome()" class="btn btn-primary">Go to Home</button>
