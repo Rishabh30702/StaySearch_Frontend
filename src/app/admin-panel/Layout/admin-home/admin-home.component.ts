@@ -181,7 +181,7 @@ pendingHoteliersCount: number = 0;
           next: () => {
             Swal.fire('Approved!', 'Hotelier has been approved.', 'success');
             this.fetchUsers();
-            this.isLoading = false;
+            
           },
           error: () => {
             Swal.fire('Error!', 'Something went wrong!', 'error');
@@ -206,7 +206,7 @@ pendingHoteliersCount: number = 0;
           next: () => {
             Swal.fire('Updated!', 'Hotelier status set to pending.', 'success');
             this.fetchUsers();  // Refresh cards
-            this.isLoading = false;
+            
           },
           error: () => {
             Swal.fire('Error!', 'Something went wrong!', 'error');
@@ -251,7 +251,7 @@ pendingHoteliersCount: number = 0;
         next: () => {
           Swal.fire('Rejected!', 'Hotelier has been rejected.', 'success');
           this.fetchUsers();  // Refresh cards
-          this.isLoading = false;
+          
         },
         error: () => {
           Swal.fire('Error!', 'Something went wrong!', 'error');
@@ -1236,7 +1236,13 @@ updateHdfc() {
       // alert('HDFC selected successfully!');
       // Optionally trigger HDFC payment or UI update
       this.setAmount();
-      this.getSelectedGateway(false); // Refresh selected gateway
+      this.getSelectedGateway(false);
+       Swal.fire({
+           icon: 'success',
+         title: 'Success',
+           text: 'Operation Success',
+         confirmButtonColor: 'green'
+          }); // Refresh selected gateway
     },
     error: (err) => {
       console.error('Failed to select HDFC', err);
