@@ -133,7 +133,16 @@
                     </div>
 
                     <div class="modal-actions mt-3">
-                      <button class="btn btn-success" (click)="saveHotel()">Save</button>
+                      <button 
+  class="btn btn-success" 
+  (click)="saveHotel()" 
+  [disabled]="loading">
+
+  <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+  <span *ngIf="!loading">Save</span>
+  <span *ngIf="loading">Saving...</span>
+
+</button>
                       <button class="btn btn-secondary ms-2" (click)="closeEditModal()">Cancel</button>
 
                     </div>
@@ -930,7 +939,7 @@
 
         <div class="modal-buttons">
           <button (click)="updateRoom()"><i class="fas fa-sync-alt"></i> Update</button>
-          <button (click)="cancelEditRoomPopup()"><i class="fas fa-arrow-left"></i> Cancel</button>
+          <button (click)="cancelEditRoomPopup()"><i class="fas fa-arrow-left"></i> Close</button>
         </div>
       </div>
     </div>

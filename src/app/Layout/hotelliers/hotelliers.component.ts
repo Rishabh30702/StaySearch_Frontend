@@ -73,6 +73,7 @@ updateHotel = { name: '', address: '', Description: '' };
 
 isEditModalOpen =false;
 
+loading = false;
 
 showStatusMenu = false;
 
@@ -1225,6 +1226,8 @@ onFileSelected(event: Event) {
           if(this.newRoom.deal){
             
             this.selectedMenu = 'deal';
+           
+            
            }
           this.newRoom = { name: '', available: 0, total: 0, price: 0, deal: false, imageUrl: '' };
           this.selectedFile = null!;
@@ -1234,7 +1237,7 @@ onFileSelected(event: Event) {
          Swal.fire({
   icon: 'success',
   title: 'Success!',
-  text: 'Room added successfully!',
+  text: this.selectedMenu =='deal'?'Room added successfully, Please Edit Room to add Offer Details': 'Room added successfully!',
   confirmButtonColor: '#28a745'
 });
 
@@ -1441,11 +1444,17 @@ onFileSelected(event: Event) {
   text: 'Offer creation successful. Awaiting approval.',
   confirmButtonColor: '#28a745'
 });
-
+this.cancelEditRoomPopup();
 
           },
          error: err => {
            this.isLoading = false;
+            Swal.fire({
+  icon: 'error',
+  title: 'Error',
+  text: 'Oops Something went wrong, Please try Again.',
+  confirmButtonColor: '#28a745'
+});
         console.error('Error creating offer:', err);
           }
          });
@@ -2005,7 +2014,7 @@ saveHotel() {
 
 
   if(this.updateHotel.name && this.updateHotel.address && this.updateHotel.Description){
-      this.isLoading = true;
+      this.loading = true;
   const updateHotelData =
   {
     name: this.updateHotel.name, // updated name for now
@@ -2020,7 +2029,7 @@ saveHotel() {
     this.hotelsService.updateHotel(this.updateHotelDataid.toString(), updateHotelData).subscribe({
       next: response => {
         console.log('Hotel updated:', response);
-        this.isLoading = false;
+        this.loading = false;
         this.isEditModalOpen = false;
           Swal.fire({
   icon: 'success',
@@ -2039,7 +2048,7 @@ saveHotel() {
   confirmButtonColor: '#d33'
 });
 
-        this.isLoading = false;
+        this.loading = false;
         this.isEditModalOpen = false;
       }
     });
