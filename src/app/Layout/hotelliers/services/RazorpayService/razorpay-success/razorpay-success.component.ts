@@ -66,55 +66,89 @@ this.Aroute.queryParams.subscribe(params => {
   }
 
   startPaymentPolling(orderId: string) {
-    this.showLoader = true;
-    let attempts = 0;
-    const maxAttempts = 15; // ~45 seconds at 3s interval
+  this.showLoader = true;
+  let attempts = 0;
+  const maxAttempts = 15; // ~45 seconds at 3s interval
 
-    this.pollingInterval = setInterval(() => {
-      attempts++;
-      console.log(`🔄 Polling attempt #${attempts}`);
+  this.pollingInterval = setInterval(() => {
+    attempts++;
+    console.log(`🔄 Polling attempt #${attempts}`);
 
-      this.http.post('https://staysearchbackend.onrender.com/api/payments/verify-payment-link', {
-        orderId
-      }).subscribe({
+    // Step 1: Fetch Razorpay payment details from backend
+    this.http.post('https://staysearchbackend.onrender.com/api/payments/get-payment-details', { orderId })
+      .subscribe({
         next: (res: any) => {
-          console.log('🔎 Poll Response:', res);
-          const status = (res.status || '').toLowerCase();
-
-          if (res.verified === true || status === 'paid' || status === 'captured') {
-            
-            clearInterval(this.pollingInterval);
-            this.showLoader = false;
-            this.createInvoice(res.paymentId)
-            Swal.fire('✅ Payment Verified', 'Your payment was successful.', 'success');
-
-            // Proceed with hotelier/ hotel registration
-            if (this.userData?.username) {
-              this.registerHotellier();
-            } else {
-              this.registerHotelafterLogin(this.formData);
-            }
-          } else {
-            console.log(`⏳ Payment not yet captured. Status: ${status}`);
+          if (!res?.razorpay_order_id || !res?.razorpay_payment_id || !res?.razorpay_signature) {
+            console.warn('❌ Razorpay details not ready yet.');
             if (attempts >= maxAttempts) {
               clearInterval(this.pollingInterval);
               this.showLoader = false;
               Swal.fire('⚠️ Payment Pending', 'Could not verify payment in time. Please try later.', 'warning');
             }
+            return;
           }
+
+          // Step 2: Call verify-payment-link API with fetched Razorpay credentials
+          const verifyPayload = {
+            razorpay_order_id: res.razorpay_order_id,
+            razorpay_payment_id: res.razorpay_payment_id,
+            razorpay_signature: res.razorpay_signature,
+            name: this.formData.name,
+            contact: this.formData.contact,
+            amount: this.formData.amount
+          };
+
+          this.http.post('https://staysearchbackend.onrender.com/api/payments/verify-payment-link', verifyPayload)
+            .subscribe({
+              next: (verifyRes: any) => {
+                console.log('🔎 Verify Response:', verifyRes);
+
+                if (verifyRes.verified === true || verifyRes.status === 'paid' || verifyRes.status === 'captured') {
+                  clearInterval(this.pollingInterval);
+                  this.showLoader = false;
+                  this.createInvoice(verifyRes.paymentId);
+
+                  Swal.fire('✅ Payment Verified', 'Your payment was successful.', 'success');
+
+                  // Proceed with hotelier/hotel registration
+                  if (this.userData?.username) {
+                    this.registerHotellier();
+                  } else {
+                    this.registerHotelafterLogin(this.formData);
+                  }
+                } else {
+                  console.log(`⏳ Payment not yet captured. Status: ${verifyRes.status}`);
+                  if (attempts >= maxAttempts) {
+                    clearInterval(this.pollingInterval);
+                    this.showLoader = false;
+                    Swal.fire('⚠️ Payment Pending', 'Could not verify payment in time. Please try later.', 'warning');
+                  }
+                }
+              },
+              error: (err) => {
+                console.error('❌ Verify API Error:', err);
+                if (attempts >= maxAttempts) {
+                  clearInterval(this.pollingInterval);
+                  this.showLoader = false;
+                  Swal.fire('❌ Verification Failed', 'Unable to verify payment. Please try again.', 'error');
+                }
+              }
+            });
+
         },
         error: (err) => {
-          console.error('❌ Verify API Error:', err);
+          console.error('❌ Fetch Payment Details Error:', err);
           if (attempts >= maxAttempts) {
             clearInterval(this.pollingInterval);
             this.showLoader = false;
-            this.fail= true;
-            Swal.fire('❌ Verification Failed', 'Unable to verify payment. Please try again.', 'error');
+            Swal.fire('❌ Verification Failed', 'Unable to fetch payment details. Please try again.', 'error');
           }
         }
       });
-    }, 3000);
-  }
+
+  }, 3000);
+}
+
 
   ngOnDestroy() {
     if (this.pollingInterval) clearInterval(this.pollingInterval);
