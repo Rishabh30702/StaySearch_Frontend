@@ -20,6 +20,7 @@ import { StripeService } from './services/stripe.service';
 import { FormDataService } from './services/form-data.service';
 import { RazorpayserviceService } from './services/RazorpayService/razorpayservice.service';
 import { AdminService } from '../../admin-panel/Layout/admin-home/Admin.Service';
+import { PaymentWindowService } from '../../services/payment-window.service';
 
 // Add this declaration so TypeScript knows about Razorpay
 declare var Razorpay: any;
@@ -334,6 +335,7 @@ hdfcOrderId: string = '';
     private formDataService: FormDataService,
     private RazorpayService: RazorpayserviceService,
      private adminService: AdminService,
+      private paymentWindowService: PaymentWindowService
   ) {
 
     this.Aroute.queryParams.subscribe(params => {
@@ -582,7 +584,9 @@ this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
   const form = document.createElement('form');
   form.method = 'POST';
   form.action = 'https://api.razorpay.com/v1/checkout/embedded';
-  form.target = '_blank';
+  const targetName = 'razorpay_checkout_' + Date.now();
+form.target = targetName;
+
   form.innerHTML = `
     <input type="hidden" name="key_id" value="${order.key}" />
     <input type="hidden" name="order_id" value="${order.orderId}" />
@@ -596,7 +600,16 @@ this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
   `;
 
   document.body.appendChild(form);
-  form.submit();
+  
+
+  const razorpayTab = window.open('', targetName);
+if (razorpayTab) {
+  form.submit(); // submits the form into that tab
+
+  // (optional) store reference using your shared service
+  this.paymentWindowService.setWindow(razorpayTab);
+}
+
 
  
   this.router.navigate(['/payment-success'],{queryParams: {email: this.username, phone: this.phonenumber, amount: amountInPaise,hotelname: this.hotelname }});
