@@ -7,6 +7,7 @@ import { AuthService } from '../../../../../Core/Services/AuthService/services/a
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { HotelsService } from '../../hotels.service';
+import { PaymentWindowService } from '../../../../../services/payment-window.service';
 
 @Component({
   selector: 'app-razorpay-success',
@@ -34,7 +35,8 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
      private hotelsService: HotelsService,
     private authService: AuthService,
      private Aroute: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private paymentWindowService: PaymentWindowService
   ) {
 this.Aroute.queryParams.subscribe(params => {
       this.username = params['email'];
@@ -141,12 +143,13 @@ this.Aroute.queryParams.subscribe(params => {
           if (attempts >= maxAttempts) {
             clearInterval(this.pollingInterval);
             this.showLoader = false;
+            this.paymentWindowService.closeWindow();
             Swal.fire('❌ Verification Failed', 'Unable to fetch payment details. Please try again.', 'error');
           }
         }
       });
 
-  }, 3000);
+  }, 15000);
 }
 
 
@@ -214,8 +217,18 @@ this.Aroute.queryParams.subscribe(params => {
     });
   }
 
-  goToDashboard() {}
-  goToHome() {}
+  goToDashboard() {
+    
+      this.router.navigate(['hotellier'], {
+  queryParams: { value: "hotellier" }
+});
+  }
+  goToHome() {
+       this.router.navigate(['hotellier'], {
+  queryParams: { value: "hotellier" }
+});
+
+  }
 
 
 
