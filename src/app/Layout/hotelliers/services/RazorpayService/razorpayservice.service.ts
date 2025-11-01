@@ -15,14 +15,14 @@ export class RazorpayserviceService {
   constructor(private http: HttpClient) {}
 
   /** ✅ Create an order on the backend */
-  createOrder(amountInPaise: number, receipt?: string): Observable<any> {
-    return this.http.post(`${this.API}/create-order`, {
-      amountInPaise,
-      currency: 'INR',
-      receipt: receipt || 'rcpt_' + Date.now(),
-      autoCapture: true
-    });
-  }
+createOrder(receipt?: string): Observable<any> {
+  return this.http.post(`${this.API}/create-order`, {
+    currency: 'INR',
+    receipt: receipt || 'rcpt_' + Date.now(),
+    autoCapture: true
+  });
+}
+
 
   /** ✅ Verify payment by order_id + payment_id + signature */
   verifyPayment(data: {

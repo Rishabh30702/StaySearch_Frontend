@@ -573,19 +573,16 @@ this.formDataService.setUserData(combinedData);
 
 
 // Razorpay order
-const amountInPaise = Math.round(Number(this.amount) * 100);
-const backendOrigin = 
-   'https://staysearchbackend.onrender.com';
-const backendCallback = "https://staysearchbackend.onrender.com/api/payments/callback";
-
-this.RazorpayService.createOrder(amountInPaise).subscribe(order => {
-  console.log("✅ Razorpay Order Created:", order)
+this.RazorpayService.createOrder().subscribe(order => {
+  console.log("✅ Razorpay Order Created:", order);
   localStorage.setItem('lastOrderId', order.orderId);
+
+  const backendCallback = "https://staysearchbackend.onrender.com/api/payments/callback";
   const form = document.createElement('form');
   form.method = 'POST';
   form.action = 'https://api.razorpay.com/v1/checkout/embedded';
   const targetName = 'razorpay_checkout_' + Date.now();
-form.target = targetName;
+  form.target = targetName;
 
   form.innerHTML = `
     <input type="hidden" name="key_id" value="${order.key}" />
@@ -600,19 +597,21 @@ form.target = targetName;
   `;
 
   document.body.appendChild(form);
-  
 
   const razorpayTab = window.open('', targetName);
-if (razorpayTab) {
-  form.submit(); // submits the form into that tab
+  if (razorpayTab) {
+    form.submit();
+    this.paymentWindowService.setWindow(razorpayTab);
+  }
 
-  // (optional) store reference using your shared service
-  this.paymentWindowService.setWindow(razorpayTab);
-}
-
-
- 
-  this.router.navigate(['/payment-success'],{queryParams: {email: this.username, phone: this.phonenumber, amount: amountInPaise,hotelname: this.hotelname }});
+  // Optional redirect after submit
+  this.router.navigate(['/payment-success'], {
+    queryParams: {
+      email: this.username,
+      phone: this.phonenumber,
+      hotelname: this.hotelname
+    }
+  });
 });
 
 
