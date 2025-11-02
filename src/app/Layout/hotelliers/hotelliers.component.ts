@@ -587,7 +587,7 @@ this.RazorpayService.createOrder().subscribe(order => {
   form.innerHTML = `
     <input type="hidden" name="key_id" value="${order.key}" />
     <input type="hidden" name="order_id" value="${order.orderId}" />
-    <input type="hidden" name="amount" value="${order.amount}" />
+    
     <input type="hidden" name="currency" value="${order.currency}" />
     <input type="hidden" name="callback_url" value="${backendCallback}" />
     <input type="hidden" name="name" value="StaySearch" />
@@ -783,7 +783,7 @@ formatDateTimeLocal(date: Date): string {
 
  localStorage.getItem('token')?this.checkStatus():"";
 
- this.fetchAmount();
+//  this.fetchAmount();
 
 
     
@@ -1976,7 +1976,7 @@ previewImages(event: Event) {
 
   // add proprty button on dashboard
   addNewProperty(){
-    this.showRegistrationInfo = true;
+   if(!localStorage.getItem('token')){this.showRegistrationInfo = true;}
     this.selectMenu('hotels');
     this.selectedMenu = 'hotels'
   }
@@ -2582,8 +2582,8 @@ registerHotel(formData: FormData) {
 
 
 
-
-fetchAmount() {
+//////////
+/*fetchAmount() {
   this.adminService.getAmountpage().subscribe({
     next: (res: any) => {
       // assuming API returns { amount: 5000 }
@@ -2594,7 +2594,7 @@ fetchAmount() {
       console.error("Error fetching amount:", err);
     }
   });
-}
+}*/ /////////
 
 
   createInvoice(res: any, amount: any) {

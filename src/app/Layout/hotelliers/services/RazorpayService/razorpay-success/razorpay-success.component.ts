@@ -19,7 +19,7 @@ export class RazorpaySuccessComponent implements OnInit, OnDestroy {
   showLoader = false;
   formData: any;
   userData: any;
-  orderId: string | null = null;
+ readonly orderId: string | null = null;
   pollingInterval: any;
   fail:boolean = false;
   username: string ='';
@@ -49,6 +49,8 @@ this.Aroute.queryParams.subscribe(params => {
     
   });
 
+  this.orderId = localStorage.getItem('lastOrderId')!;
+
 
   }
 
@@ -58,7 +60,7 @@ this.Aroute.queryParams.subscribe(params => {
     this.userData = this.formDataService.getUserData();
 
     // ✅ We no longer need paymentId — we only need orderId to verify
-    this.orderId = localStorage.getItem('lastOrderId');
+    
 
     if (this.orderId) {
       this.startPaymentPolling(this.orderId);
@@ -67,7 +69,18 @@ this.Aroute.queryParams.subscribe(params => {
     }
   }
 
-  startPaymentPolling(orderId: string) {
+  startPaymentPolling(OrderId: string) {
+      const orderId = OrderId;
+
+ if (this.pollingInterval) {
+    console.warn("⚠️ Polling already active, cannot start another instance.");
+    return;
+  }
+
+  // Lock orderId for this polling session (immutable local copy)
+  
+
+
   this.showLoader = true;
   let attempts = 0;
   const maxAttempts = 15; // ~45 seconds at 3s interval
@@ -233,13 +246,12 @@ this.Aroute.queryParams.subscribe(params => {
 
 
 createInvoice(res: any) {
-    
+      
     const invoiceData = {
       orderId: this.orderId,
       paymentId: res,
       customerEmail:this.username,
       customerPhone: this.phone,
-      amountInPaise: this.amount,
       hotelName: this.hotelname
     };
 
