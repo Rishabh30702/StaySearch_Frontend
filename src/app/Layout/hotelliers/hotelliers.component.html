@@ -821,12 +821,12 @@
 
             <div class="form-group2">
               <label for="password">Password</label>
-              <input type="password" id="password" name="password" [(ngModel)]="userprofile.password" required />
+              <input type="password" id="password" name="password" [(ngModel)]="userprofile.password"  required />
             </div>
 
             <div class="form-group2">
               <label for="newPassword">New Password</label>
-              <input type="password" id="newPassword" name="newPassword" [(ngModel)]="userprofile.newPassword" />
+              <input type="password" id="newPassword"    #newPassword="ngModel" name="newPassword"  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$"   title="Password must be at least 8 characters, include uppercase, lowercase, number, and special character" [(ngModel)]="userprofile.newPassword" />
             </div>
 
             <div class="button-group">
@@ -838,6 +838,13 @@
            <button (click)="logout()" style="margin-top: 20px; margin-left: 20px;  border-radius: 8px; color: white; background-color: red; padding: 8px 16px; border: none;">
              Log Out
             </button>
+
+            <div *ngIf="newPassword?.touched && newPassword?.invalid" class="text-danger">
+  <small *ngIf="newPassword?.errors?.['required']">New password is required.</small>
+  <small *ngIf="newPassword?.errors?.['pattern']">
+    Must be 8+ characters, include uppercase, lowercase, number & special character.
+  </small>
+</div>
         </div>
         </div>
 

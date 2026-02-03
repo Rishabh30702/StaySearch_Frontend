@@ -2273,6 +2273,17 @@ let items = this.menuItems;
 
 
 updatePassword() {
+const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+  if (!strongPasswordRegex.test(this.userprofile.newPassword)) {
+    alert(
+      'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+    );
+    return;
+  }
+
+  
    this.isLoading = true;
     console.log('Updating password with:', {
       oldPassword: this.userprofile.password,

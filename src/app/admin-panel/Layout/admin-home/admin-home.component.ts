@@ -11,12 +11,13 @@ import { HotelsService } from '../../../Layout/hotelliers/services/hotels.servic
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { SafeTextPipe } from '../../../safe-text.pipe';
 
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, SpinnerComponent, FormsModule],
+  imports: [CommonModule, SpinnerComponent, FormsModule,SafeTextPipe],
   templateUrl: './admin-home.component.html',
   styleUrls: ['./admin-home.component.css'],
   animations: [
@@ -837,6 +838,7 @@ onImageUpload(event: any) {
 }
 
 submitContentUpdate() {
+  this.content.title = this.sanitizeInput(this.content.title);
 
   // send `this.content` to backend
   console.log('Submitting content update:', this.content);
@@ -1391,6 +1393,13 @@ getTransactionsSummary(): void {
   }
 
 
+
+
+
+sanitizeInput(input: string): string {
+  // Remove tags and special characters
+  return input.replace(/[<>\/]/g, '');
+}
 
 
 }
