@@ -62,8 +62,23 @@
   <form #signupForm="ngForm">
     <input type="email" [(ngModel)]="signupUsername" name="signupUsername" required placeholder="Email Address">
     <input type="text" [(ngModel)]="signupEmail" name="signupEmail" required placeholder="Name">
-    <input type="password" [(ngModel)]="signupPassword" name="signupPassword" required placeholder="Password">
-    <input type="password" [(ngModel)]="signupRepeatPassword" name="signupRepeatPassword" required placeholder="Repeat Password">
+    <input type="password" [(ngModel)]="signupPassword"  #signupPasswordRef="ngModel" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$" name="signupPassword" required placeholder="Password">
+    <div *ngIf="signupPasswordRef.touched && signupPasswordRef.invalid" class="text-danger">
+      <small *ngIf="signupPasswordRef.errors?.['required']">Password is required.</small>
+      <small *ngIf="signupPasswordRef.errors?.['pattern']">
+        Password must be at least 8 characters, include uppercase, lowercase, number & special character.
+      </small>
+    </div>
+    
+    <input type="password" [(ngModel)]="signupRepeatPassword" #signupRepeatPasswordRef="ngModel" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$" name="signupRepeatPassword" required placeholder="Repeat Password">
+    <div *ngIf="signupRepeatPasswordRef.touched && signupRepeatPasswordRef.invalid" class="text-danger">
+      <small *ngIf="signupRepeatPasswordRef.errors?.['required']">Repeat Password is required.</small>
+    </div>
+
+    <!-- Custom match validation -->
+    <div *ngIf="signupRepeatPasswordRef.touched && signupRepeatPassword !== signupPassword" class="text-danger">
+      <small>Passwords do not match.</small>
+    </div>
     <input type="tel" [(ngModel)]="signupContact" name="signupContact" required pattern="[0-9]{10}" maxlength="10" placeholder="Contact number">
     <input type="text" [(ngModel)]="signupGstin" name="signupGstin" maxlength="15" placeholder="Provide Your GSTIN">
   

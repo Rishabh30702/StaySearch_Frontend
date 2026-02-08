@@ -244,6 +244,8 @@ expandedWishlistIndex: number | null = null;
 }
 
 updateProfile() {
+
+  
   this.isLoading = true
   const payload = {
     fullname: this.fullName,
@@ -275,6 +277,17 @@ updateProfile() {
 }
 
 updatePassword() {
+
+   // 2. Strong password regex
+  const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+  if (!strongPasswordRegex.test(this.newPassword)) {
+    alert(
+      'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+    );
+    return;
+  }
   this.isLoading = true;
 
   if (this.oldPassword && this.newPassword) {

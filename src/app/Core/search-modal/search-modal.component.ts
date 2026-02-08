@@ -109,6 +109,18 @@ export class SearchModalComponent implements OnInit {
   
 
   register() {
+
+    const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+  if (!strongPasswordRegex.test(this.user.password)) {
+    alert(
+      'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+    );
+    return;
+  }
+
+
     this.isLoading = true;
     this.authService.register(this.user).subscribe(
       response => {

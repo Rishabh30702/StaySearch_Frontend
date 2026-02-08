@@ -241,6 +241,17 @@ phoneNumber = "";
   // }
 
   registerHotelier() {
+
+const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+
+  if (!strongPasswordRegex.test(this.signupPassword)) {
+    alert(
+      'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+    );
+    return;
+  }
+    
     
     if (this.signupPassword !== this.signupRepeatPassword) {
         Swal.fire({

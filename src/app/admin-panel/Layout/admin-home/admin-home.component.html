@@ -62,9 +62,9 @@
             <li *ngIf="notifications.length === 0" class="dropdown-item text-center text-muted">No notifications</li>
             <li *ngFor="let notif of notifications" (click)="markAsRead(notif)" class="dropdown-item" [class.bg-light]="notif.read">
               <div class="d-flex flex-column">
-                <strong [class.text-muted]="notif.read">{{ notif.title }}</strong>
+                <strong [class.text-muted]="notif.read">{{ notif.title | safeText }}</strong>
                 <small class="text-muted">{{ notif.time | date:'short' }}</small>
-                <span>{{ notif.message }}</span>
+                <span>{{ notif.message | safeText}}</span>
               </div>
             </li>
           </ul>
@@ -136,8 +136,8 @@
       
       <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title text-warning fw-bold">{{ user.fullname }}</h5>
-          <p><strong>Email:</strong> {{ user.username }}</p>
+          <h5 class="card-title text-warning fw-bold">{{ user.fullname | safeText }}</h5>
+          <p><strong>Email:</strong> {{ user.username | safeText}}</p>
           <span class="badge bg-warning text-dark mb-3">Pending</span>
           <button class="btn btn-outline-success w-100 mb-2" (click)="approveHotelier(user.id)">Approve</button>
           <button class="btn btn-outline-danger w-100" (click)="rejectHotelier(user.id)">Reject</button>
@@ -154,8 +154,8 @@
     <div class="col-md-4 mb-4" *ngFor="let user of approvedHoteliers">
       <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title text-success fw-bold">{{ user.fullname }}</h5>
-          <p><strong>Email:</strong> {{ user.username }}</p>
+          <h5 class="card-title text-success fw-bold">{{ user.fullname | safeText }}</h5>
+          <p><strong>Email:</strong> {{ user.username | safeText }}</p>
           <span class="badge bg-success mb-3">Approved</span>
           <button class="btn btn-outline-danger w-100 mb-2" (click)="rejectHotelier(user.id)">Reject</button>
           
@@ -173,8 +173,8 @@
     <div class="col-md-4 mb-4" *ngFor="let user of rejectedHoteliers">
       <div class="card shadow-sm h-100">
         <div class="card-body">
-          <h5 class="card-title text-danger fw-bold">{{ user.fullname }}</h5>
-          <p><strong>Email:</strong> {{ user.username }}</p>
+          <h5 class="card-title text-danger fw-bold">{{ user.fullname | safeText }}</h5>
+          <p><strong>Email:</strong> {{ user.username | safeText }}</p>
           <span class="badge bg-danger mb-3">Rejected</span>
           <button class="btn btn-outline-warning w-100" (click)="makePending(user.id)">Make Pending</button>
         </div>
@@ -416,9 +416,9 @@
         <tr *ngFor="let row of filteredHotels">
           <td>{{ row.Sno }}</td>
           <td>{{ row.id }}</td>
-          <td>{{ row.h_name }}</td>
-          <td>{{ row.address}}</td>
-          <td>{{ row.col4 }}</td>
+          <td>{{ row.h_name | safeText}}</td>
+          <td>{{ row.address | safeText}}</td>
+          <td>{{ row.col4 | safeText }}</td>
           <!-- <td>{{ row.col5 }}</td> -->
           <!-- <td>{{ row.email }}</td> -->
           
@@ -550,7 +550,7 @@
               <td>{{ i + 1 }}</td>
               <td>{{ comment.username }}</td>
               <td>
-                <label >{{ comment.text }}</label>
+                <label >{{ comment.text | safeText  }}</label>
                
               <td>
   <span
@@ -626,12 +626,12 @@
 
             <div class="form-group">
               <label for="contentTitle">Title</label>
-              <input type="text" [(ngModel)]="content.title" name="contentTitle" required />
+              <input type="text" [(ngModel)]="content.title" name="contentTitle" pattern="^[a-zA-Z0-9 .,_-]+$" required />
             </div>
       
            <div *ngIf="content.type !== 'banner'" class="form-group"> <!-- correct -->
               <label for="contentBody">Content</label>
-              <textarea [(ngModel)]="content.body" name="contentBody" rows="5" required></textarea>
+              <textarea [(ngModel)]="content.body" name="contentBody"  maxlength="500" rows="5" required></textarea>
             </div>
       
             <div class="form-group">
@@ -678,9 +678,9 @@
   [@removeCard]="removedOfferId === offer.id ? 'removed' : 'in'"
   (@removeCard.done)="onAnimationDone($event, offer.id)"
   class="offer-card">
-      <h2>{{ offer.title }}</h2>
-      <p>{{ offer.status }}</p>
-      <p><strong>Discount:</strong> {{ offer.description }}% off</p>
+      <h2>{{ offer.title  | safeText }}</h2>
+      <p>{{ offer.status  | safeText}}</p>
+      <p><strong>Discount:</strong> {{ offer.description  | safeText }}% off</p>
       <button (click)="approveOffer(offer.id,offer)">Approve</button>
     </div>
   </div>
