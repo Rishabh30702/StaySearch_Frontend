@@ -2445,6 +2445,24 @@ getUserProfile()
          },
         error: (err) => {
          console.error('Error fetching user Profile:', err);
+           
+          // Check if the error is a 401 (Unauthorized)
+            if (err.status === 401) {
+                alert("Your session has expired due to a password change. Please login again.");
+                
+                // 1. Clear local storage / cookies
+                this.authService.logout(); 
+                
+                // 2. Redirect to login page
+                this.router.navigate(['/adminAccess'], { 
+  queryParams: { key: 'owner' } 
+});
+
+         
+             }
+
+
+
              }
             });
 
