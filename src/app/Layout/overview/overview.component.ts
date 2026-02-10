@@ -9,10 +9,11 @@ import Swal from 'sweetalert2';
 import { FeedbackServiceService } from '../../Core/Services/feedback-service.service';
 import { AuthService } from '../../Core/Services/AuthService/services/auth.service';
 import { SearchModalComponent } from "../../Core/search-modal/search-modal.component";
+import { SafeTextPipe } from '../../safe-text.pipe';
 
 @Component({
   selector: 'app-overview',
-  imports: [CommonModule, SpinnerComponent, FormsModule, SearchModalComponent],
+  imports: [CommonModule, SpinnerComponent, FormsModule, SearchModalComponent,SafeTextPipe],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
 })
@@ -53,11 +54,11 @@ stars = Array(5).fill(0);
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      console.log("Query Params:", params); // Debugging
+      // console.log("Query Params:", params); // Debugging
      
 
       this.hotelId = params['hotelId'];
-      console.log("Extracted hotelId:", this.hotelId); // Debugging
+      // console.log("Extracted hotelId:", this.hotelId); // Debugging
 
       if (this.hotelId) {
         this.fetchHotelData();
@@ -75,26 +76,35 @@ stars = Array(5).fill(0);
     }
   
     const apiUrl = `https://staysearchbackend.onrender.com/v1/hotel/${this.hotelId}`;
-    console.log("Fetching from API:", apiUrl);
+    // console.log("Fetching from API:", apiUrl);
   
     this.http.get(apiUrl).subscribe(
       (data: any) => {
-        console.log("Fetched Hotel Data:", data);
+        // console.log("Fetched Hotel Data:", data);
   
         if (data) {
+
+          const clean = (text: string) => text ? text.replace(/<[^>]*>?/gm, '') : '';
           this.hotel = {
             ...data,
-            latitude: data.lat,
-            longitude: data.lng,
-            roomsList: data.roomsList?.map((room: any) => ({
-              ...room,
-              showExpandIcon: room.description && room.description.length > 50, // Ensure check for description existence
-            })) || [],
-          };
-  
-          this.hotel.roomsList.forEach((room: any) => {
-            this.expandedRooms[room.id] = false;
-          });
+           name: clean(data.name),
+    address: clean(data.address),
+    description: clean(data.description),
+    
+    latitude: data.lat,
+    longitude: data.lng,
+    roomsList: data.roomsList?.map((room: any) => ({
+      ...room,
+      // Clean room-level fields
+      name: clean(room.name),
+      description: clean(room.description),
+      showExpandIcon: room.description && room.description.length > 50,
+    })) || [],
+  };
+
+  this.hotel.roomsList.forEach((room: any) => {
+    this.expandedRooms[room.id] = false;
+  });
   
           this.isLoading = false;
           setTimeout(() => this.loadMap(), 500);

@@ -34,30 +34,41 @@ export class ListingsComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     // ✅ Fetch Hotels Before Applying Filters
-    this.hotelListingService.getHotels().subscribe(
-      (data: any) => {
-        if (!Array.isArray(data)) {
-          console.error("API response is not an array:", data);
-          return;
-        }
-         this.hotels = data;
-         // ✅ Shuffle hotels randomly
-      // this.hotels = this.shuffleArray(data);
-        this.filteredHotels = [...this.hotels];
-        this.isLoading = false;
+this.hotelListingService.getHotels().subscribe(
+  (data: any) => {
+    if (!Array.isArray(data)) {
+      console.error("API response is not an array:", data);
+      this.isLoading = false;
+      return;
+    }
 
-        // ✅ Apply Filters AFTER Data is Loaded
-        this.route.queryParams.subscribe(params => {
-          console.log("Query Params Received:", params);
-          this.applyFilters(params);
-          this.scrollToTop();
-        });
-      },
-      (error: any) => {
-        console.error("❌ Error fetching hotels:", error);
-        this.isLoading = false;
-      }
-    ); 
+    // --- SECURE SANITIZATION BLOCK ---
+    const clean = (text: string) => (text ? text.replace(/<[^>]*>?/gm, '') : '');
+
+    this.hotels = data.map((hotel: any) => ({
+      ...hotel,
+      name: clean(hotel.name),
+      address: clean(hotel.address),
+      description: clean(hotel.description)
+    }));
+    // ---------------------------------
+
+    // ✅ Set filtered hotels using the sanitized data
+    this.filteredHotels = [...this.hotels];
+    this.isLoading = false;
+
+    // ✅ Apply Filters AFTER Data is Loaded and Sanitized
+    this.route.queryParams.subscribe(params => {
+      console.log("Query Params Received:", params);
+      this.applyFilters(params);
+      this.scrollToTop();
+    });
+  },
+  (error: any) => {
+    console.error("❌ Error fetching hotels:", error);
+    this.isLoading = false;
+  }
+);
   }
 
 

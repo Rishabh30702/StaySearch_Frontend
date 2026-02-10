@@ -12,11 +12,12 @@ import { SpinnerComponent } from '../../Core/spinner/spinner.component';
 import { HotelListingService } from '../../Core/Services/hotel-listing.service';
 import { HotelsService } from '../hotelliers/services/hotels.service';
 import { AdminService } from '../../admin-panel/Layout/admin-home/Admin.Service';
+import { SafeTextPipe } from '../../safe-text.pipe';
 
 
 @Component({
   selector: 'app-home',
-  imports: [SearchModalComponent,FormsModule,TranslateModule,RouterModule,CommonModule,SpinnerComponent],
+  imports: [SearchModalComponent,FormsModule,TranslateModule,RouterModule,CommonModule,SpinnerComponent,SafeTextPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -310,20 +311,24 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  showFeedbacks(){
+ showFeedbacks() {
+  const clean = (text: string) => text ? text.replace(/<[^>]*>?/gm, '') : '';
 
-    this.feedbackService.getFeedback().subscribe(
-      (data) => {
-        // Sort feedback from newest to oldest based on createdAt timestamp
-        this.feedbackList = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  
-        // console.log('Sorted Feedback Data:', this.feedbackList);
-      },
-      (error) => {
-        console.error('Error fetching feedback:', error);
-      }
-    );
-  }
+  this.feedbackService.getFeedback().subscribe(
+    (data) => {
+      this.feedbackList = data
+        .map((f: any) => ({
+          ...f,
+          hotelName: clean(f.hotelName),
+          description: clean(f.description),
+          // Clean amenities array
+          likedAmenities: f.likedAmenities?.map((a: string) => clean(a)) || []
+        }))
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    },
+    (error) => console.error('Error fetching feedback:', error)
+  );
+}
 
   getStars(rating: number): string[] {
     const stars: string[] = [];
@@ -380,122 +385,104 @@ export class HomeComponent implements OnInit {
     
   }
 
- getHotels(){
+getHotels() {
+  const clean = (text: string) => text ? text.replace(/<[^>]*>?/gm, '') : '';
   this.loading = true;
   
   this.hoteListingService.getHotels().subscribe(
     (data: any) => {
-      if (!data || data.length === 0) {
-        console.log('No hotels data found');
-        this.loading = false;
-       
-      } else {
-        // console.log('Data found');
-        // console.log(data);
-  
-         this.topRatedHotels = data.map((hotel: any) => ({
+      if (data && data.length > 0) {
+        this.topRatedHotels = data.map((hotel: any) => ({
           image: hotel.imageUrl,
           id: hotel.hotelId || 0,
-          name: hotel.name
-        })); 
-  
-        this.loading = false;
+          name: clean(hotel.name) // Clean hotel name
+        }));
       }
+      this.loading = false;
     },
     (err) => {
       this.loading = false;
       console.error('Error fetching hotels:', err.message);
     }
   );
-  
-
-  
- }
+}
 
 
-getAllOffers(){
+getAllOffers() {
+  const clean = (text: string) => (text ? text.replace(/<[^>]*>?/gm, '') : '');
+
   this.HotelsService.getOffers().subscribe({
-      next: (res) => {
+    next: (res) => {
+      // 1. Map and Sanitize first
+      this.offers = res
+        .map((offer: any) => ({
+          ...offer,
+          title: clean(offer.title),
+          description: clean(offer.description),
+          validity: clean(offer.validity),
+          badge: clean(offer.badge),
+        }))
+        // 2. Sort the sanitized data
+        .sort((a: any, b: any) => {
+          const dateA = new Date(a.validFrom).getTime();
+          const dateB = new Date(b.validFrom).getTime();
 
-        //filtering on the basis of most recent first -> higher discount
-        
-   this.offers = res
-  .map((offer: any) => ({ ...offer }))
-  .sort((a: { validFrom: string, description: string }, b: { validFrom: string, description: string }) => {
-    const dateA = new Date(a.validFrom).getTime();
-    const dateB = new Date(b.validFrom).getTime();
+          if (dateA !== dateB) {
+            return dateB - dateA; // Newest first
+          }
 
-    if (dateA !== dateB) {
-      return dateB - dateA; // Newest first
-    }
+          const descA = parseFloat(a.description) || 0;
+          const descB = parseFloat(b.description) || 0;
 
-    const descA = parseFloat(a.description);
-    const descB = parseFloat(b.description);
-
-    return descB - descA; // Higher description value first
+          return descB - descA; // Higher discount value first
+        });
+    },
+    error: (err) => {
+      console.error('Error fetching offers:', err);
+    },
   });
-      // console.log("Offers data", this.offers)
-       
-      },
-      error: (err) => {
-        console.error('Error fetching offers:', err);
-      },
-    });
-  }
+}
+
+getBannerContent() {
+  const clean = (text: string) => (text ? text.replace(/<[^>]*>?/gm, '') : '');
+  this.isLoading = true;
+
+  this.adminService.getContent().subscribe({
+    next: (banners) => {
+      this.slides = banners.slice(0, 2).map((item: any, index: number) => ({
+        // Sanitize the caption to prevent XSS
+        caption: clean(item.title), 
+        image: item.imageUrl,
+        alt: index == 0 ? 'First Slide' : 'Second Slide',
+        icon: 'MDI.png'
+      }));
+      this.isLoading = false;
+    },
+    error: (err) => {
+      this.isLoading = false;
+      console.error('Failed to load banners:', err);
+    }
+  });
+}
 
 
-  getBannerContent(){
-    this.isLoading = true;
-    this.adminService.getContent().subscribe(
-      {
+getInfoContent() {
+  const clean = (text: string) => (text ? text.replace(/<[^>]*>?/gm, '') : '');
 
-         next: (banners) => {
-            //  for now only 2nd and 3rd item is shown
-               this.slides = banners.slice(0, 2).map((item: any, index: number) => ({
-               caption: item.title,
-               image: item.imageUrl,
-               alt: index == 0? 'First Slide' : 'Second Slide',
-               icon: 'MDI.png' 
-                  }));
-                  this.isLoading = false;
-        //  console.log("banner content ",banners)
-        
-        }
-      ,
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Failed to load banners:', err)}
-
-      }
-    )
-  }
-
-
-
-
-  getInfoContent(){
-    this.adminService.getInfopage().subscribe(
-      {
-
-         next: (res) => {
-            //  for now only 2nd and 3rd item is shown
-               this.events = res.slice(0, 2).map((item: any, index: number) => ({
-               title: item.title,
-               image: item.imageUrl,
-               description: item.content,
-               altText: item.title,
-               classname: index == 0? 'kumbh-mela' : 'braj-holi',
-               imageFirst: index == 0? true : false
-                  }));
-        //  console.log("info content ",res)
-        
-        }
-      ,
-      error: (err) => console.error('Failed to load Info page:', err)
-
-      }
-    )
-  }
+  this.adminService.getInfopage().subscribe({
+    next: (res) => {
+      this.events = res.slice(0, 2).map((item: any, index: number) => ({
+        title: clean(item.title),        // Sanitize title
+        description: clean(item.content), // Sanitize content body
+        image: item.imageUrl,
+        altText: clean(item.title),
+        className: index == 0 ? 'kumbh-mela' : 'braj-holi',
+        imageFirst: index == 0 ? true : false
+      }));
+    },
+    error: (err) => console.error('Failed to load Info page:', err)
+  });
+}
 
 }
 

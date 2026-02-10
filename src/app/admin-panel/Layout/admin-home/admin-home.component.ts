@@ -270,8 +270,20 @@ pendingHoteliersCount: number = 0;
     this.authService.getAllUsers().subscribe({
       next: (res) => {
         // Sort by createdAt (latest first)
-        this.users = res.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const clean = (text: string) => (text ? text.replace(/<[^>]*>?/gm, '') : '');
 
+this.users = res
+  .map((user: any) => ({
+    ...user,
+    // Sanitize high-risk fields
+    name: clean(user.name),
+    username: clean(user.username),
+    email: clean(user.email),
+    role: clean(user.role)
+  }))
+  .sort((a: any, b: any) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
         // console.log('All users (sorted):', this.users);
 
         // Filter users after sorting
@@ -1073,14 +1085,19 @@ getHotels(){
       } else {
         // console.log("data found");
         // console.log(data);
-        this.hotels = data.map((hotel: any,index: number) => ({
-          Sno: index+ 1,
-          address: hotel.address || 'Unknown Location',
-          id: hotel.hotelId || 0,
-          h_name:hotel.name,
-          col4: hotel.accommodationType
-          
-        }))
+      // Define the cleaning function to strip HTML tags
+const clean = (text: string) => (text ? text.replace(/<[^>]*>?/gm, '') : '');
+
+this.hotels = data.map((hotel: any, index: number) => ({
+  Sno: index + 1,
+  // Sanitize the address
+  address: clean(hotel.address) || 'Unknown Location',
+  id: hotel.hotelId || 0,
+  // Sanitize the hotel name
+  h_name: clean(hotel.name),
+  // Sanitize the accommodation type
+  col4: clean(hotel.accommodationType)
+}));
        
         this.isLoading = false;
       }
