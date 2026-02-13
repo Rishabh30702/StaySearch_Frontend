@@ -47,7 +47,7 @@ export class SearchModalComponent implements OnInit {
   place: string = '';
   hotelName: string = '';
 
-  user = { username: '', password: '', role: 'USER' }; // Default role is 'USER'
+  user = { username: '', password: '', }; 
   message: string = '';
   isLoading: boolean = false;
   constructor(private router: Router, private cdr: ChangeDetectorRef,

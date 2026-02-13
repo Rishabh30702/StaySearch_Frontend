@@ -309,13 +309,13 @@ localStorage.removeItem('token');
 
 checkExisting(username: any){
   this.isLoading=true;
-   this.authService.getAllUsers().subscribe({
-      next: (res) => {
-      const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/gi, '');
+  
 
-this.idExist = res.some((user: any) =>
-  normalize(user.username) === normalize(username)
-);
+  this.authService.checkusername(username).subscribe({
+    next: (res) => {
+      this.idExist = res.exists;
+     
+    
          this.isLoading=false;
            if(!this.idExist){
             this.router.navigate(['hotellier'], {

@@ -39,7 +39,7 @@ export class AuthService {
     };
   }
 
-  register(user: {  username: string; password: string; role: string }): Observable<any> {
+  register(user: {  username: string; password: string;}): Observable<any> {
     return this.http.post(`${this.baseUrl}/auth/register`, user);
   }
 
@@ -129,8 +129,12 @@ export class AuthService {
     return this.http.delete(`${this.baseUrl}/auth/delete/${userId}`);
   }
 
-
-
+checkusername(username: string) {
+  // Use an object type that matches your Map.of("exists", exists)
+  return this.http.get<{ exists: boolean }>(`${this.baseUrl}/auth/check-username`, {
+    params: { username: username } // This sends ?username=... in the URL
+  });
+}
  getStatus() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
