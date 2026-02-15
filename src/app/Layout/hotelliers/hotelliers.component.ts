@@ -21,6 +21,7 @@ import { FormDataService } from './services/form-data.service';
 import { RazorpayserviceService } from './services/RazorpayService/razorpayservice.service';
 import { AdminService } from '../../admin-panel/Layout/admin-home/Admin.Service';
 import { PaymentWindowService } from '../../services/payment-window.service';
+import { firstValueFrom } from 'rxjs';
 
 // Add this declaration so TypeScript knows about Razorpay
 declare var Razorpay: any;
@@ -410,7 +411,7 @@ hdfcOrderId: string = '';
 });
   }
 
-openStripeModal() {
+async openStripeModal() {
   if(this.activeGateway == 'STRIPE') {
     this.showStripeModal = true;
    // Use requestAnimationFrame + setTimeout to wait for DOM to render
@@ -539,6 +540,14 @@ const propertyData = {
   rooms: form.value.rooms
 };
 
+try
+{
+
+
+await firstValueFrom( this.hotelsService.validateHotel(propertyData));
+  
+  
+
 // Store property data locally
 const formData = new FormData();
 formData.append(
@@ -614,7 +623,13 @@ this.RazorpayService.createOrder().subscribe(order => {
   });
 });
 
+  }
 
+  catch (err: any) {
+    // 🛡️ 4. If validation fails, it jumps here and STOPS
+    alert(err.error?.message || "Duplicate or Invalid Data");
+     this.isSubmit = false;
+  }
 
 
   } else {
@@ -1179,7 +1194,7 @@ onFileSelected(event: Event) {
     const reader = new FileReader();
     reader.onload = () => {
       this.newRoom.imageUrl = reader.result as string; // Data URL
-      //  console.log("img url ", this.newRoom.imageUrl);
+        // console.log("img url ", this.newRoom.imageUrl);
     };
     reader.readAsDataURL(this.selectedFile);
     
