@@ -12,6 +12,7 @@ export class HotelsService {
   private baseUrl = 'https://staysearchbackend.onrender.com/v1/mine/hotels';
 
  private base2 = 'https://staysearchbackend.onrender.com/' ;
+ private testUrl ="http://localhost:8080/v1/mine/hotels"
   
   getHotels(): Observable<any> {
     const token = localStorage.getItem('token');
@@ -36,6 +37,11 @@ export class HotelsService {
     );
   }
 
+
+  validateHotel(hotelData: any): Observable<any> {
+  // We send the raw form data before the payment/upload step
+  return this.http.post(`${this.base2}v1/validate`, hotelData);
+}
 
   updateHotel(hotelId: string, hotelData: any) {
     return this.http.patch(`https://staysearchbackend.onrender.com/v1/updateHotel/${hotelId}`, hotelData);
