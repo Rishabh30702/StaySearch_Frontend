@@ -521,7 +521,6 @@ closeNewUserModal()
 newUser = {
   username: '',
   password: '',
-  role: 'USER'
 };
 
 addnewUser() {
