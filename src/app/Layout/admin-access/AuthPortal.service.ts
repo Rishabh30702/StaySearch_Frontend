@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class AuthPortalService {
 
   private baseUrl = 'https://staysearchbackend.onrender.com/auth/';
-  private testUrl = 'http://localhost:8080/auth/';
+  private testUrl = 'http://localhost:8080';
   private t2 = 'http://localhost:8080/v1/mine/hotels';
   private base2 ="https://staysearchbackend.onrender.com";
 

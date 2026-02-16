@@ -10,6 +10,7 @@ export class RoomService {
   private testURL = 'http://localhost:8080/api/hotelier';
   private baseURL = 'https://staysearchbackend.onrender.com/v1/mine/rooms';
   private base2 =  "https://staysearchbackend.onrender.com"
+   private test = 'http://localhost:8080';
 
   constructor(private http: HttpClient) {}
 

@@ -836,16 +836,38 @@ content = {
   type: 'banner',
   title: '',
   body: '',
-  image: null
+  image: null as File | null,
 };
 
 scheduledContent = {
   title: '',
   scheduleTime: ''
 };
-
 onImageUpload(event: any) {
-  this.content.image = event.target.files[0];
+  const file: File = event.target.files[0];
+
+  if (!file) return;
+
+  // 1. Size Validation (e.g., Max 2MB)
+  const maxSize = 2 * 1024 * 1024; 
+  if (file.size > maxSize) {
+    alert("File is too large! Maximum size is 2MB.");
+    event.target.value = ''; // Reset the input
+    return;
+  }
+
+  // 2. Type Validation (MIME Type)
+  // We explicitly check for common safe image formats
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!allowedTypes.includes(file.type)) {
+    alert("Invalid file type! Only JPG, PNG, and WebP are allowed.");
+    event.target.value = ''; 
+    return;
+  }
+
+  // 3. Assignment (Only if it passes security checks)
+  this.content.image = file;
+  console.log("File validated and ready for upload:", file.name);
 }
 
 submitContentUpdate() {
