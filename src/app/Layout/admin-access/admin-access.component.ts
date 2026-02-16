@@ -47,7 +47,7 @@ export class AdminAccessComponent implements OnInit {
   selectedRole: string = '';
 
   isLoading: boolean = false;
-  idExist: boolean = true;
+  available: boolean = true;
 
 userEmail = "";
 phoneNumber = "";
@@ -313,11 +313,11 @@ checkExisting(username: any){
 
   this.authService.checkusername(username).subscribe({
     next: (res) => {
-      this.idExist = res.exists;
+      this.available = res.available;
      
     
          this.isLoading=false;
-           if(!this.idExist){
+           if(this.available){
             this.router.navigate(['hotellier'], {
                 queryParams: {
                   fullname: this.signupEmail,
@@ -333,8 +333,8 @@ else {
   this.isLoading=false;
         Swal.fire({
           icon: 'warning',
-          title: 'Username Already Exists',
-          text: 'The chosen username is already taken. Please choose a different one.',
+          title: 'Username Not available',
+          text: 'The chosen username is not available. Please choose a different one.',
         });
       }
     

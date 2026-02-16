@@ -130,8 +130,8 @@ export class AuthService {
   }
 
 checkusername(username: string) {
-  // Use an object type that matches your Map.of("exists", exists)
-  return this.http.get<{ exists: boolean }>(`${this.baseUrl}/auth/check-username`, {
+ 
+  return this.http.get<{ available: boolean }>(`${this.baseUrl}/auth/check-username`, {
     params: { username: username } // This sends ?username=... in the URL
   });
 }
