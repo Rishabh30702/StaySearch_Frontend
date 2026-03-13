@@ -21,6 +21,7 @@ export class AdminAccessComponent implements OnInit {
   private authService: AuthService
   ) {}
   accessKey: string | null = null;
+  captchaToken: string | null = null;
   ngOnInit(): void {
     
     history.pushState(null, '', location.href);
@@ -28,6 +29,11 @@ export class AdminAccessComponent implements OnInit {
       history.pushState(null, '', location.href);
     };
 
+
+    (window as any).onCaptchaResolved = (token: string) => {
+      console.log("Turnstile Token Received:", token);
+      this.captchaToken = token;
+    };
 
  this.route.queryParamMap.subscribe(params => {
       this.accessKey = params.get('key');
@@ -92,8 +98,19 @@ phoneNumber = "";
     this.isLoading =true;
     const payload = {
       username: this.loginUsername,
-      password: this.loginPassword
+      password: this.loginPassword,
+      captchaToken: this.captchaToken
     };
+
+    if (!this.captchaToken) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Verification Required',
+        text: 'Please complete the CAPTCHA to prove you are human.',
+      });
+      this.isLoading = false;
+      return;
+    }
 
      if (this.selectedRole === 'admin') {
     // Call admin login API
@@ -113,6 +130,8 @@ phoneNumber = "";
             text: 'Invalid admin credentials.',
           });
         }
+
+        this.resetCaptcha();
       },
       error: (err: any) => {
         this.isLoading = false;
@@ -121,6 +140,8 @@ phoneNumber = "";
           title: 'Login Failed',
           text: err?.error?.message || 'Invalid admin credentials.',
         });
+        this.resetCaptcha();
+        
       },
     });
   } else if (this.selectedRole === 'owner') {
@@ -144,6 +165,8 @@ phoneNumber = "";
             title: 'Login Failed',
             text: 'Something went wrong. Please try again.'
           });
+
+          this.resetCaptcha();
         }
       },
       error: (err: any) => {
@@ -178,6 +201,8 @@ phoneNumber = "";
           text: err?.error?.message || 'Invalid credentials. Please try again.'
         });
         console.error('Login error:', err);
+
+        this.resetCaptcha();
       }
   
 
@@ -189,6 +214,10 @@ phoneNumber = "";
   
   
   }
+
+
+
+  
 
 }
   
@@ -347,9 +376,21 @@ else {
         title: 'Failed ',
         text: 'An error occurred, Please try again later.',
       });
-        
+        this.resetCaptcha();
       }
     });
 }
+
+
+
+resetCaptcha() {
+    this.captchaToken = null;
+    if ((window as any).turnstile) {
+      (window as any).turnstile.reset();
+    }
+  }
+
+
+
    
 }
