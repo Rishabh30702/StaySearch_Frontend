@@ -4,6 +4,11 @@
 
     <!-- Login Form -->
     <div *ngIf="showLogin" class="login">
+
+      <div class="cf-turnstile" 
+         data-sitekey="0x4AAAAAACqCv0L6bDIYcj8P" 
+         data-callback="onCaptchaResolved">
+    </div>
       <div class="title">
         <span>Sign In</span>
         <p>Welcome back, please login to your account. </p>
