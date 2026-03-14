@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, NgModule, OnInit } from "@angular/core";
+import { Component, NgModule, NgZone, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthPortalService } from "./AuthPortal.service";
@@ -8,6 +8,7 @@ import { SpinnerComponent } from "../../Core/spinner/spinner.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { AuthService } from "../../Core/Services/AuthService/services/auth.service";
+declare var turnstile: any;
 
 @Component({
   selector: 'app-admin-access',
@@ -18,7 +19,7 @@ import { AuthService } from "../../Core/Services/AuthService/services/auth.servi
 })
 export class AdminAccessComponent implements OnInit {
   constructor(private router: Router, private hotelierService: AuthPortalService,private route: ActivatedRoute,
-  private authService: AuthService
+  private authService: AuthService,private NgZone: NgZone
   ) {}
   accessKey: string | null = null;
   captchaToken: string | null = null;
@@ -30,10 +31,9 @@ export class AdminAccessComponent implements OnInit {
     };
 
 
-    (window as any).onCaptchaResolved = (token: string) => {
-      console.log("Turnstile Token Received:", token);
-      this.captchaToken = token;
-    };
+    
+
+
 
  this.route.queryParamMap.subscribe(params => {
       this.accessKey = params.get('key');
@@ -48,6 +48,46 @@ export class AdminAccessComponent implements OnInit {
       }
 
 
+  }
+
+
+
+
+ngAfterViewInit() {
+    // Wait a tiny bit for Angular to finish the DOM
+ setTimeout(() => {
+    if (typeof turnstile !== 'undefined') {
+      turnstile.render('.cf-turnstile', {
+        sitekey: '0x4AAAAAACqCv0L6bDIYcj8P',
+        callback: (token: string) => {
+          this.NgZone.run(() => {
+            this.captchaToken = token;
+          });
+        },
+        'error-callback': (code: string) => {
+          this.NgZone.run(() => {
+            console.error("Turnstile Error:", code);
+            this.handleCaptchaError(code);
+          });
+        },
+        
+        theme: 'dark'
+      });
+    }
+  }, 300); // 300ms i
+  }
+
+
+
+
+   handleCaptchaError(code: string) {
+    console.error("Cloudflare Turnstile Error:", code);
+    
+    if (code === '600010') {
+      alert("Verification failed. Please check if your browser has 'Tracking Protection' or 'Ad-blockers' enabled.");
+    } else {
+      alert("Captcha error occurred. Please refresh the page.");
+    }
   }
 
   selectedRole: string = '';
@@ -109,6 +149,7 @@ phoneNumber = "";
         text: 'Please complete the CAPTCHA to prove you are human.',
       });
       this.isLoading = false;
+      this.resetCaptcha();
       return;
     }
 
