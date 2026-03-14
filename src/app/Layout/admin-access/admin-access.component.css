@@ -391,4 +391,20 @@
  
  
  
- 
+.cf-turnstile {
+    position: absolute;
+    /* Pushes it to the absolute edge of the parent container */
+    right: 0; 
+    
+   
+    top: 105%;
+    transform: translateY(-50%) scale(0.7); 
+    
+    /* Ensures the 'shrink' happens toward the right wall */
+    transform-origin: right center;
+    display: block !important;
+    visibility: visible !important;
+    
+    
+    /* Remove 'left' and 'size' as they interfere with the layout */
+}
